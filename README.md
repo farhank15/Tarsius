@@ -203,7 +203,6 @@ Tarsius is grounded in **18 external peer-reviewed papers, empirical studies, an
 | 9 | Differential oracles validate COBOL translation | SEDCoT (arXiv:2607.04092) |
 | 10 | Context Rot degrades long-horizon agents | The Ralph Loop |
 
-*Full research table: [docs/research/deep-research-literature.md](docs/research/deep-research-literature.md)*
 
 ---
 
