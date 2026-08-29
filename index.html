@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarsius — Capture Knowledge That Was Never Written Down</title>
+  <meta name="description" content="A Tacit-Knowledge Capture & Persistence Layer for IBM Bob 2.0. Preserves undocumented business rules before senior engineers retire." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #05080f;
+      --surf-1:   #0b1017;
+      --surf-2:   #111820;
+      --surf-3:   #19222e;
+      --border:   #1e2937;
+      --border-2: #283444;
+      --text:     #dde6f0;
+      --text-2:   #8fa3b8;
+      --text-3:   #506070;
+      --teal:     #2dd4bf;
+      --teal-1:   rgba(45,212,191,.08);
+      --teal-2:   rgba(45,212,191,.18);
+      --em:       #34d399;
+      --amber:    #fbbf24;
+      --red:      #f87171;
+      --purple:   #a78bfa;
+      --blue:     #60a5fa;
+      --r:        10px;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .85em;
+      color: var(--teal);
+      background: var(--teal-1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ─── Layout ─────────────────────────────────────── */
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+    .section { padding: 88px 0; border-bottom: 1px solid var(--border); }
+    .section:last-of-type { border-bottom: none; }
+
+    /* ─── Nav ────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(5,8,15,.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      height: 60px;
+      display: flex; align-items: center;
+    }
+    .nav-inner {
+      width: 100%; max-width: 1040px; margin: 0 auto; padding: 0 28px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 15px; white-space: nowrap; margin-right: 16px;
+    }
+    .nav-brand img { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; }
+    .nav-links {
+      display: flex; gap: 2px; list-style: none; flex: 1;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      display: block; color: var(--text-2); font-size: 13px;
+      padding: 6px 12px; border-radius: 7px; white-space: nowrap;
+      transition: color .15s, background .15s;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surf-2); }
+    .nav-gh {
+      display: inline-flex; align-items: center; gap-7px; gap: 7px;
+      background: var(--surf-2); border: 1px solid var(--border-2);
+      color: var(--text); font-size: 13px; font-weight: 600;
+      padding: 7px 16px; border-radius: 8px; white-space: nowrap;
+      transition: border-color .15s, background .15s;
+    }
+    .nav-gh:hover { background: var(--surf-3); border-color: var(--text-3); }
+    @media (max-width: 680px) { .nav-links { display: none; } }
+
+    /* ─── Hero ───────────────────────────────────────── */
+    .hero {
+      padding: 96px 0 80px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal-1); border: 1px solid var(--teal-2);
+      color: var(--teal); font-size: 11px; font-weight: 700;
+      padding: 5px 14px; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 32px;
+    }
+    .hero-eyebrow i { font-size: 8px; }
+    .hero-logo {
+      width: 108px; height: 108px; border-radius: 50%;
+      border: 2px solid var(--border-2);
+      margin: 0 auto 32px; display: block;
+      box-shadow: 0 0 40px rgba(45,212,191,.08);
+    }
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 54px); font-weight: 800;
+      letter-spacing: -.025em; line-height: 1.12;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { color: var(--teal); font-style: normal; }
+    .hero-sub {
+      color: var(--text-2); font-size: 17px;
+      max-width: 560px; margin: 0 auto 36px; line-height: 1.65;
+    }
+    .hero-chips {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600;
+      padding: 5px 13px; border-radius: 99px; border: 1px solid;
+    }
+    .chip-teal   { background: rgba(45,212,191,.08);  border-color: rgba(45,212,191,.25);  color: var(--teal);   }
+    .chip-green  { background: rgba(52,211,153,.08);  border-color: rgba(52,211,153,.25);  color: var(--em);     }
+    .chip-blue   { background: rgba(96,165,250,.08);  border-color: rgba(96,165,250,.25);  color: var(--blue);   }
+    .chip-red    { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.25); color: var(--red);    }
+    .chip-purple { background: rgba(167,139,250,.08); border-color: rgba(167,139,250,.25); color: var(--purple); }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: #03080e; font-weight: 700; font-size: 14px;
+      padding: 12px 26px; border-radius: 9px;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text); font-weight: 600; font-size: 14px;
+      padding: 12px 26px; border-radius: 9px;
+      border: 1px solid var(--border-2);
+      transition: background .15s, border-color .15s;
+    }
+    .btn-outline:hover { background: var(--surf-2); border-color: var(--text-3); }
+    .hero-quote {
+      margin: 52px auto 0; max-width: 500px; text-align: left;
+      border-left: 3px solid var(--teal-2); padding-left: 20px;
+      color: var(--text-2); font-size: 14px; line-height: 1.8; font-style: italic;
+    }
+    .hero-quote strong { color: var(--text); font-style: normal; }
+
+    /* ─── Section header ─────────────────────────────── */
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--teal);
+      display: block; margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(22px, 3vw, 30px); font-weight: 800;
+      letter-spacing: -.02em; line-height: 1.2; margin-bottom: 12px;
+    }
+    .lead { color: var(--text-2); font-size: 15px; max-width: 600px; margin-bottom: 40px; line-height: 1.7; }
+
+    /* ─── Stats ──────────────────────────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .stat {
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px 22px;
+      transition: border-color .15s;
+    }
+    .stat:hover { border-color: var(--border-2); }
+    .stat-val {
+      font-size: 38px; font-weight: 800; line-height: 1;
+      margin-bottom: 8px; font-variant-numeric: tabular-nums;
+    }
+    .c-red    { color: var(--red); }
+    .c-amber  { color: var(--amber); }
+    .c-teal   { color: var(--teal); }
+    .c-em     { color: var(--em); }
+    .c-purple { color: var(--purple); }
+    .c-blue   { color: var(--blue); }
+    .stat-desc { color: var(--text-2); font-size: 13px; line-height: 1.55; }
+    .stat-src  { color: var(--text-3); font-size: 11px; margin-top: 6px; font-weight: 500; }
+
+    /* ─── Info box ───────────────────────────────────── */
+    .info-box {
+      margin-top: 36px;
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 26px 28px;
+    }
+    .info-box-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .info-box p { color: var(--text-2); font-size: 14px; line-height: 1.75; }
+
+    /* ─── Steps ──────────────────────────────────────── */
+    .steps { display: grid; gap: 14px; }
+    .step {
+      display: grid; grid-template-columns: 48px 1fr; gap: 20px;
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px;
+      transition: border-color .15s;
+    }
+    .step:hover { border-color: var(--border-2); }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--teal-1); border: 1px solid var(--teal-2);
+      color: var(--teal); font-weight: 800; font-size: 16px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-body { min-width: 0; }
+    .step-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .step-desc  { color: var(--text-2); font-size: 13px; line-height: 1.65; margin-bottom: 12px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 600;
+      background: var(--surf-2); border: 1px solid var(--border-2);
+      color: var(--text-3); padding: 3px 10px; border-radius: 99px;
+    }
+
+    /* ─── Feature grid ───────────────────────────────── */
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+    .feat {
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px;
+      transition: border-color .15s;
+    }
+    .feat:hover { border-color: var(--border-2); }
+    .feat-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; margin-bottom: 14px; flex-shrink: 0;
+    }
+    .feat-icon i { font-size: 15px; }
+    .feat-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .feat-desc  { color: var(--text-2); font-size: 13px; line-height: 1.6; }
+
+    /* ─── Triage cards ───────────────────────────────── */
+    .triage-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 32px; }
+    .triage-card {
+      border-radius: var(--r); padding: 22px 20px; text-align: center;
+    }
+    .tc-red   { background: rgba(248,113,113,.07); border: 1px solid rgba(248,113,113,.2); }
+    .tc-amber { background: rgba(251,191,36,.06);  border: 1px solid rgba(251,191,36,.2);  }
+    .tc-green { background: rgba(52,211,153,.06);  border: 1px solid rgba(52,211,153,.2);  }
+    .triage-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; margin: 0 auto 12px;
+    }
+    .triage-label { font-weight: 700; font-size: 14px; margin-bottom: 5px; }
+    .triage-sub   { color: var(--text-2); font-size: 12px; line-height: 1.6; }
+    .tc-red   .triage-label { color: var(--red); }
+    .tc-amber .triage-label { color: var(--amber); }
+    .tc-green .triage-label { color: var(--em); }
+    @media (max-width: 600px) { .triage-row { grid-template-columns: 1fr; } }
+
+    /* ─── Compare table ──────────────────────────────── */
+    .table-wrap { overflow-x: auto; border-radius: var(--r); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--surf-2); padding: 13px 18px;
+      font-size: 11px; font-weight: 700; text-align: left;
+      color: var(--text-3); text-transform: uppercase; letter-spacing: .07em;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 13px 18px; font-size: 13px; line-height: 1.55;
+      border-bottom: 1px solid var(--border); vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255,255,255,.015); }
+    .td-gap  { color: var(--red);  font-size: 12px; }
+    .td-adds { color: var(--em);   font-size: 12px; }
+    .callout {
+      margin-top: 16px; padding: 16px 20px;
+      background: var(--surf-1); border: 1px solid var(--border-2);
+      border-left: 3px solid var(--teal);
+      border-radius: var(--r); font-size: 13px; color: var(--text-2); line-height: 1.7;
+    }
+
+    /* ─── Architecture ───────────────────────────────── */
+    .arch-wrap {
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 28px; display: grid; gap: 10px;
+    }
+    .arch-layer {
+      border: 1px solid var(--border-2); border-radius: 9px; padding: 20px 22px;
+    }
+    .arch-layer-title {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .arch-layer-title i { font-size: 12px; }
+    .arch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 8px; }
+    .arch-item {
+      background: var(--surf-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px;
+    }
+    .arch-item-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .arch-item-desc  { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+    .arch-divider {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      color: var(--text-3); font-size: 12px; font-weight: 600;
+      letter-spacing: .05em; text-transform: uppercase;
+    }
+    .arch-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── MCP tools ──────────────────────────────────── */
+    .mcp-list { display: grid; gap: 12px; }
+    .mcp-card {
+      display: flex; gap: 18px; align-items: flex-start;
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px 22px;
+      transition: border-color .15s;
+    }
+    .mcp-card:hover { border-color: var(--border-2); }
+    .mcp-icon {
+      width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px;
+      background: var(--teal-1); border: 1px solid var(--teal-2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--teal); font-size: 15px;
+    }
+    .mcp-fn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 600; color: var(--teal); margin-bottom: 5px;
+    }
+    .mcp-desc { color: var(--text-2); font-size: 13px; line-height: 1.6; }
+
+    /* ─── Demo callouts ──────────────────────────────── */
+    .aha-grid { display: grid; gap: 14px; margin-bottom: 36px; }
+    .aha {
+      background: var(--surf-1); border-radius: var(--r);
+      padding: 24px; border: 1px solid;
+    }
+    .aha-red  { border-color: rgba(248,113,113,.3); border-left: 3px solid var(--red);  }
+    .aha-teal { border-color: rgba(45,212,191,.25); border-left: 3px solid var(--teal); }
+    .aha-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .09em; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .aha-text { color: var(--text-2); font-size: 14px; line-height: 1.75; }
+    .aha-text strong { color: var(--text); }
+
+    /* ─── Impact row ─────────────────────────────────── */
+    .impact-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px,1fr)); gap: 12px; }
+    .impact-card {
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 22px 18px; text-align: center;
+    }
+    .impact-num   { font-size: 42px; font-weight: 800; color: var(--teal); line-height: 1; }
+    .impact-label { color: var(--text-2); font-size: 12px; margin-top: 6px; line-height: 1.5; }
+
+    /* ─── Getting started ────────────────────────────── */
+    .gs-steps { display: grid; gap: 12px; }
+    .gs-step {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px 22px;
+    }
+    .gs-num {
+      width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px;
+      background: var(--teal-1); border: 1px solid var(--teal-2);
+      color: var(--teal); font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gs-step h4 { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+    .gs-step p  { color: var(--text-2); font-size: 13px; }
+    pre {
+      background: var(--surf-2); border: 1px solid var(--border-2);
+      border-radius: var(--r); padding: 22px 24px; margin-top: 24px;
+      overflow-x: auto; font-size: 13px; line-height: 1.75;
+      font-family: 'JetBrains Mono', monospace; color: #c9d1d9;
+    }
+    pre .c { color: var(--text-3); }
+    pre .t { color: var(--teal); }
+    pre .p { color: var(--purple); }
+
+    /* ─── File tree ──────────────────────────────────── */
+    .tree {
+      background: var(--surf-2); border: 1px solid var(--border-2);
+      border-radius: var(--r); padding: 22px 24px; overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9;
+    }
+    .tree .d { color: var(--blue); font-weight: 700; }
+    .tree .f { color: var(--text); }
+    .tree .n { color: var(--text-3); }
+
+    /* ─── FAQ ────────────────────────────────────────── */
+    .faq { display: grid; gap: 10px; }
+    details {
+      background: var(--surf-1); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden;
+    }
+    details[open] { border-color: var(--border-2); }
+    summary {
+      padding: 17px 20px; cursor: pointer; font-weight: 700; font-size: 14px;
+      list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      user-select: none; transition: background .12s;
+    }
+    summary:hover { background: var(--surf-2); }
+    summary::-webkit-details-marker { display: none; }
+    summary .faq-icon { width: 24px; height: 24px; flex-shrink: 0; border-radius: 6px;
+      background: var(--surf-2); border: 1px solid var(--border-2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-3); font-size: 13px; transition: background .12s; }
+    details[open] summary .faq-icon { background: var(--teal-1); color: var(--teal); border-color: var(--teal-2); }
+    .faq-body { padding: 0 20px 18px; color: var(--text-2); font-size: 13px; line-height: 1.75; }
+
+    /* ─── Footer ─────────────────────────────────────── */
+    footer {
+      text-align: center; padding: 52px 28px;
+      border-top: 1px solid var(--border);
+      color: var(--text-3); font-size: 13px; line-height: 2;
+    }
+    footer img { width: 44px; border-radius: 50%; display: block; margin: 0 auto 14px; }
+    footer .footer-name { font-weight: 700; font-size: 15px; color: var(--text-2); margin-bottom: 4px; }
+    footer a { color: var(--text-3); transition: color .12s; }
+    footer a:hover { color: var(--text-2); }
+    footer .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <img src="publics/Tarsius.png" alt="Tarsius" />
+      Tarsius
+    </a>
+    <ul class="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#mcp-tools">MCP Tools</a></li>
+      <li><a href="#getting-started">Get Started</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="https://github.com/farhank15/Tarsius" class="nav-gh" target="_blank" rel="noopener">
+      <i class="fa-brands fa-github"></i> GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">
+      <i class="fa-solid fa-circle" style="font-size:6px"></i>
+      IBM TechXchange 2026 Hackathon
+    </div>
+    <img src="publics/Tarsius.png" alt="Tarsius mascot" class="hero-logo" />
+    <h1>Capture Knowledge That Was<br><em>Never Written Down.</em></h1>
+    <p class="hero-sub">A Tacit-Knowledge Capture &amp; Persistence Layer for IBM Bob 2.0. Preserves undocumented business rules, legal exceptions, and institutional memory before senior engineers retire.</p>
+    <div class="hero-chips">
+      <span class="chip chip-teal"><i class="fa-solid fa-robot"></i> IBM Bob 2.0</span>
+      <span class="chip chip-green"><i class="fa-brands fa-node-js"></i> Node.js 18+</span>
+      <span class="chip chip-blue"><i class="fa-brands fa-js"></i> TypeScript 5</span>
+      <span class="chip chip-red"><i class="fa-solid fa-book"></i> arXiv:2605.17535</span>
+      <span class="chip chip-purple"><i class="fa-solid fa-vial"></i> 33/33 Tests</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#getting-started" class="btn-primary">
+        <i class="fa-solid fa-play"></i> Get Started
+      </a>
+      <a href="https://github.com/farhank15/Tarsius" class="btn-outline" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> View on GitHub
+      </a>
+    </div>
+    <blockquote class="hero-quote">
+      Like the tarsier primate — the smallest primate with the largest eyes — Tarsius sees the knowledge that exists in no document, no Redbook, no code comment.<br><br>
+      <strong>Bob reads what's written. Tarsius captures what's only in someone's head.</strong>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ═══════════════ PROBLEM ═══════════════ -->
+<section class="section" id="problem">
+  <div class="wrap">
+    <span class="eyebrow">The Problem</span>
+    <h2>A Knowledge Crisis Already in Progress</h2>
+    <p class="lead">Critical operational knowledge is disappearing from IBM i teams faster than it can be captured — and existing AI tooling cannot recover knowledge that was never externalized in the first place.</p>
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-val c-red">72%</div>
+        <div class="stat-desc">of RPG developers are over 50 — retirement wave already underway</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> Procern 2025</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val c-amber">#1</div>
+        <div class="stat-desc">Skills gap is now the #1 concern — overtaking cybersecurity for the first time in 9 years</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> Fortra IBM i Survey 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val c-red">&gt;70%</div>
+        <div class="stat-desc">of mainframe exit projects fail due to overestimation of generative AI capabilities</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> Gartner June 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val c-red">9–19%</div>
+        <div class="stat-desc">behavioral equivalence rate — 81–91% of business logic is silently lost in AI migration</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> AgentModernize arXiv:2605.17535</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val c-amber">66%</div>
+        <div class="stat-desc">of organizations have fewer than 3 IBM i admins — 10% already have zero</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> Fortra IBM i Survey 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val c-teal">$3T</div>
+        <div class="stat-desc">in daily transactions run on IBM i systems — understood by fewer people every year</div>
+        <div class="stat-src"><i class="fa-solid fa-circle-info fa-xs"></i> IT Jungle / IBM</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-label c-red">
+        <i class="fa-solid fa-triangle-exclamation"></i> Real Example — ORDVAL.rpgle
+      </div>
+      <p>The documentation says <em style="color:var(--red)">"Suspended accounts cannot submit orders."</em> The code has an exception — DISC orders bypass suspension — introduced by a 2010 class action settlement (CS-4471). <strong style="color:var(--text)">These two files were 11 years out of sync.</strong> No Redbook mentions it. No code comment explains why. This rule existed only in a senior engineer's memory — until Tarsius captured it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section class="section" id="how-it-works">
+  <div class="wrap">
+    <span class="eyebrow">How It Works</span>
+    <h2>The Four-Step Workflow</h2>
+    <p class="lead">Tarsius runs as a custom Bob mode with dedicated subagents — capturing tacit knowledge before it's gone and persisting it as a binding contract that constrains all future code generation.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Capture — Surface What Bob Cannot See</div>
+          <div class="step-desc">Senior engineers are guided through a structured review session. Tarsius reads both source code and documentation simultaneously, detecting contradictions and surfacing implicit rules that static analysis cannot reach. The interview asks only about genuinely undocumented gaps — not what's already in the code.</div>
+          <div class="tags">
+            <span class="tag"><i class="fa-solid fa-cube fa-xs"></i> Agent Mode</span>
+            <span class="tag"><i class="fa-solid fa-sitemap fa-xs"></i> Subagents</span>
+            <span class="tag"><i class="fa-solid fa-file-lines fa-xs"></i> Document Understanding</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Persist — Outside the Context Window</div>
+          <div class="step-desc">Approved rules are written to a structured, versioned Business Rule Inventory stored outside Bob's active context window. Every decision is recorded as an immutable hash-chained audit trail — who approved what, when, and why. Zero database required.</div>
+          <div class="tags">
+            <span class="tag"><i class="fa-solid fa-plug fa-xs"></i> Custom MCP Tools</span>
+            <span class="tag"><i class="fa-solid fa-database fa-xs"></i> BRI JSON</span>
+            <span class="tag"><i class="fa-solid fa-link fa-xs"></i> Hash Audit Trail</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Reinforce — Re-inject Before Every Generation</div>
+          <div class="step-desc">Before any code generation task, approved rules are automatically re-injected into Bob's working context via lifecycle hooks — regardless of session boundaries or context compaction. Bob always has the right knowledge, even three weeks later in a brand new session.</div>
+          <div class="tags">
+            <span class="tag"><i class="fa-solid fa-rotate fa-xs"></i> Lifecycle Hooks</span>
+            <span class="tag"><i class="fa-solid fa-at fa-xs"></i> MCP Resources</span>
+            <span class="tag"><i class="fa-solid fa-file-shield fa-xs"></i> RISK-CONTEXT.md</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Learn — Institutional Memory Accumulates</div>
+          <div class="step-desc">A gotcha memory stores institutional knowledge across sessions — legal exceptions, class action settlements, undocumented workarounds. The system becomes progressively better at flagging dangerous exceptions automatically as more senior engineers are interviewed over time.</div>
+          <div class="tags">
+            <span class="tag"><i class="fa-solid fa-brain fa-xs"></i> Gotcha Memory</span>
+            <span class="tag"><i class="fa-solid fa-chart-line fa-xs"></i> Pattern Engine</span>
+            <span class="tag"><i class="fa-solid fa-clock-rotate-left fa-xs"></i> Decision History</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="section" id="features">
+  <div class="wrap">
+    <span class="eyebrow">Key Features</span>
+    <h2>What Tarsius Adds to IBM Bob 2.0</h2>
+    <p class="lead">Bob provides the execution engine. Tarsius provides knowledge capture, persistence, triage, and verification — capabilities that don't exist in Bob natively.</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2)">
+          <i class="fa-solid fa-microphone c-teal"></i>
+        </div>
+        <div class="feat-title">Structured Interview Mode</div>
+        <div class="feat-desc">Guided session surfaces undocumented rules, exceptions, and workarounds that exist nowhere in writing. Captures knowledge that no document, Redbook, or code comment contains.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2)">
+          <i class="fa-solid fa-shield-halved c-red"></i>
+        </div>
+        <div class="feat-title">Deterministic Risk Triage</div>
+        <div class="feat-desc">5-condition classifier with zero LLM calls. Contradictions are always must-review. High-confidence dual-source rules are auto-approved. 50–70% of rules require no human attention at all.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2)">
+          <i class="fa-solid fa-file-contract c-blue"></i>
+        </div>
+        <div class="feat-title">Pre-Generation Binding Contract</div>
+        <div class="feat-desc"><code>RISK-CONTEXT.md</code> is auto-generated after approval. Bob reads this file before generating any code — AI cannot deviate from approved rules, even across sessions.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2)">
+          <i class="fa-solid fa-layer-group c-purple"></i>
+        </div>
+        <div class="feat-title">Context Window Persistence</div>
+        <div class="feat-desc">Rules persist outside the context window in BRI JSON files. Re-injected via lifecycle hooks before every edit — regardless of session boundaries or context compaction events.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)">
+          <i class="fa-solid fa-link c-amber"></i>
+        </div>
+        <div class="feat-title">Immutable Decision History</div>
+        <div class="feat-desc">Hash-chained audit trail of every approval and rejection. Who decided, when, and why — with a cryptographic chain linking each record to the previous one. Compliance-ready from day one.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2)">
+          <i class="fa-solid fa-brain c-purple"></i>
+        </div>
+        <div class="feat-title">Gotcha Memory</div>
+        <div class="feat-desc">Institutional knowledge accumulates automatically over time. "Don't remove the DISC exception — class action CS-4471." Persists forever, across sessions, across team members.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2)">
+          <i class="fa-solid fa-certificate c-em"></i>
+        </div>
+        <div class="feat-title">Confidence Badge</div>
+        <div class="feat-desc">After Bob generates code, Tarsius compares output against approved rules via AST diff and heuristic fallback. Catches AI deviations before they reach production — not after.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2)">
+          <i class="fa-solid fa-code-compare c-red"></i>
+        </div>
+        <div class="feat-title">Contradiction Detection</div>
+        <div class="feat-desc">Cross-references code against documentation automatically. Flags when code and spec disagree — like the DISC exception that was 11 years out of sync with its own specification.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2)">
+          <i class="fa-solid fa-gauge c-teal"></i>
+        </div>
+        <div class="feat-title">Governance Dashboard</div>
+        <div class="feat-desc">React-based dashboard for reviewing extracted rules, approving or rejecting pending items, exploring code provenance with line-level evidence, and monitoring risk scores in real-time.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:14px">
+        <i class="fa-solid fa-traffic-light"></i> Risk Triage System
+      </p>
+      <div class="triage-row">
+        <div class="triage-card tc-red">
+          <div class="triage-icon" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25)">
+            <i class="fa-solid fa-shield-halved c-red"></i>
+          </div>
+          <div class="triage-label">Must Review</div>
+          <div class="triage-sub">Contradiction detected or low confidence. Always requires human approval before any code generation proceeds.</div>
+        </div>
+        <div class="triage-card tc-amber">
+          <div class="triage-icon" style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25)">
+            <i class="fa-solid fa-eye c-amber"></i>
+          </div>
+          <div class="triage-label">Glance</div>
+          <div class="triage-sub">Medium confidence or single source only. Requires a quick human sanity check — typically under 30 seconds.</div>
+        </div>
+        <div class="triage-card tc-green">
+          <div class="triage-icon" style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25)">
+            <i class="fa-solid fa-circle-check c-em"></i>
+          </div>
+          <div class="triage-label">Auto-Approve</div>
+          <div class="triage-sub">High confidence, dual source, no contradiction. Safe for automatic approval — no human needed. 50–70% of rules land here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ WHY TARSIUS ═══════════════ -->
+<section class="section" id="why-tarsius">
+  <div class="wrap">
+    <span class="eyebrow">Why Tarsius</span>
+    <h2>The Gap Bob Cannot Fill</h2>
+    <p class="lead">Bob's RAG and Business Rules Extraction are highly effective — but only when the answer already exists somewhere in writing. Tarsius is the step that happens before that's possible.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fa-solid fa-robot fa-xs"></i> What Bob Does</th>
+            <th><i class="fa-solid fa-circle-xmark fa-xs"></i> The Gap</th>
+            <th><i class="fa-solid fa-circle-plus fa-xs"></i> What Tarsius Adds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Business Rules Extraction</strong> reads logic already encoded in source</td>
+            <td class="td-gap"><i class="fa-solid fa-minus fa-xs"></i> Cannot extract rules that were never written in code</td>
+            <td class="td-adds"><i class="fa-solid fa-plus fa-xs"></i> <strong>Structured interview</strong> surfaces undocumented exceptions</td>
+          </tr>
+          <tr>
+            <td><strong>RAG</strong> retrieves answers from documentation and Redbooks</td>
+            <td class="td-gap"><i class="fa-solid fa-minus fa-xs"></i> Cannot retrieve knowledge that was never documented</td>
+            <td class="td-adds"><i class="fa-solid fa-plus fa-xs"></i> <strong>Tacit knowledge capture</strong> turns person-memory into structured artifact</td>
+          </tr>
+          <tr>
+            <td><strong>Context window</strong> starts fresh each session</td>
+            <td class="td-gap"><i class="fa-solid fa-minus fa-xs"></i> Rules approved in Session 1 forgotten by Session 5</td>
+            <td class="td-adds"><i class="fa-solid fa-plus fa-xs"></i> <strong>Persistence layer</strong> re-injects rules regardless of session boundaries</td>
+          </tr>
+          <tr>
+            <td><strong>Code generation</strong> is unconstrained by prior approvals</td>
+            <td class="td-gap"><i class="fa-solid fa-minus fa-xs"></i> AI can silently violate a rule no one stated</td>
+            <td class="td-adds"><i class="fa-solid fa-plus fa-xs"></i> <strong>Binding contract</strong> (<code>RISK-CONTEXT.md</code>) constrains generation</td>
+          </tr>
+          <tr>
+            <td><strong>Review workflow</strong> is post-generation</td>
+            <td class="td-gap"><i class="fa-solid fa-minus fa-xs"></i> Deviations caught only after code is written</td>
+            <td class="td-adds"><i class="fa-solid fa-plus fa-xs"></i> <strong>Pre-generation governance</strong> catches deviations before code exists</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <i class="fa-solid fa-lightbulb c-teal"></i> <strong style="color:var(--text)">The core insight:</strong> Tarsius is the step that happens <em>before</em> extraction and retrieval become possible — turning tacit knowledge into the kind of written artifact that Bob's existing tools can then read, retrieve, and act on with full confidence.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
+<section class="section" id="architecture">
+  <div class="wrap">
+    <span class="eyebrow">Architecture</span>
+    <h2>How the System Fits Together</h2>
+    <p class="lead">Tarsius sits as a persistence layer on top of IBM Bob 2.0 — adding knowledge capture, triage, contract generation, and verification that Bob's native features do not provide.</p>
+    <div class="arch-wrap">
+
+      <div class="arch-layer" style="border-color:rgba(96,165,250,.25)">
+        <div class="arch-layer-title" style="color:var(--blue)">
+          <i class="fa-solid fa-robot"></i> IBM Bob 2.0 — Native Execution Engine
+        </div>
+        <div class="arch-grid">
+          <div class="arch-item"><div class="arch-item-title">Custom Modes</div><div class="arch-item-desc">Legacy Analyzer · Transformer</div></div>
+          <div class="arch-item"><div class="arch-item-title">Subagents</div><div class="arch-item-desc">Parallel per-function scan</div></div>
+          <div class="arch-item"><div class="arch-item-title">Document Understanding</div><div class="arch-item-desc">RPG + Markdown cross-read</div></div>
+          <div class="arch-item"><div class="arch-item-title">Code Generation</div><div class="arch-item-desc">Constrained by RISK-CONTEXT.md</div></div>
+          <div class="arch-item"><div class="arch-item-title">Skills &amp; Rules</div><div class="arch-item-desc">Reusable workflow definitions</div></div>
+          <div class="arch-item"><div class="arch-item-title">MCP Framework</div><div class="arch-item-desc">Connects to Tarsius tools</div></div>
+        </div>
+      </div>
+
+      <div class="arch-divider">
+        <div class="arch-divider-line"></div>
+        <i class="fa-solid fa-arrows-up-down" style="font-size:11px"></i> MCP tool calls
+        <div class="arch-divider-line"></div>
+      </div>
+
+      <div class="arch-layer" style="border-color:rgba(45,212,191,.25)">
+        <div class="arch-layer-title" style="color:var(--teal)">
+          <i class="fa-solid fa-layer-group"></i> Tarsius Persistence Layer — Custom Innovation
+        </div>
+        <div class="arch-grid">
+          <div class="arch-item"><div class="arch-item-title">Capture Phase</div><div class="arch-item-desc">Structured interview · Contradiction detection</div></div>
+          <div class="arch-item"><div class="arch-item-title">Persist Phase</div><div class="arch-item-desc">BRI JSON · Hash audit trail</div></div>
+          <div class="arch-item"><div class="arch-item-title">Reinforce Phase</div><div class="arch-item-desc">Lifecycle hooks · Session injection</div></div>
+          <div class="arch-item"><div class="arch-item-title">Learn Phase</div><div class="arch-item-desc">Gotcha memory · Pattern engine</div></div>
+          <div class="arch-item"><div class="arch-item-title">5 MCP Tools</div><div class="arch-item-desc">write_finding · mark_approved · …</div></div>
+          <div class="arch-item"><div class="arch-item-title">Triage Classifier</div><div class="arch-item-desc">Deterministic — zero LLM calls</div></div>
+        </div>
+      </div>
+
+      <div class="arch-divider">
+        <div class="arch-divider-line"></div>
+        <i class="fa-solid fa-arrows-up-down" style="font-size:11px"></i> React Query polling
+        <div class="arch-divider-line"></div>
+      </div>
+
+      <div class="arch-layer" style="border-color:rgba(167,139,250,.25)">
+        <div class="arch-layer-title" style="color:var(--purple)">
+          <i class="fa-solid fa-gauge"></i> Tarsius Dashboard — React + Vite
+        </div>
+        <div class="arch-grid">
+          <div class="arch-item"><div class="arch-item-title">Business Rules</div><div class="arch-item-desc">Approve · Reject · Search</div></div>
+          <div class="arch-item"><div class="arch-item-title">Risk Map</div><div class="arch-item-desc">Score distribution · Triage groups</div></div>
+          <div class="arch-item"><div class="arch-item-title">Code Explorer</div><div class="arch-item-desc">File groups · Line provenance</div></div>
+          <div class="arch-item"><div class="arch-item-title">Decision History</div><div class="arch-item-desc">Timeline · Audit trail</div></div>
+          <div class="arch-item"><div class="arch-item-title">Gotcha Memory</div><div class="arch-item-desc">Institutional warnings</div></div>
+          <div class="arch-item"><div class="arch-item-title">Settings</div><div class="arch-item-desc">MCP tools · Config</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MCP TOOLS ═══════════════ -->
+<section class="section" id="mcp-tools">
+  <div class="wrap">
+    <span class="eyebrow">MCP Tools</span>
+    <h2>5 Custom Tools Bob Calls at Runtime</h2>
+    <p class="lead">Tarsius implements a custom MCP server registered in <code>.bob/mcp.json</code>. Bob calls these tools during extraction, approval, and generation — converting free-form AI output into structured, versioned artifacts.</p>
+    <div class="mcp-list">
+      <div class="mcp-card">
+        <div class="mcp-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+        <div>
+          <div class="mcp-fn">write_finding()</div>
+          <div class="mcp-desc">Records a structured business rule into the BRI with triage classification, confidence score, evidence location, source attribution, and contradiction flag. Converts Bob's free-form extraction output into typed, versioned JSON.</div>
+        </div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon"><i class="fa-solid fa-list-check"></i></div>
+        <div>
+          <div class="mcp-fn">get_pending_approvals()</div>
+          <div class="mcp-desc">Returns the list of rules awaiting human review, with optional filters for module, triage level, or contradiction status. Powers the approval queue in the Tarsius Dashboard and Bob's review workflow.</div>
+        </div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+          <div class="mcp-fn">mark_approved()</div>
+          <div class="mcp-desc">Approves or rejects a rule after human review. Auto-generates an updated <code>RISK-CONTEXT.md</code> binding contract. Records the decision in the immutable hash-chained audit trail. Bob reads the contract before its next generation task.</div>
+        </div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon"><i class="fa-solid fa-link"></i></div>
+        <div>
+          <div class="mcp-fn">record_decision()</div>
+          <div class="mcp-desc">Writes an immutable hash-chained decision record containing who decided, the decision, the justification, a risk score snapshot, and a chain hash linking to the previous record. Every record is cryptographically tamper-evident.</div>
+        </div>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-icon"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <div class="mcp-fn">check_gotchas()</div>
+          <div class="mcp-desc">Cross-references a rule against the institutional knowledge store. Returns matching gotcha warnings such as "Class action CS-4471 — DO NOT remove without legal sign-off." Ensures institutional memory is surfaced before every approval decision.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ DEMO ═══════════════ -->
+<section class="section" id="demo">
+  <div class="wrap">
+    <span class="eyebrow">Demo</span>
+    <h2>Two Aha Moments</h2>
+    <p class="lead">The ORDVAL.rpgle demo illustrates both core problems Tarsius solves — contradiction detection between code and specification, and cross-session rule persistence for AI generation.</p>
+    <div class="aha-grid">
+      <div class="aha aha-red">
+        <div class="aha-label c-red">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Aha Moment 1 — Tacit Knowledge Surfaces a Hidden Exception
+        </div>
+        <p class="aha-text">Bob extracts 4 rules from <code>ORDVAL.rpgle</code> and flags one as must-review. The documentation says <em>"suspended accounts cannot order."</em> The code says <em>"DISC orders bypass suspension"</em> — an exception from a 2010 class action settlement (CS-4471). These files were 11 years out of sync. <strong>No Redbook mentioned it. No code comment explained why. This rule existed only in a senior engineer's memory — until Tarsius captured it.</strong></p>
+      </div>
+      <div class="aha aha-teal">
+        <div class="aha-label c-teal">
+          <i class="fa-solid fa-shield-halved"></i>
+          Aha Moment 2 — Persisted Knowledge Constrains Future AI
+        </div>
+        <p class="aha-text">Developer approves the exception. In a later session — after context compaction — Bob generates new code. Approved rules are auto-injected via lifecycle hooks. The Confidence Badge drops when the AI omits the DISC exception. <strong>Every AI tool can generate code. Tarsius is the only one that catches when AI disobeys your approved rules — even three sessions later.</strong></p>
+      </div>
+    </div>
+    <div class="impact-row">
+      <div class="impact-card">
+        <div class="impact-num">4</div>
+        <div class="impact-label">Rules extracted from ORDVAL.rpgle</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">2</div>
+        <div class="impact-label">Implicit rules — 100% missed without Tarsius</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">1</div>
+        <div class="impact-label">Contradiction detected — 11 years unsynced</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">1</div>
+        <div class="impact-label">AI deviation caught before production</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ GETTING STARTED ═══════════════ -->
+<section class="section" id="getting-started">
+  <div class="wrap">
+    <span class="eyebrow">Get Started</span>
+    <h2>Up and Running in 5 Minutes</h2>
+    <p class="lead">Tarsius requires IBM Bob 2.0, Node.js 18+, and npm. No database, no cloud infrastructure — just JSON files and a local MCP server over stdio.</p>
+    <div class="gs-steps">
+      <div class="gs-step">
+        <div class="gs-num">1</div>
+        <div><h4>Clone the repository</h4><p>Get the source and navigate into the project directory.</p></div>
+      </div>
+      <div class="gs-step">
+        <div class="gs-num">2</div>
+        <div><h4>Build the MCP server</h4><p>Compile the TypeScript MCP server. Bob connects to this process over stdio at runtime.</p></div>
+      </div>
+      <div class="gs-step">
+        <div class="gs-num">3</div>
+        <div><h4>Start the dashboard</h4><p>Launch the React governance dashboard. Opens on <code>localhost:5173</code> by default.</p></div>
+      </div>
+      <div class="gs-step">
+        <div class="gs-num">4</div>
+        <div><h4>Copy Bob configuration</h4><p>Copy the <code>.bob/</code> templates to your project root. This registers custom modes, skills, MCP server, and rules with Bob.</p></div>
+      </div>
+      <div class="gs-step">
+        <div class="gs-num">5</div>
+        <div><h4>Open Bob IDE</h4><p>Select <strong>Legacy Analyzer</strong> mode. Attach your RPG source file and spec document. Start the structured interview workflow.</p></div>
+      </div>
+    </div>
+    <pre><span class="c"># 1. Clone</span>
+<span class="t">git clone</span> https://github.com/farhank15/Tarsius
+<span class="t">cd</span> Tarsius
+
+<span class="c"># 2. Build MCP server</span>
+<span class="t">cd</span> mcp-server <span class="p">&&</span> npm install <span class="p">&&</span> npm run build
+
+<span class="c"># 3. Start dashboard</span>
+<span class="t">cd</span> ../dashboard <span class="p">&&</span> npm install <span class="p">&&</span> npm run dev
+
+<span class="c"># 4. Copy Bob config</span>
+<span class="t">cp</span> -r templates/.bob .
+
+<span class="c"># 5. Run end-to-end tests</span>
+<span class="t">npx tsx</span> test/flow-test.ts
+<span class="c"># Expected: 33/33 tests passing</span></pre>
+  </div>
+</section>
+
+<!-- ═══════════════ STRUCTURE ═══════════════ -->
+<section class="section" id="structure">
+  <div class="wrap">
+    <span class="eyebrow">Project Structure</span>
+    <h2>What's Inside</h2>
+    <p class="lead">Every directory has a clear, single purpose. No infrastructure beyond a local Node.js process.</p>
+    <div class="tree">
+<span class="d">tarsius/</span>
+├── <span class="d">.bob/</span>                        <span class="n"># Bob configuration (committed)</span>
+│   ├── <span class="f">custom_modes.yaml</span>        <span class="n"># Legacy Analyzer + Transformer modes</span>
+│   ├── <span class="f">mcp.json</span>                 <span class="n"># MCP server registration</span>
+│   ├── <span class="d">rules/</span>                   <span class="n"># Mode-specific governance rules</span>
+│   ├── <span class="d">skills/</span>                  <span class="n"># Extract / Review / Generate skills</span>
+│   ├── <span class="d">agents/</span>                  <span class="n"># Subagent persona definitions</span>
+│   └── <span class="f">RISK-CONTEXT.md</span>          <span class="n"># Active binding contract (approved rules)</span>
+│
+├── <span class="d">mcp-server/src/</span>
+│   ├── <span class="d">tools/</span>                   <span class="n"># write_finding, mark_approved, check_gotchas …</span>
+│   ├── <span class="d">bri/</span>                     <span class="n"># BRI schema, triage classifier, decision store</span>
+│   └── <span class="d">verify/</span>                  <span class="n"># Heuristic verification engine</span>
+│
+├── <span class="d">dashboard/src/</span>
+│   ├── <span class="d">pages/</span>                   <span class="n"># Dashboard, Business Rules, Risk Map …</span>
+│   ├── <span class="d">components/</span>              <span class="n"># RuleCard, TriageBadge, DecisionHistory …</span>
+│   └── <span class="d">hooks/</span>                   <span class="n"># useBriData (React Query)</span>
+│
+├── <span class="d">sample-data/</span>
+│   ├── <span class="f">ORDVAL.rpgle</span>             <span class="n"># Legacy RPG source (demo)</span>
+│   ├── <span class="f">order-validation-spec.md</span> <span class="n"># Specification document (demo)</span>
+│   ├── <span class="f">ordval.ts</span>                <span class="n"># Generated modernized TypeScript</span>
+│   ├── <span class="f">tarsius-bri.json</span>         <span class="n"># Business Rule Inventory</span>
+│   ├── <span class="f">tarsius-decisions.json</span>   <span class="n"># Decision audit trail</span>
+│   └── <span class="f">tarsius-gotchas.json</span>     <span class="n"># Institutional knowledge store</span>
+│
+├── <span class="d">templates/</span>                   <span class="n"># Bob config templates for new projects</span>
+├── <span class="d">docs/</span>                        <span class="n"># Documentation and research</span>
+├── <span class="f">index.html</span>                   <span class="n"># This page</span>
+└── <span class="f">test/flow-test.ts</span>            <span class="n"># End-to-end test suite (33 tests)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FAQ ═══════════════ -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <span class="eyebrow">FAQ</span>
+    <h2>Frequently Asked Questions</h2>
+    <p class="lead">Common questions from developers, architects, and judges reviewing Tarsius.</p>
+    <div class="faq">
+      <details>
+        <summary>Why not use Bob's built-in Business Rules Extraction?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">Business Rules Extraction reads logic already encoded in source code. RAG retrieves answers from documentation or Redbooks. Both require the knowledge to already exist somewhere in writing. Tarsius addresses the case neither can reach: knowledge that was never externalized at all — the exceptions that live only in a person's memory. Bob reads what's written. Tarsius captures what's only in someone's head.</div>
+      </details>
+      <details>
+        <summary>What happens when the senior engineer retires?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">That is exactly the problem Tarsius solves. The structured interview captures tacit knowledge as a persistent, versioned artifact — Business Rule Inventory, decision history, and gotcha memory. Once captured, the knowledge persists indefinitely regardless of who leaves the organization. The value compounds: the more engineers interviewed before retirement, the richer the institutional memory becomes.</div>
+      </details>
+      <details>
+        <summary>How is this different from traditional documentation?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">Traditional documentation is manual, prose-based, and quickly outdated. Tarsius generates structured, timestamped, attributed records automatically — with an immutable audit trail of who approved what and why. And critically, Tarsius captures knowledge that was never documented in the first place. Most documentation captures what should happen; Tarsius captures the exceptions and workarounds that everyone knows but no one ever wrote down.</div>
+      </details>
+      <details>
+        <summary>Does Tarsius add overhead to the review process?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">No — it makes review dramatically more efficient. Without Tarsius, a developer reviews 200 lines of generated code looking for subtle deviations (roughly 2 hours). With Tarsius, the developer approves a small set of flagged rules (roughly 5 minutes). 50–70% of rules are auto-approved by the deterministic classifier — developers only see the must-review rules that require human judgment.</div>
+      </details>
+      <details>
+        <summary>How does this work with context compaction?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">Bob's context window gets summarized over long sessions, losing detailed history. Tarsius persists rules outside the context window in BRI JSON files and re-injects them via lifecycle hooks before every code generation task — regardless of session boundaries. The approved rules are always present in context when Bob needs them, even in a completely fresh session months later.</div>
+      </details>
+      <details>
+        <summary>How does it scale to 5,000+ legacy programs?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">The deterministic triage classifier automatically routes rules by risk level. Developers focus review only on high-risk must-review rules. The system is file-based with zero infrastructure: JSON and Markdown, Git-native, no database, no cloud. It scales with the team's review capacity, not the codebase size. Parallel subagent extraction means multiple modules can be analyzed concurrently.</div>
+      </details>
+      <details>
+        <summary>Is the triage classifier just another LLM score?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">No. The classifier uses 5 deterministic conditions — contradiction detected, confidence level, source count, module impact count, rule type — with zero LLM calls. Results are fully reproducible. The same rule always gets the same triage level regardless of context, session, or model state. This makes the system auditable and trustworthy for compliance purposes.</div>
+      </details>
+      <details>
+        <summary>Is this production-ready?
+          <span class="faq-icon"><i class="fa-solid fa-plus fa-xs"></i></span>
+        </summary>
+        <div class="faq-body">The architecture is production-suitable: Git-native, JSON flat-file storage (no database required), zero external infrastructure. The MCP server is TypeScript with full type safety and a 33-test end-to-end suite validating the complete workflow from extraction through approval and generation. Modernization teams can adopt it immediately with their existing Bob and Git setup.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <img src="publics/Tarsius.png" alt="Tarsius" />
+  <div class="footer-name">Tarsius</div>
+  <div>Capture Knowledge That Was Never Written Down. Then Let AI Code.</div>
+  <div style="margin-top:6px;color:var(--text-3);font-size:12px">
+    Built for the IBM TechXchange 2026 Pre-conference Dev Day Hackathon
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/farhank15/Tarsius" target="_blank" rel="noopener">
+      <i class="fa-brands fa-github"></i> GitHub
+    </a>
+    <a href="README.md"><i class="fa-solid fa-book"></i> README</a>
+    <a href="https://arxiv.org/html/2605.17535v1" target="_blank" rel="noopener">
+      <i class="fa-solid fa-flask"></i> Research Paper
+    </a>
+    <a href="docs/submission/BOB-UTILIZATION.md">
+      <i class="fa-solid fa-file-lines"></i> Bob Utilization
+    </a>
+  </div>
+  <div style="margin-top:20px;font-size:11px;border-top:1px solid var(--border);padding-top:16px">
+    MIT License &nbsp;·&nbsp; Made with IBM Bob
+  </div>
+</footer>
+
+</body>
+</html>
