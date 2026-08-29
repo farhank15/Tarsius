@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* ─── Theme ─────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-tarsius-50: #f0f9ff;
+  --color-tarsius-100: #e0f2fe;
+  --color-tarsius-200: #bae6fd;
+  --color-tarsius-300: #7dd3fc;
+  --color-tarsius-400: #38bdf8;
+  --color-tarsius-500: #0ea5e9;
+  --color-tarsius-600: #0284c7;
+  --color-tarsius-700: #0369a1;
+  --color-tarsius-800: #075985;
+  --color-tarsius-900: #0c4a6e;
+
+  --color-risk-critical: #ef4444;
+  --color-risk-high: #f97316;
+  --color-risk-medium: #eab308;
+  --color-risk-low: #22c55e;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}

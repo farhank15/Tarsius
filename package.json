@@ -1,0 +1,17 @@
+{
+  "name": "tarsius",
+  "private": true,
+  "description": "Business Rule Integrity Guardian — AI-powered legacy modernization verification",
+  "workspaces": [
+    "mcp-server",
+    "dashboard"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

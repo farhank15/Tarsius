@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "tarsius": {
+      "command": "node",
+      "args": ["mcp-server/dist/index.js"],
+      "alwaysAllow": [
+        "write_finding",
+        "get_pending_approvals",
+        "mark_approved",
+        "record_decision",
+        "check_gotchas"
+      ],
+      "hooks": {
+        "session_start": {
+          "command": "node",
+          "args": ["mcp-server/dist/hooks/session-start.js"]
+        },
+        "before_edit": {
+          "command": "node",
+          "args": ["mcp-server/dist/hooks/before-edit.js"]
+        },
+        "after_edit": {
+          "command": "node",
+          "args": ["mcp-server/dist/hooks/after-edit.js"]
+        }
+      }
+    }
+  }
+}

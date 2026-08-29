@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "decisions": [],
+  "summary": {
+    "totalDecisions": 0,
+    "approved": 0,
+    "rejected": 0,
+    "reversed": 0,
+    "overrides": 0,
+    "avgDecisionTime": "0 hours",
+    "byUser": {},
+    "byRole": {},
+    "byMonth": {}
+  },
+  "lastChainHash": "0000000000000000"
+}
