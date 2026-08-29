@@ -13,6 +13,25 @@ function approvePlugin(): Plugin {
   return {
     name: "tarsius-approve-api",
     configureServer(server: ViteDevServer) {
+      // Serve /publics/* from the monorepo root (images, assets)
+      server.middlewares.use("/publics", (req, res, next) => {
+        const root = join(process.cwd(), "..");
+        const filePath = join(root, "publics", req.url ?? "");
+        if (!existsSync(filePath)) { next(); return; }
+        try {
+          const stat = statSync(filePath);
+          if (!stat.isFile()) { next(); return; }
+          const ext = extname(filePath).toLowerCase();
+          const mime: Record<string, string> = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp" };
+          res.writeHead(200, {
+            "Content-Type": mime[ext] ?? "application/octet-stream",
+            "Content-Length": stat.size,
+            "Cache-Control": "no-store",
+          });
+          createReadStream(filePath).pipe(res);
+        } catch { next(); }
+      });
+
       // Serve /sample-data/* as static JSON files from the monorepo root
       server.middlewares.use("/sample-data", (req, res, next) => {
         const root = join(process.cwd(), "..");

@@ -1,7 +1,6 @@
 import { type ReactNode, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  Shield,
   LayoutDashboard,
   BookOpen,
   Code2,
@@ -60,9 +59,11 @@ export default function Layout({ children }: LayoutProps) {
         {/* Logo */}
         <div className="px-5 py-4 border-b border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0">
-              <Shield className="w-4 h-4 text-teal-400" />
-            </div>
+            <img
+              src="/publics/Tarsius.png"
+              alt="Tarsius"
+              className="w-8 h-8 rounded-full border border-slate-700/60 shrink-0 object-cover"
+            />
             <div className="min-w-0">
               <p className="font-semibold text-sm text-white tracking-tight leading-none mb-0.5">Tarsius</p>
               <p className="text-[11px] text-slate-500 leading-none">Knowledge Capture</p>
