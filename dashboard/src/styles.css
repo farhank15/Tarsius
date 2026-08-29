@@ -2,40 +2,90 @@
 
 /* ─── Theme ─────────────────────────────────────────────────────────────────── */
 @theme {
-  --color-tarsius-50: #f0f9ff;
-  --color-tarsius-100: #e0f2fe;
-  --color-tarsius-200: #bae6fd;
-  --color-tarsius-300: #7dd3fc;
-  --color-tarsius-400: #38bdf8;
-  --color-tarsius-500: #0ea5e9;
-  --color-tarsius-600: #0284c7;
-  --color-tarsius-700: #0369a1;
-  --color-tarsius-800: #075985;
-  --color-tarsius-900: #0c4a6e;
+  --color-tarsius-50:  #f0fdfa;
+  --color-tarsius-100: #ccfbf1;
+  --color-tarsius-200: #99f6e4;
+  --color-tarsius-300: #5eead4;
+  --color-tarsius-400: #2dd4bf;
+  --color-tarsius-500: #14b8a6;
+  --color-tarsius-600: #0d9488;
+  --color-tarsius-700: #0f766e;
+  --color-tarsius-800: #115e59;
+  --color-tarsius-900: #134e4a;
 
   --color-risk-critical: #ef4444;
-  --color-risk-high: #f97316;
-  --color-risk-medium: #eab308;
-  --color-risk-low: #22c55e;
+  --color-risk-high:     #f97316;
+  --color-risk-medium:   #eab308;
+  --color-risk-low:      #22c55e;
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
 
 /* ─── Animations ─────────────────────────────────────────────────────────────── */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+@keyframes growBar {
+  from { width: 0%; }
+}
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1);    }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+.animate-fade-in   { animation: fadeIn   0.3s ease-out forwards; }
+.animate-slide-in  { animation: slideIn  0.25s ease-out forwards; }
+.animate-grow-bar  { animation: growBar  0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.animate-scale-up  { animation: scaleUp  0.2s ease-out forwards; }
+
+/* ─── Card ───────────────────────────────────────────────────────────────────── */
+.card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
 }
+.card:hover {
+  border-color: #334155;
+}
+.card-header {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+.card-body { padding: 1.25rem; }
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────────── */
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* ─── Stagger helpers ────────────────────────────────────────────────────────── */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }

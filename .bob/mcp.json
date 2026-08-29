@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "tarsius": {
+      "command": "node",
+      "args": ["mcp-server/dist/index.js"],
+      "cwd": "/Users/mawa/Development/my_projects/Tarsius",
+      "alwaysAllow": [
+        "write_finding",
+        "get_pending_approvals",
+        "mark_approved",
+        "record_decision",
+        "check_gotchas"
+      ]
+    }
+  }
+}

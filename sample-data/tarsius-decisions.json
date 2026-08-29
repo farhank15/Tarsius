@@ -1,16 +1,59 @@
 {
   "version": "1.0",
-  "decisions": [],
+  "decisions": [
+    {
+      "id": "DEC-00001",
+      "hash": "ffb9c9e1e7a41",
+      "chainHash": "043612298017e8",
+      "ruleId": "BR-DISC-EXCEPTION",
+      "decision": {
+        "previousStatus": "pending",
+        "newStatus": "approved"
+      },
+      "decidedBy": {
+        "userId": "dashboard-user",
+        "userName": "Dashboard User",
+        "role": "developer"
+      },
+      "timestamp": "2026-08-29T02:43:02.195Z",
+      "justification": "Dashboard approved",
+      "context": {
+        "overrideAutoApprove": false,
+        "reversed": false,
+        "riskScoreAtDecision": 44,
+        "triageAtDecision": "🔴 must-review"
+      }
+    },
+    {
+      "id": "DEC-00002",
+      "hash": "20ae2fb863d2f",
+      "chainHash": "55c0388a6fd678",
+      "ruleId": "BR-GRANDFATHER-PRICING",
+      "decision": {
+        "previousStatus": "pending",
+        "newStatus": "approved"
+      },
+      "decidedBy": {
+        "userId": "dashboard-user",
+        "userName": "Dashboard User",
+        "role": "developer"
+      },
+      "timestamp": "2026-08-29T02:43:05.920Z",
+      "justification": "Dashboard approved",
+      "context": {
+        "overrideAutoApprove": false,
+        "reversed": false,
+        "riskScoreAtDecision": 21,
+        "triageAtDecision": "🟡 glance"
+      }
+    }
+  ],
   "summary": {
-    "totalDecisions": 0,
-    "approved": 0,
+    "totalDecisions": 2,
+    "approved": 2,
     "rejected": 0,
     "reversed": 0,
-    "overrides": 0,
-    "avgDecisionTime": "0 hours",
-    "byUser": {},
-    "byRole": {},
-    "byMonth": {}
+    "overrides": 0
   },
   "lastChainHash": "0000000000000000"
 }

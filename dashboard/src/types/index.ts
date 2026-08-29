@@ -1,41 +1,30 @@
-/**
- * Business Rule Inventory (BRI) TypeScript types.
- *
- * Full schema will be implemented during hackathon.
- * See docs/reference/blueprint.md 2.3 for the complete field specification.
- */
-
 export interface BusinessRule {
-  id: string;
-  module: string;
-  description: string;
-  triage: "must-review" | "glance" | "auto-approve";
-  confidence: {
-    label: "high" | "medium" | "low";
-    method: "z3-formal-proof" | "differential-fuzzing" | "llm-heuristic";
-    score: number;
-  };
-  evidence: {
-    contradiction: boolean;
-    codeLocation: {
-      file: string;
-      startLine: number;
-      endLine: number;
-    };
-    docQuote?: string;
-  };
-  status: "pending" | "approved" | "rejected";
+  id: string; type: "explicit" | "implicit"; title: string; description: string;
+  confidence: { label: "high" | "medium" | "low"; score: number };
+  triage: "🟢 auto-approve" | "🟡 glance" | "🔴 must-review";
+  riskScore: number; source: ("code" | "document")[];
+  evidence: { codeLocation: { file: string; startLine: number; endLine: number };
+    docQuote: string | null; contradiction: boolean; contradictionNote?: string };
+  approvalStatus: "pending" | "approved" | "rejected";
+  category: string; affectsModules: string[];
 }
 
-export interface BriIndex {
-  modules: Record<
-    string,
-    {
-      totalRules: number;
-      pending: number;
-      approved: number;
-      rejected: number;
-      lastScanned: string;
-    }
-  >;
+export interface BriSummary {
+  totalRules: number; explicit: number; implicit: number;
+  contradictions: number; modulesTracked: number;
+  byTriage: { "auto-approve": number; glance: number; "must-review": number };
+}
+
+export interface DecisionRecord {
+  id: string; hash: string; chainHash: string; ruleId: string;
+  decision: { previousStatus: string; newStatus: string };
+  decidedBy: { userId: string; userName: string; role: string };
+  timestamp: string; justification: string;
+  context: { overrideAutoApprove: boolean; reversed: boolean; riskScoreAtDecision: number; triageAtDecision: string };
+}
+
+export interface GotchaRecord {
+  id: string; title: string; description: string;
+  category: string; severity: string;
+  triggerCount: number; active: boolean;
 }

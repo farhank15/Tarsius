@@ -1,8 +1,10 @@
 {
   "version": "3.0",
   "sourceModule": "sample-data/ORDVAL.rpgle",
-  "attachedDocs": ["sample-data/order-validation-spec.md"],
-  "generatedAt": "2026-08-29T10:15:00Z",
+  "attachedDocs": [
+    "sample-data/order-validation-spec.md"
+  ],
+  "generatedAt": "2026-08-29T02:43:05.919Z",
   "provenance": {
     "customMode": "legacy-analyzer",
     "documentUnderstanding": true,
@@ -10,22 +12,44 @@
   },
   "dependencies": {
     "ORDVAL.rpgle": {
-      "calls": ["CUSTCHK.rpgle", "PRICCALC.rpgle"],
-      "calledBy": ["ORDENTRY.rpgle"],
-      "globalState": ["SUSPEND-FLAG", "DISC-TYPE"],
-      "externalFiles": ["CUSTMAST", "ORDHIST"]
+      "calls": [
+        "CUSTCHK.rpgle",
+        "PRICCALC.rpgle"
+      ],
+      "calledBy": [
+        "ORDENTRY.rpgle"
+      ],
+      "globalState": [
+        "SUSPEND-FLAG",
+        "DISC-TYPE"
+      ],
+      "externalFiles": [
+        "CUSTMAST",
+        "ORDHIST"
+      ]
     },
     "CUSTCHK.rpgle": {
       "calls": [],
-      "calledBy": ["ORDVAL.rpgle", "CRDCHK.rpgle"],
-      "globalState": ["SUSPEND-FLAG"],
-      "externalFiles": ["CUSTMAST"]
+      "calledBy": [
+        "ORDVAL.rpgle",
+        "CRDCHK.rpgle"
+      ],
+      "globalState": [
+        "SUSPEND-FLAG"
+      ],
+      "externalFiles": [
+        "CUSTMAST"
+      ]
     },
     "PRICCALC.rpgle": {
       "calls": [],
-      "calledBy": ["ORDVAL.rpgle"],
+      "calledBy": [
+        "ORDVAL.rpgle"
+      ],
       "globalState": [],
-      "externalFiles": ["PRICING"]
+      "externalFiles": [
+        "PRICING"
+      ]
     }
   },
   "rules": [
@@ -41,15 +65,24 @@
       },
       "triage": "🟢 auto-approve",
       "riskScore": 1,
-      "source": ["code", "document"],
+      "source": [
+        "code",
+        "document"
+      ],
       "evidence": {
-        "codeLocation": { "file": "ORDVAL.rpgle", "startLine": 56, "endLine": 59 },
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 56,
+          "endLine": 59
+        },
         "docQuote": "Accounts with status **C** (Cancelled) are **rejected** for all order types.",
         "contradiction": false
       },
       "approvalStatus": "approved",
       "category": "account-status",
-      "affectsModules": ["ORDENTRY.rpgle"]
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
     },
     {
       "id": "BR-SUSPENDED-BLOCK",
@@ -63,15 +96,24 @@
       },
       "triage": "🟢 auto-approve",
       "riskScore": 2,
-      "source": ["code", "document"],
+      "source": [
+        "code",
+        "document"
+      ],
       "evidence": {
-        "codeLocation": { "file": "ORDVAL.rpgle", "startLine": 65, "endLine": 68 },
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 65,
+          "endLine": 68
+        },
         "docQuote": "Accounts with status **S** (Suspended) are **rejected** for all order types.",
         "contradiction": false
       },
       "approvalStatus": "approved",
       "category": "account-status",
-      "affectsModules": ["ORDENTRY.rpgle"]
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
     },
     {
       "id": "BR-DISC-EXCEPTION",
@@ -85,16 +127,25 @@
       },
       "triage": "🔴 must-review",
       "riskScore": 44,
-      "source": ["code", "document"],
+      "source": [
+        "code",
+        "document"
+      ],
       "evidence": {
-        "codeLocation": { "file": "ORDVAL.rpgle", "startLine": 77, "endLine": 81 },
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 77,
+          "endLine": 81
+        },
         "docQuote": "No exceptions exist for suspended accounts under any order type.",
         "contradiction": true,
         "contradictionNote": "Code implements DISC exception (CS-4471) but spec doesn't mention it — 11 years out of sync"
       },
-      "approvalStatus": "pending",
+      "approvalStatus": "approved",
       "category": "account-status-exception",
-      "affectsModules": ["CUSTCHK.rpgle"]
+      "affectsModules": [
+        "CUSTCHK.rpgle"
+      ]
     },
     {
       "id": "BR-GRANDFATHER-PRICING",
@@ -108,16 +159,24 @@
       },
       "triage": "🟡 glance",
       "riskScore": 21,
-      "source": ["code"],
+      "source": [
+        "code"
+      ],
       "evidence": {
-        "codeLocation": { "file": "ORDVAL.rpgle", "startLine": 94, "endLine": 99 },
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 94,
+          "endLine": 99
+        },
         "docQuote": null,
         "contradiction": false,
         "contradictionNote": "Code-only rule — no documentation to compare against. Extracted from pricing logic with class action reference in comments"
       },
-      "approvalStatus": "pending",
+      "approvalStatus": "approved",
       "category": "pricing",
-      "affectsModules": ["PRICCALC.rpgle"]
+      "affectsModules": [
+        "PRICCALC.rpgle"
+      ]
     }
   ],
   "summary": {
@@ -126,7 +185,11 @@
     "implicit": 2,
     "contradictions": 1,
     "modulesTracked": 3,
-    "byTriage": { "auto-approve": 2, "glance": 1, "must-review": 1 },
+    "byTriage": {
+      "auto-approve": 2,
+      "glance": 1,
+      "must-review": 1
+    },
     "riskDistribution": {
       "critical": 0,
       "medium": 2,
