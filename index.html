@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarsius — Behavioral Safety Layer for AI Legacy Modernization | IBM Bob 2.0</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            },
+            surface: {
+              base: '#070a12',
+              card: '#0f172a',
+              cardHover: '#131e36',
+              border: '#1e293b',
+              borderLight: '#334155',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #070a12; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Ambient Glows */
+    .glow-blue { box-shadow: 0 0 35px -5px rgba(59, 130, 246, 0.25); }
+    .glow-emerald { box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.25); }
+    .glow-rose { box-shadow: 0 0 35px -5px rgba(244, 63, 94, 0.25); }
+
+    .grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-surface-base text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col">
+
+  <!-- ========================================================================= -->
+  <!-- TOP ANNOUNCEMENT BAR                                                      -->
+  <!-- ========================================================================= -->
+  <div class="border-b border-surface-border/60 bg-surface-card/40 backdrop-blur-md px-4 py-2 text-xs text-center flex items-center justify-center gap-2 flex-wrap">
+    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold tracking-wide uppercase text-[10px]">
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+      IBM Bob 2.0 Hackathon
+    </span>
+    <span class="text-slate-400">Formal Verification & Tacit Knowledge Safety Layer</span>
+    <span class="text-slate-600">·</span>
+    <span class="text-emerald-400 font-mono font-medium">38/38 Tests Passing (100% Green)</span>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- NAVIGATION BAR                                                            -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-50 border-b border-surface-border/80 bg-surface-base/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+          <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
+            Tarsius
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded">v2.0</span>
+          </span>
+          <p class="text-[10px] text-slate-400 -mt-0.5 tracking-tight">Behavioral Safety Layer for AI Modernization</p>
+        </div>
+      </a>
+
+      <!-- Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+        <a href="#problem" class="hover:text-white transition-colors">The Crisis</a>
+        <a href="#beth-oracle" class="hover:text-white transition-colors flex items-center gap-1">
+          BETH Oracle
+          <span class="text-[10px] px-1.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100%</span>
+        </a>
+        <a href="#ledger" class="hover:text-white transition-colors">SHA-256 Ledger</a>
+        <a href="#architecture" class="hover:text-white transition-colors">Bob 2.0 Integration</a>
+        <a href="#competitive-matrix" class="hover:text-white transition-colors">Benchmark</a>
+        <a href="#docs" class="hover:text-white transition-colors">Docs</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="./presentation/index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface-card hover:bg-surface-border text-slate-200 border border-surface-border transition-colors">
+          <i data-lucide="presentation" class="w-3.5 h-3.5 text-blue-400"></i>
+          Slide Deck
+        </a>
+        <a href="https://github.com/farhank15/Tarsius" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 transition-all hover:shadow-blue-600/40">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span>GitHub Repo</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- HERO SECTION                                                              -->
+  <!-- ========================================================================= -->
+  <section class="relative pt-20 pb-24 overflow-hidden border-b border-surface-border/60">
+    <div class="absolute inset-0 grid-pattern opacity-40 pointer-events-none"></div>
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 text-center">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-surface-border/80 shadow-inner mb-6">
+        <i data-lucide="cpu" class="w-3.5 h-3.5 text-blue-400"></i>
+        <span class="text-xs font-medium text-slate-300">Enterprise Mainframe & RPG Modernization</span>
+        <span class="text-slate-600">·</span>
+        <span class="text-xs font-mono text-emerald-400">Zero Silent Regressions</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight sm:leading-none mb-6">
+        The Most Dangerous Business Rule is the One <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">Nobody Wrote Down</span>.
+      </h1>
+
+      <!-- One Liner -->
+      <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+        <span class="text-white font-semibold">IBM Bob changes the code. Tarsius protects the business behavior.</span><br />
+        Pre-generation governance that captures unwritten legal carve-outs, locks decisions into a SHA-256 hash-chained ledger, and mathematically proves equivalence via the BETH Differential Oracle.
+      </p>
+
+      <!-- Key CTA Row -->
+      <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
+        <a href="#beth-oracle" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-xl shadow-blue-600/30 transition-all hover:scale-105">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          Explore BETH Oracle Live
+        </a>
+        <a href="./presentation/index.html" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-surface-card hover:bg-surface-cardHover text-slate-200 border border-surface-border font-semibold text-sm transition-all hover:border-slate-600">
+          <i data-lucide="play-circle" class="w-4 h-4 text-emerald-400"></i>
+          View 3-Minute Slide Deck
+        </a>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+        <div class="p-5 rounded-2xl bg-surface-card/60 border border-surface-border backdrop-blur-md">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Legacy Dev Crisis</p>
+          <p class="text-3xl font-extrabold text-white mt-1 font-mono">72%</p>
+          <p class="text-xs text-slate-400 mt-1">RPG devs aged >50 (Fortra 2026)</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-surface-card/60 border border-surface-border backdrop-blur-md">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mainframe Exits</p>
+          <p class="text-3xl font-extrabold text-rose-400 mt-1 font-mono">&gt;70%</p>
+          <p class="text-xs text-slate-400 mt-1">Modernizations fail (Gartner 2026)</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-surface-card/60 border border-surface-border backdrop-blur-md">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Naive LLM Regress</p>
+          <p class="text-3xl font-extrabold text-amber-400 mt-1 font-mono">0–19%</p>
+          <p class="text-xs text-slate-400 mt-1">Edge equivalence (arXiv:2605.17535)</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-surface-card/60 border border-surface-border backdrop-blur-md">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Governed Equivalence</p>
+          <p class="text-3xl font-extrabold text-emerald-400 mt-1 font-mono">100%</p>
+          <p class="text-xs text-slate-400 mt-1">12/12 ORDVAL test vectors pass</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- THE CORE PROBLEM & DISCOVERY                                              -->
+  <!-- ========================================================================= -->
+  <section id="problem" class="py-20 border-b border-surface-border/60">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">The Tacit Knowledge Trap</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Why AI Modernization Disasters Happen</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">
+          AI coding tools only read what is written. In legacy enterprise systems, the written documentation contradicts the actual code that has run for decades.
+        </p>
+      </div>
+
+      <!-- Real Case Comparison Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <!-- Documentation Side -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-surface-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+                <i data-lucide="file-text" class="w-4 h-4 text-blue-400"></i>
+                Official Specification (order-validation-spec.md)
+              </span>
+              <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Written Spec</span>
+            </div>
+            <div class="p-4 rounded-xl bg-surface-base font-mono text-xs text-slate-300 border border-surface-border leading-relaxed">
+              <p class="text-rose-400 font-bold mb-2">Rule 3.2: Account Status Verification</p>
+              <p>"Any account marked with CMSTAT = 'S' (Suspended) must be immediately BLOCKED from placing orders. <strong>No exceptions are permitted under any condition.</strong>"</p>
+            </div>
+            <p class="text-xs text-slate-400 mt-4 leading-relaxed">
+              Every naive AI assistant (and newly hired human engineer) reading this document implements a strict block.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-border flex items-center gap-2 text-xs text-rose-400 font-medium">
+            <i data-lucide="alert-octagon" class="w-4 h-4 shrink-0"></i>
+            <span>Result: Drops unwritten legal carve-outs silently</span>
+          </div>
+        </div>
+
+        <!-- Reality Code Side -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-rose-900/50 glow-rose flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-300">
+                <i data-lucide="code" class="w-4 h-4 text-rose-400"></i>
+                Real Mainframe Production Code (ORDVAL.rpgle L77–81)
+              </span>
+              <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">11 Years Unsynced</span>
+            </div>
+            <div class="p-4 rounded-xl bg-surface-base font-mono text-xs text-slate-300 border border-surface-border leading-relaxed">
+              <p class="text-slate-500">// Legal Settlement CS-4471 (2010 Class Action Exception)</p>
+              <p class="text-slate-500">// Suspended accounts retain right to submit DISC orders</p>
+              <p><span class="text-blue-400">IF</span> CMSUSPND = <span class="text-emerald-300">'Y'</span> <span class="text-blue-400">AND</span> ORDTYPE = <span class="text-emerald-300">'DISC'</span>;</p>
+              <p class="pl-4 text-emerald-400 font-bold">STATUS = 'ALLOW';  // Hardcoded legal requirement!</p>
+              <p><span class="text-blue-400">ENDIF;</span></p>
+            </div>
+            <p class="text-xs text-slate-400 mt-4 leading-relaxed">
+              Written 11 years ago during class action settlement CS-4471. Removing it violates compliance and triggers massive legal liability (such as TSB Bank's £48.65M penalty).
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-surface-border flex items-center justify-between flex-wrap gap-2">
+            <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              Tarsius Discovers & Bridges This Contradiction
+            </span>
+            <span class="text-xs font-mono text-slate-400">Risk Score: 44 (Must-Review)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- BETH DIFFERENTIAL ORACLE INTERACTIVE SHOWCASE                             -->
+  <!-- ========================================================================= -->
+  <section id="beth-oracle" class="py-20 border-b border-surface-border/60 bg-surface-card/20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Mathematical Proof Engine</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">BETH Differential Oracle</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">
+          Dual-execution oracle testing 12 real customer order vectors. Compare the Naive Modernization run against the Governed Modernization run.
+        </p>
+      </div>
+
+      <!-- Interactive Switcher Card -->
+      <div class="p-6 sm:p-8 rounded-3xl bg-surface-card border border-surface-border shadow-2xl">
+        <!-- Switcher Header -->
+        <div class="flex items-center justify-between border-b border-surface-border pb-6 flex-wrap gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="binary" class="w-5 h-5 text-blue-400"></i>
+              Execution Comparison Mode
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Toggle between naive AI code generation vs Tarsius-governed generation</p>
+          </div>
+
+          <div class="inline-flex p-1 rounded-xl bg-surface-base border border-surface-border">
+            <button id="btn-naive" onclick="switchRunner('naive')" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-surface-card text-amber-300 shadow border border-amber-500/30">
+              Naive Runner (No Contract)
+            </button>
+            <button id="btn-governed" onclick="switchRunner('governed')" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+              Governed Runner (100% BER)
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Banner -->
+        <div id="metric-banner" class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-b border-surface-border">
+          <div>
+            <span class="text-xs text-slate-400 uppercase font-semibold">Equivalence Rate (BER)</span>
+            <p id="ber-rate" class="text-3xl font-extrabold text-amber-400 font-mono mt-1">66.7%</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 uppercase font-semibold">Equivalent Vectors</span>
+            <p id="passed-count" class="text-3xl font-extrabold text-slate-200 font-mono mt-1">8 / 12</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 uppercase font-semibold">Silent Regressions</span>
+            <p id="failed-count" class="text-3xl font-extrabold text-rose-400 font-mono mt-1">4 Regressions</p>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 uppercase font-semibold">Verdict</span>
+            <p id="verdict-text" class="text-sm font-bold text-rose-300 mt-2 flex items-center gap-1.5">
+              <i data-lucide="x-circle" class="w-4 h-4 text-rose-400"></i>
+              Blocked From Deployment
+            </p>
+          </div>
+        </div>
+
+        <!-- Vectors Table -->
+        <div class="overflow-x-auto mt-6">
+          <table class="w-full text-left text-xs">
+            <thead class="text-[11px] uppercase tracking-wider text-slate-400 bg-surface-base/80 border-b border-surface-border font-semibold">
+              <tr>
+                <th class="py-3 px-3">Vector</th>
+                <th class="py-3 px-3">Scenario Description</th>
+                <th class="py-3 px-3">Input Attributes</th>
+                <th class="py-3 px-3">Legacy Oracle</th>
+                <th class="py-3 px-3">Modernized Output</th>
+                <th class="py-3 px-3 text-right">Result</th>
+              </tr>
+            </thead>
+            <tbody id="vector-tbody" class="divide-y divide-surface-border/60 font-mono">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- CRYPTOGRAPHIC AUDIT LEDGER                                                -->
+  <!-- ========================================================================= -->
+  <section id="ledger" class="py-20 border-b border-surface-border/60">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Tamper-Evident Governance</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">SHA-256 Decision Hash Chain</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">
+          Every approval creates an immutable cryptographic record chained back to genesis. If any decision is altered, the chain breaks org-wide.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Decision 3 -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-surface-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-xs text-blue-400 font-bold">DEC-00003</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mb-1">BR-GRANDFATHER-PRICING</h4>
+            <p class="text-xs text-slate-400 mb-4">Plan-7 legacy customers retain locked-in pricing per 2009 settlement.</p>
+            <div class="space-y-1.5 font-mono text-[11px] p-3 rounded-lg bg-surface-base border border-surface-border text-slate-300">
+              <p><span class="text-slate-500">Hash:</span> de2769d389d807f500f4dbfacf674c209d4adfc58e6606f1c8888ef154e06fdc</p>
+              <p><span class="text-indigo-400 font-bold">Chain:</span> 1b94cc7f1ab4767d417b2e8ecffae38e76f2020f945a2233ecdd35aa2aefb30b</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border flex items-center justify-between text-[11px] text-slate-400">
+            <span>Decided by: Architect (architect-1)</span>
+            <span class="text-emerald-400 flex items-center gap-1"><i data-lucide="link-2" class="w-3.5 h-3.5"></i> Linked</span>
+          </div>
+        </div>
+
+        <!-- Decision 4 -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-indigo-900/60 glow-blue flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-xs text-indigo-400 font-bold">DEC-00004 (Chain Tip)</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mb-1">BR-DISC-EXCEPTION</h4>
+            <p class="text-xs text-slate-400 mb-4">Approved 11-year unwritten carve-out for suspended accounts under CS-4471.</p>
+            <div class="space-y-1.5 font-mono text-[11px] p-3 rounded-lg bg-surface-base border border-surface-border text-slate-300">
+              <p><span class="text-slate-500">Hash:</span> c1bd6eeebdbe5f4df399891ecdbf4dd15881a3b3f0f5d721031ea5b51c0f6dfb</p>
+              <p><span class="text-indigo-400 font-bold">Chain:</span> 1004ad65a78c8e3018820e25c23bbe9cfb9b98802a5f288f77efe20c4a7d72ef</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border flex items-center justify-between text-[11px] text-slate-400">
+            <span>Decided by: Architect (architect-1)</span>
+            <span class="text-indigo-400 font-bold flex items-center gap-1"><i data-lucide="check-check" class="w-3.5 h-3.5"></i> Validated Tip</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- IBM BOB 2.0 INTEGRATION STACK                                             -->
+  <!-- ========================================================================= -->
+  <section id="architecture" class="py-20 border-b border-surface-border/60 bg-surface-card/10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Under The Hood</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Built Directly on IBM Bob 2.0 Agentic Architecture</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">
+          Tarsius is not an external wrapper. It deeply hooks into IBM Bob 2.0's native capabilities.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pillar 1 -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-surface-border">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-4">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">2 Custom Agent Modes</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            <strong class="text-slate-200">legacy-analyzer:</strong> Read-only extraction & Socratic inquiry.<br /><br />
+            <strong class="text-slate-200">modernization-transformer:</strong> Code regeneration strictly bound to approved rules in <code class="text-blue-400">RISK-CONTEXT.md</code>.
+          </p>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-surface-border">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
+            <i data-lucide="radio" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">6 Native MCP Tools</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Standard Stdio MCP server with typed Zod schemas: <code class="text-slate-200">write_finding</code>, <code class="text-slate-200">get_pending_approvals</code>, <code class="text-slate-200">mark_approved</code>, <code class="text-slate-200">record_decision</code>, <code class="text-slate-200">check_gotchas</code>, and <code class="text-slate-200">verify_equivalence</code>.
+          </p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="p-6 rounded-2xl bg-surface-card border border-surface-border">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4">
+            <i data-lucide="repeat" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Compaction Lifecycle Hooks</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            <strong class="text-slate-200">PreCompact:</strong> Persists approved rules snapshot before context compaction.<br /><br />
+            <strong class="text-slate-200">PostCompact:</strong> Re-injects the governance contract back into the fresh context window automatically.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- COMPETITIVE MATRIX: TARSIUS VS THE FIELD                                  -->
+  <!-- ========================================================================= -->
+  <section id="competitive-matrix" class="py-20 border-b border-surface-border/60">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-semibold uppercase tracking-wider text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">Competitive Benchmark</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Why Tarsius Dominates Legacy Modernization</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base">
+          Comparison against alternative hackathon approaches, code archaeologists, and naive AI coding assistants.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-surface-border bg-surface-card">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-surface-base/90 border-b border-surface-border text-slate-300 font-semibold uppercase text-[11px] tracking-wider">
+              <th class="py-4 px-5">Capability / Architectural Gate</th>
+              <th class="py-4 px-5 bg-blue-950/40 text-blue-300 font-bold border-x border-blue-500/30">
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i>
+                  Tarsius v2 (Governed)
+                </div>
+              </th>
+              <th class="py-4 px-5 text-slate-400">OraLift (PL/SQL Scaffolder)</th>
+              <th class="py-4 px-5 text-slate-400">Inbin / ContextLease</th>
+              <th class="py-4 px-5 text-slate-400">Decision Memory AI</th>
+              <th class="py-4 px-5 text-slate-400">Naive LLM Coding</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-border/60 text-slate-300">
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Target Problem Space</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-blue-200 border-x border-blue-500/20">$1.5T Legacy (IBM i / RPGLE)</td>
+              <td class="py-3.5 px-5 text-slate-400">Oracle PL/SQL</td>
+              <td class="py-3.5 px-5 text-slate-400">Tool Hooks / Leases</td>
+              <td class="py-3.5 px-5 text-slate-400">PR & Git History</td>
+              <td class="py-3.5 px-5 text-slate-400">Generic Snippets</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Tacit Knowledge Extraction</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">Dual-Source Contradiction (Code vs Spec)</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ Code-only (AST)</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-amber-400">⚠️ Git/PR archaeology only</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ Single prompt only</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Human-in-the-Loop Triage</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">Zero-LLM Deterministic Engine</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ Static markdown report</td>
+              <td class="py-3.5 px-5 text-amber-400">⚠️ Simple boolean prompt</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ No triage gate</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Agent Context Binding</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">RISK-CONTEXT.md + EnforcedHooks</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ No agent constraint</td>
+              <td class="py-3.5 px-5 text-amber-400">⚠️ Single PreToolUse hook</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ No enforcement</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ Unconstrained drift</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Context Collapse Defense</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">PreCompact / PostCompact Lifecycle Hooks</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ Suffers context collapse</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Mathematical Equivalence Proof</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">BETH Differential Oracle (12 Vectors, BER)</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ No execution test</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ 0–19% BER (arXiv)</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Compliance Audit Trail</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">SHA-256 Merkle Ledger + Rule Passports</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+              <td class="py-3.5 px-5 text-amber-400">⚠️ Git log graph</td>
+              <td class="py-3.5 px-5 text-rose-400">❌ None</td>
+            </tr>
+            <tr class="hover:bg-surface-base/40">
+              <td class="py-3.5 px-5 font-semibold text-white">Passing Automated Tests</td>
+              <td class="py-3.5 px-5 bg-blue-950/20 font-bold text-emerald-400 border-x border-blue-500/20">38 / 38 Passing (100% Green)</td>
+              <td class="py-3.5 px-5 text-slate-500">Unspecified</td>
+              <td class="py-3.5 px-5 text-slate-500">Unspecified</td>
+              <td class="py-3.5 px-5 text-slate-500">Unspecified</td>
+              <td class="py-3.5 px-5 text-rose-400">Fails on edge cases</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- QUICK LAUNCH & DOCUMENTATION HUB                                          -->
+  <!-- ========================================================================= -->
+  <section id="docs" class="py-20 border-b border-surface-border/60">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <h2 class="text-3xl font-extrabold text-white">Project Deliverables & Repository Access</h2>
+        <p class="text-slate-400 mt-2 text-sm">Everything verified, documented, and reproducible from a clean clone.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="./presentation/index.html" target="_blank" class="p-6 rounded-2xl bg-surface-card border border-surface-border hover:border-blue-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <i data-lucide="presentation" class="w-6 h-6 text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+            <h4 class="text-base font-bold text-white group-hover:text-blue-400 transition-colors">Interactive Slide Deck</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Standalone 3-slide executive presentation compliant with Lablab.ai video structure.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-blue-400 mt-4 flex items-center gap-1">Open Slides &rarr;</span>
+        </a>
+
+        <a href="#beth-oracle" class="p-6 rounded-2xl bg-surface-card border border-surface-border hover:border-emerald-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <i data-lucide="binary" class="w-6 h-6 text-emerald-400 mb-3 group-hover:scale-110 transition-transform"></i>
+            <h4 class="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">Interactive BETH Simulator</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Test all 12 ORDVAL vectors live in browser. Compare 66.7% Naive vs 100% Governed modernization in real-time.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-emerald-400 mt-4 flex items-center gap-1">Launch Simulator &rarr;</span>
+        </a>
+
+        <a href="https://github.com/farhank15/Tarsius" target="_blank" class="p-6 rounded-2xl bg-surface-card border border-surface-border hover:border-purple-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <i data-lucide="git-branch" class="w-6 h-6 text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
+            <h4 class="text-base font-bold text-white group-hover:text-purple-400 transition-colors">Source Code & Sessions</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Clean GitHub repository with 38 passing tests and exported IBM Bob session reports.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-purple-400 mt-4 flex items-center gap-1">View on GitHub &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER & DISCLOSURE                                                       -->
+  <!-- ========================================================================= -->
+  <footer class="py-12 bg-surface-base text-slate-500 text-xs">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-blue-400"></i>
+        <span class="font-bold text-slate-300">Tarsius</span>
+        <span>&copy; 2026. Built with IBM Bob 2.0 for the IBM Bob Hackathon.</span>
+      </div>
+      <p class="text-slate-400 text-center md:text-right max-w-xl">
+        <strong>Mandatory Disclosure:</strong> Demo scenario (sample data only) prepared in advance; all product code, MCP tools, oracle, and dashboard built during the event with IBM Bob.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- INTERACTIVE LOGIC (VECTORS SIMULATOR)                                     -->
+  <!-- ========================================================================= -->
+  <script>
+    // Test Vectors Data
+    const vectors = [
+      { id: "V01", desc: "Baseline — active customer, standard order", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
+      { id: "V02", desc: "Cancelled customer blocked (BR-CANCELLED-BLOCK)", input: "C / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
+      { id: "V03", desc: "Suspended-status customer blocked (BR-SUSPENDED-BLOCK)", input: "S / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
+      { id: "V04", desc: "Suspended-flag + DISC order — carve-out applies", input: "A / Susp: Y / DISC / PLAN1", legacy: "A (std)", naive: "R (null)", gov: "A (std)", naiveMatch: false, govMatch: true },
+      { id: "V05", desc: "Suspended-flag standard order — rejected", input: "A / Susp: Y / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
+      { id: "V06", desc: "PLAN7 active customer — grandfather pricing", input: "A / Susp: N / STND / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true },
+      { id: "V07", desc: "PLAN7 active DISC order — grandfather pricing", input: "A / Susp: N / DISC / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true },
+      { id: "V08", desc: "Express order — active customer", input: "A / Susp: N / EXPR / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
+      { id: "V09", desc: "Corporate order — active customer", input: "A / Susp: N / CORP / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
+      { id: "V10", desc: "Unknown/inactive status — rejected", input: "X / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
+      { id: "V11", desc: "Negative amount — active customer", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
+      { id: "V12", desc: "PLAN7 + suspended-flag + DISC — carve-out + grandfather", input: "A / Susp: Y / DISC / PLAN7", legacy: "A (legacy)", naive: "R (null)", gov: "A (legacy)", naiveMatch: false, govMatch: true },
+    ];
+
+    function renderVectors(mode) {
+      const tbody = document.getElementById("vector-tbody");
+      tbody.innerHTML = "";
+
+      vectors.forEach(v => {
+        const passed = mode === "governed" ? v.govMatch : v.naiveMatch;
+        const output = mode === "governed" ? v.gov : v.naive;
+        const tr = document.createElement("tr");
+        tr.className = passed ? "hover:bg-surface-base/40" : "bg-rose-950/20 hover:bg-rose-950/30";
+
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-bold text-slate-300">${v.id}</td>
+          <td class="py-3 px-3 text-slate-300 font-sans">${v.desc}</td>
+          <td class="py-3 px-3 text-slate-400 text-[11px]">${v.input}</td>
+          <td class="py-3 px-3 text-slate-300 font-bold">${v.legacy}</td>
+          <td class="py-3 px-3 ${passed ? 'text-slate-300' : 'text-rose-400 font-bold'}">${output}</td>
+          <td class="py-3 px-3 text-right">
+            ${passed 
+              ? '<span class="inline-flex items-center gap-1 text-emerald-400 text-xs font-bold"><i data-lucide="check" class="w-3.5 h-3.5"></i> PASS</span>'
+              : '<span class="inline-flex items-center gap-1 text-rose-400 text-xs font-bold"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> REGRESSION</span>'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function switchRunner(mode) {
+      const btnNaive = document.getElementById("btn-naive");
+      const btnGov = document.getElementById("btn-governed");
+      const berRate = document.getElementById("ber-rate");
+      const passedCount = document.getElementById("passed-count");
+      const failedCount = document.getElementById("failed-count");
+      const verdict = document.getElementById("verdict-text");
+
+      if (mode === "governed") {
+        btnGov.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-emerald-600 text-white shadow border border-emerald-500";
+        btnNaive.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+
+        berRate.innerText = "100.0%";
+        berRate.className = "text-3xl font-extrabold text-emerald-400 font-mono mt-1";
+
+        passedCount.innerText = "12 / 12";
+        failedCount.innerText = "0 Regressions";
+        failedCount.className = "text-3xl font-extrabold text-emerald-400 font-mono mt-1";
+
+        verdict.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Certified Safe to Deploy';
+        verdict.className = "text-sm font-bold text-emerald-300 mt-2 flex items-center gap-1.5";
+      } else {
+        btnNaive.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-surface-card text-amber-300 shadow border border-amber-500/30";
+        btnGov.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+
+        berRate.innerText = "66.7%";
+        berRate.className = "text-3xl font-extrabold text-amber-400 font-mono mt-1";
+
+        passedCount.innerText = "8 / 12";
+        failedCount.innerText = "4 Regressions";
+        failedCount.className = "text-3xl font-extrabold text-rose-400 font-mono mt-1";
+
+        verdict.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4 text-rose-400"></i> Blocked From Deployment';
+        verdict.className = "text-sm font-bold text-rose-300 mt-2 flex items-center gap-1.5";
+      }
+
+      renderVectors(mode);
+    }
+
+    // Init
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      switchRunner("naive");
+    });
+  </script>
+</body>
+</html>

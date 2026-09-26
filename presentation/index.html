@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarsius — Tacit-Knowledge Capture & Persistence Layer for IBM Bob 2.0</title>
+
+  <!-- ===== TAILWIND CSS (CDN) ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: { 50: '#f0f2f8', 100: '#d6dce8', 200: '#aeb8cc', 300: '#8593b0', 400: '#5d6f94', 500: '#3a4a6b', 600: '#2a3750', 700: '#1a2438', 800: '#111827', 900: '#0a0e1a' },
+            brand: { 50: '#e8f4ff', 100: '#c8e5ff', 200: '#94ccff', 300: '#5cadff', 400: '#2e8cff', 500: '#4f8cff', 600: '#2068d6', 700: '#1a4da6', 800: '#163578', 900: '#0f204d' },
+            teal: { 400: '#22d3ee', 500: '#06b6d4' },
+            emerald: { 400: '#34d399', 500: '#10b981' },
+            amber: { 400: '#fbbf24', 500: '#f59e0b' },
+            rose: { 400: '#fb7185', 500: '#ef4444' },
+            violet: { 400: '#a78bfa', 500: '#8b5cf6' }
+          },
+          fontFamily: { 
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 3s ease-in-out infinite',
+            'fade-up': 'fadeUp 0.6s ease-out forwards',
+          },
+          keyframes: {
+            pulseGlow: { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.5 } },
+            float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-6px)' } },
+            fadeUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- ===== LUCIDE ICONS (CDN) ===== -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- ===== MERMAID.JS (CDN) ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- ===== GOOGLE FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0a0e1a; color: #e8edf5; overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a3750; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4f8cff; }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .glass { background: rgba(26, 34, 64, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(42, 53, 96, 0.5); }
+    .glass-hover:hover { border-color: #4f8cff; box-shadow: 0 0 30px rgba(79, 140, 255, 0.12); }
+    .glass-rose { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); }
+    .glass-amber { background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2); }
+    .glass-emerald { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .glass-teal { background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); }
+
+    .pulse-dot { animation: dotPulse 1.4s ease-in-out infinite; }
+    @keyframes dotPulse { 0%, 100% { box-shadow: 0 0 4px #ef4444; } 50% { box-shadow: 0 0 16px #ef4444; } }
+
+    .tab-btn.active { background: #4f8cff; color: #ffffff; font-weight: 600; border-color: #4f8cff; }
+  </style>
+</head>
+<body class="min-h-screen relative antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- BACKGROUND GLOW EFFECTS -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="fixed bottom-1/3 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- NAVIGATION -->
+  <nav class="sticky top-0 z-50 glass border-b border-slate-800/80 bg-dark-900/80 backdrop-blur-md px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-teal-400 flex items-center justify-center font-bold text-dark-900 shadow-lg shadow-brand-500/20">
+          T
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-white">Tarsius        <span class="text-teal-400 font-medium text-xs px-2 py-0.5 rounded-full bg-teal-400/10 border border-teal-400/20 ml-1">Knowledge Capture</span></span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+        <a href="#global-crisis" class="hover:text-teal-400 transition">Global Crisis</a>
+        <a href="#architecture" class="hover:text-teal-400 transition">Architecture</a>
+        <a href="#subagents" class="hover:text-teal-400 transition">4 Subagents</a>
+        <a href="#contract-engine" class="hover:text-teal-400 transition">Formal Contract</a>
+        <a href="#demo-flow" class="hover:text-teal-400 transition">2 Aha Moments</a>
+        <a href="#research" class="hover:text-teal-400 transition">Research Matrix (18 Papers)</a>
+      </div>
+
+      <a href="https://github.com/farhank15/Tarsius" target="_blank" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-brand-500/20">
+        <i data-lucide="github" class="w-3.5 h-3.5"></i> Repository
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+    <!-- ============================================================
+         HEADER HERO BANNER
+         ============================================================ -->
+    <header class="text-center space-y-6 reveal visible">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-brand-500/10 border border-brand-500/20 text-teal-400">
+        <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+        IBM Bob 2.0 Hackathon &middot; lablab.ai &middot; September 25–27, 2026
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-400">Tarsius</span>
+        <span class="block text-2xl sm:text-4xl lg:text-5xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-teal-400 to-emerald-400 font-bold">
+          Capture Knowledge That Was Never Written Down
+        </span>
+      </h1>
+
+      <p class="text-slate-400 text-base sm:text-lg max-w-3xl mx-auto font-light leading-relaxed">
+        A <strong class="text-white font-medium">tacit-knowledge capture & persistence layer</strong> for IBM Bob 2.0.
+        When senior engineers retire, they take undocumented business rules with them.
+        Tarsius captures that knowledge <strong class="text-teal-400 font-medium">before it's gone</strong> — and persists it so AI never forgets.
+      </p>
+
+      <!-- METRICS GRID STATS -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto pt-4">
+        <div class="glass p-3.5 rounded-xl border border-rose-500/20 bg-rose-500/5">
+          <div class="text-2xl sm:text-3xl font-extrabold text-rose-400">72% Over 50</div>
+          <div class="text-xs text-slate-400 mt-1">RPG Developers Approaching Retirement</div>
+        </div>
+        <div class="glass p-3.5 rounded-xl border border-amber-500/20 bg-amber-500/5">
+          <div class="text-2xl sm:text-3xl font-extrabold text-amber-400">0–19% BER</div>
+          <div class="text-xs text-slate-400 mt-1">AI Logic Loss without Safety Net (arXiv:2605.17535)</div>
+        </div>
+        <div class="glass p-3.5 rounded-xl border border-brand-500/20 bg-brand-500/5">
+          <div class="text-2xl sm:text-3xl font-extrabold text-brand-400">Zero Docs</div>
+          <div class="text-xs text-slate-400 mt-1">Critical Rules That Were Never Written Down</div>
+        </div>
+        <div class="glass p-3.5 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+          <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400">18 Sources</div>
+          <div class="text-xs text-slate-400 mt-1">Peer-Reviewed Papers & Global Surveys</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         SECTION 1 — THE GLOBAL SOFTWARE ENGINEERING CRISIS
+         ============================================================ -->
+    <section id="global-crisis" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+          <i data-lucide="globe" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">The Knowledge Disappearance Crisis</h2>
+          <p class="text-xs text-slate-400">Critical operational knowledge is vanishing from IBM i teams — and existing AI cannot recover what was never written down</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <!-- Crisis 1 -->
+        <div class="glass p-5 rounded-xl space-y-3 border border-rose-500/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">Legacy Crisis</span>
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+          </div>
+          <h3 class="font-bold text-white text-base">The Retirement Wave</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            <strong class="text-white">72% of RPG developers are over 50</strong> (<a href="https://power.fortra.com/resources/guides/ibm-i-marketplace-survey-results" target="_blank" rel="noopener" class="text-amber-400 hover:text-amber-300 underline underline-offset-2">Fortra 2026</a>). <strong class="text-white">Skills gap = #1 concern</strong> (69%), overtaking cybersecurity for the first time in 9 years (<a href="https://power.fortra.com/resources/guides/ibm-i-marketplace-survey-results" target="_blank" rel="noopener" class="text-amber-400 hover:text-amber-300 underline underline-offset-2">Fortra 2026</a>). When they leave, they don't just take syntax knowledge — they take undocumented exceptions, workarounds, and gotchas that were never written anywhere.
+          </p>
+          <div class="text-[11px] text-slate-400 border-t border-slate-800 pt-2">Sources: Fortra IBM i Marketplace Survey 2026</div>
+        </div>
+
+        <!-- Crisis 2 -->
+        <div class="glass p-5 rounded-xl space-y-3 border border-amber-500/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Verification Crisis</span>
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <h3 class="font-bold text-white text-base">The Written-Word Blind Spot</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            IBM Bob reads everything <strong class="text-white">written</strong>: repository-wide context over source code, document understanding over specs. But all of it requires knowledge to be <strong class="text-amber-400">already written down</strong>. When a critical rule exists only in someone's head, even the best agent silently fails — generating plausible code that violates a rule no one remembered to state.
+          </p>
+          <div class="text-[11px] text-slate-400 border-t border-slate-800 pt-2">Sources: IBM Bob documentation, Tarsius analysis</div>
+        </div>
+
+        <!-- Crisis 3 -->
+        <div class="glass p-5 rounded-xl space-y-3 border border-brand-500/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">Logic Loss Gap</span>
+            <i data-lucide="brain-circuit" class="w-4 h-4 text-brand-400"></i>
+          </div>
+          <h3 class="font-bold text-white text-base">The Knowledge Gap Is Permanent</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Once a senior developer retires without a structured handoff, that knowledge gap becomes <strong class="text-brand-400">permanent and unrecoverable</strong>. No future AI tool, however capable, can extract knowledge from a document that was never written. <strong class="text-white">30-50% cost overruns</strong> are common when teams must reverse-engineer intent from code alone.
+          </p>
+          <div class="text-[11px] text-slate-400 border-t border-slate-800 pt-2">Sources: Gartner 2026, Industry analysis</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2 — END-TO-END ARCHITECTURE & WORKFLOW
+         ============================================================ -->
+    <section id="architecture" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+          <i data-lucide="network" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">End-to-End Knowledge Capture & Persistence Architecture</h2>
+          <p class="text-xs text-slate-400">How Tarsius integrates with IBM Bob 2.0 to capture tacit knowledge and persist it as a binding contract that constrains all future code generation</p>
+        </div>
+      </div>
+
+      <!-- MERMAID DIAGRAM CONTAINER -->
+      <div class="glass rounded-2xl p-6 border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span class="text-xs font-mono text-teal-400">SYSTEM DATA FLOW &amp; AGENTIC ORCHESTRATION</span>
+          <span class="text-[11px] text-slate-400">Interactive Visualization</span>
+        </div>
+
+        <div class="overflow-x-auto py-2">
+          <pre class="mermaid text-center">
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#1a2440', 'primaryTextColor': '#e8edf5', 'primaryBorderColor': '#2a3560', 'lineColor': '#4f8cff', 'secondaryColor': '#0a0e1a', 'tertiaryColor': '#111827', 'clusterBkg': '#0d1324', 'clusterBorder': '#2a3560' }}}%%
+flowchart TD
+    subgraph PHASE1["PHASE 1: Capture — Structured Interview (Legacy Analyzer)"]
+        direction LR
+        A[Legacy RPG Code + Specs] --> B[Subagent A: Rule Extractor]
+        A --> C[Subagent B: Tacit Knowledge Interview]
+        B -->|MCP: write_finding| D[(tarsius-bri.json)]
+        C -->|Surfaces undocumented exceptions| D
+        D --> E[Deterministic Risk Triage 🔴🟡🟢]
+    end
+
+    subgraph PHASE2["PHASE 2: Persist & Reinforce — Human Knowledge Gate"]
+        direction LR
+        E --> F[React Dashboard Visual Risk Map]
+        F -->|Human Approve 🔴 & 🟡| G[MCP: mark_approved]
+        G --> H[Auto-Generate RISK-CONTEXT.md + Decision History]
+    end
+
+    subgraph PHASE3["PHASE 3: Reinforce & Learn — Constrained Generation + Verification"]
+        direction LR
+        H -->|Lifecycle Hooks Re-inject Rules| I[Subagent C: Code Transformer]
+        I --> J[Generated Code]
+        J --> K[Subagent D: Confidence Verifier]
+        K -->|MCP: verify_equivalence| L{BETH: BER?}
+        L -->|&lt; 100%: Deviation| M[Human Review or Auto-Remediate]
+        M --> I
+        L -->|100% — 12/12 vectors| N[Commit &amp; Record Decision]
+    end
+
+    style PHASE1 fill:#0d1324,stroke:#2a3560,color:#e8edf5
+    style PHASE2 fill:#0d1f1a,stroke:#34d399,color:#34d399
+    style PHASE3 fill:#1a1424,stroke:#a78bfa,color:#a78bfa
+          </pre>
+        </div>
+      </div>
+
+      <!-- 3 PHASE EXPLANATION CARDS -->
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="glass p-5 rounded-xl space-y-2 border-l-4 border-l-brand-500">
+          <div class="text-xs font-mono text-brand-400 uppercase font-semibold">Phase 1 &middot; Capture</div>
+          <h4 class="text-sm font-bold text-white">Structured Interview &amp; Rule Extraction</h4>
+          <p class="text-xs text-slate-300">
+            Subagents scan RPG code and attached spec documents. The interview surfaces implicit rules Bob's static analysis cannot detect — undocumented exceptions, workarounds, and gotchas that exist only in a senior engineer's memory.
+          </p>
+        </div>
+
+        <div class="glass p-5 rounded-xl space-y-2 border-l-4 border-l-emerald-500">
+          <div class="text-xs font-mono text-emerald-400 uppercase font-semibold">Phase 2 &middot; Persist</div>
+          <h4 class="text-sm font-bold text-white">Knowledge Persistence &amp; Binding Contract</h4>
+          <p class="text-xs text-slate-300">
+            Approved rules are written to a versioned rule ledger (BRI) with immutable audit trail. Tarsius generates <code class="text-teal-400">RISK-CONTEXT.md</code> — a binding contract that constrains all future AI generation.
+          </p>
+        </div>
+
+        <div class="glass p-5 rounded-xl space-y-2 border-l-4 border-l-violet-500">
+          <div class="text-xs font-mono text-violet-400 uppercase font-semibold">Phase 3 &middot; Reinforce &amp; Learn</div>
+          <h4 class="text-sm font-bold text-white">Context Persistence &amp; Verification</h4>
+          <p class="text-xs text-slate-300">
+            Lifecycle hooks re-inject approved rules before every code generation task — even across session boundaries. BETH catches deviations vector-by-vector. Gotcha memory accumulates.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3 — THE 4 SPECIALIZED SUBAGENT ROLES
+         ============================================================ -->
+    <section id="subagents" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+          <i data-lucide="users" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">4 Specialized Subagent Roles Native to IBM Bob 2.0</h2>
+          <p class="text-xs text-slate-400">Capture, persist, reinforce, and learn — orchestrated via Bob's native subagent system</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Subagent 1 -->
+        <div class="glass p-5 rounded-xl space-y-3 glass-hover transition border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-sm">
+            1
+          </div>
+          <div class="font-mono text-xs text-brand-400">rule-extractor-agent</div>
+          <h3 class="font-bold text-white text-sm">Rule Extractor (Capture)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Scans legacy RPG/COBOL code, extracts implicit & explicit rules, surfaces undocumented exceptions, and writes structured records into BRI JSON via <code class="text-slate-200">write_finding()</code>.
+          </p>
+        </div>
+
+        <!-- Subagent 2 -->
+        <div class="glass p-5 rounded-xl space-y-3 glass-hover transition border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-sm">
+            2
+          </div>
+          <div class="font-mono text-xs text-rose-400">contradiction-auditor</div>
+          <h3 class="font-bold text-white text-sm">Tacit Knowledge Interviewer</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Guides senior engineer through structured review, surfaces rules Bob cannot detect. Compares <code class="text-slate-200">docQuote</code> vs <code class="text-slate-200">codeLocation</code> to flag contradictions.
+          </p>
+        </div>
+
+        <!-- Subagent 3 -->
+        <div class="glass p-5 rounded-xl space-y-3 glass-hover transition border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+            3
+          </div>
+          <div class="font-mono text-xs text-emerald-400">code-transformer</div>
+          <h3 class="font-bold text-white text-sm">Code Transformer (Reinforce)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Generates code strictly constrained by approved rules in <code class="text-slate-200">RISK-CONTEXT.md</code>. Lifecycle hooks ensure rules persist across sessions.
+          </p>
+        </div>
+
+        <!-- Subagent 4 -->
+        <div class="glass p-5 rounded-xl space-y-3 glass-hover transition border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold text-sm">
+            4
+          </div>
+          <div class="font-mono text-xs text-violet-400">beth-verifier</div>
+          <h3 class="font-bold text-white text-sm">BETH Verifier (Verify)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Runs the BETH differential oracle: 12 ORDVAL vectors against the SME-approved rules. Deviations surface per vector. Decision history + gotcha memory accumulate for future sessions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4 — FORMAL INVARIANT CONTRACT ENGINE
+         ============================================================ -->
+    <section id="contract-engine" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <i data-lucide="file-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Knowledge Persistence Layer</h2>
+          <p class="text-xs text-slate-400">How approved rules persist across sessions and constrain future AI generation via <code class="text-teal-400">RISK-CONTEXT.md</code></p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Raw BRI Data -->
+        <div class="glass p-5 rounded-xl space-y-3 border border-slate-800 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-slate-400">
+            <span>JSON BRI Data Source</span>
+            <span class="text-[10px] text-teal-400">tarsius-bri.json</span>
+          </div>
+          <pre class="text-slate-300 overflow-x-auto text-[11px] leading-relaxed">
+{
+  <span class="text-teal-400">"id"</span>: <span class="text-emerald-400">"BR-DISC-EXCEPTION"</span>,
+  <span class="text-teal-400">"title"</span>: <span class="text-emerald-400">"Suspended accounts may submit DISC orders"</span>,
+  <span class="text-teal-400">"triage"</span>: <span class="text-rose-400">"🔴 must-review"</span>,
+  <span class="text-teal-400">"approvalStatus"</span>: <span class="text-emerald-400">"approved"</span>,
+  <span class="text-teal-400">"contract"</span>: {
+    <span class="text-teal-400">"precondition"</span>: <span class="text-emerald-400">"status == 'SUSPENDED' && type == 'DISC'"</span>,
+    <span class="text-teal-400">"expectedBehavior"</span>: <span class="text-emerald-400">"ALLOW_ORDER"</span>,
+    <span class="text-teal-400">"forbiddenBehavior"</span>: <span class="text-rose-400">"BLOCK_ORDER"</span>
+  }
+}</pre>
+        </div>
+
+        <!-- Binding Contract Markdown -->
+        <div class="glass p-5 rounded-xl space-y-3 border border-slate-800 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-slate-400">
+            <span>Auto-Generated Binding Contract</span>
+            <span class="text-[10px] text-brand-400">.bob/RISK-CONTEXT.md</span>
+          </div>
+          <pre class="text-slate-300 overflow-x-auto text-[11px] leading-relaxed">
+<span class="text-brand-400">### 🟢 Approved Rule: BR-DISC-EXCEPTION</span>
+- <span class="text-slate-400">Description:</span> Suspended accounts may submit DISC (CS-4471).
+- <span class="text-slate-400">Location:</span> ORDVAL.rpgle (Lines 58-66)
+- <span class="text-amber-400">FORMAL INVARIANT CONTRACT:</span>
+  - <span class="text-teal-400">WHEN:</span> account.status == 'SUSPENDED' AND order.type == 'DISC'
+  - <span class="text-emerald-400">MUST:</span> Return ALLOW
+  - <span class="text-rose-400">NEVER:</span> Return BLOCK</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5 — INTERACTIVE DEMO SCENARIOS (2 AHA MOMENTS)
+         ============================================================ -->
+    <section id="demo-flow" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Interactive Demo Scenario: 2 Aha Moments</h2>
+          <p class="text-xs text-slate-400">The 3-minute pitch flow proving contradiction detection and AST self-healing</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Aha Moment 1 -->
+        <div class="glass p-6 rounded-2xl border border-rose-500/20 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">Aha Moment #1</span>
+            <span class="text-xs text-slate-400">Phase 1 &amp; 2</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Tacit Knowledge Surfaces a Hidden Exception</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            The written spec states: <em class="text-rose-400">"Suspended accounts cannot submit orders"</em>. But legacy RPG code has a 2010 legal exception (CS-4471) that was never documented. This rule existed <strong class="text-white">only in a senior engineer's memory</strong>.
+          </p>
+          <div class="glass p-3 rounded-lg text-xs space-y-1 font-mono text-slate-300">
+            <div class="text-rose-400 font-semibold">🔴 BR-DISC-EXCEPTION (Captured via Interview)</div>
+            <div>Doc says: "No exceptions under any order type"</div>
+            <div>Code says: IF STATUS='SUSP' AND TYPE='DISC' ALLOW</div>
+            <div class="text-teal-400 font-semibold mt-1">Tarsius captured knowledge that was never written down!</div>
+          </div>
+        </div>
+
+        <!-- Aha Moment 2 -->
+        <div class="glass p-6 rounded-2xl border border-violet-500/20 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">Aha Moment #2</span>
+            <span class="text-xs text-slate-400">Phase 3</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Persisted Knowledge Constrains Future AI</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            In a later session — after context compaction — Bob's Transformer generates code. Lifecycle hooks re-inject the approved DISC exception rule. When AI deviates, BETH catches it — vector by vector.
+          </p>
+          <div class="glass p-3 rounded-lg text-xs space-y-1 font-mono text-slate-300">
+            <div class="text-amber-400 font-semibold">⚠️ Context Compaction: detailed history summarized</div>
+            <div class="text-violet-400">Lifecycle Hooks: re-inject approved rules from BRI</div>
+            <div class="text-emerald-400 font-semibold mt-1">Result: Knowledge persists across sessions — AI never forgets!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6 — RESEARCH MATRIX (18 CITATIONS)
+         ============================================================ -->
+    <section id="research" class="reveal space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <i data-lucide="book-open" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Research Grounding Matrix</h2>
+          <p class="text-xs text-slate-400">18 peer-reviewed papers and empirical surveys grounding every design decision in Tarsius</p>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 border border-slate-800 overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-mono">
+              <th class="pb-3 pr-4">#</th>
+              <th class="pb-3 pr-4">Finding &amp; Issue</th>
+              <th class="pb-3 pr-4">Research Source</th>
+              <th class="pb-3">How Tarsius Addresses It</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300">
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">1</td>
+              <td class="py-2.5 font-semibold text-white">0–19% Behavioral Equivalence Rate</td>
+              <td class="py-2.5 text-slate-400">AgentModernize (arXiv:2605.17535)</td>
+              <td class="py-2.5">PRE-generation verification: approve rules before code synthesis</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">2</td>
+              <td class="py-2.5 font-semibold text-white">Bottleneck is generation, not extraction — BSG captures 91.2% of rules, BER only 0–19%</td>
+              <td class="py-2.5 text-slate-400">AgentModernize §V-E (arXiv:2605.17535)</td>
+              <td class="py-2.5">Operationalizes the paper's "trust boundary" as a human-in-the-loop verification layer</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">3</td>
+              <td class="py-2.5 font-semibold text-white">29% trust, 66% verification tax</td>
+              <td class="py-2.5 text-slate-400">Stack Overflow 2025, METR 2025</td>
+              <td class="py-2.5">Shifts verification from post-generation debugging to 5-min pre-gen approval</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">4</td>
+              <td class="py-2.5 font-semibold text-white">84% time spent on non-coding friction</td>
+              <td class="py-2.5 text-slate-400">IDC 2025 (via Atlassian DevEx 2025)</td>
+              <td class="py-2.5">Automates rule discovery &amp; dependency mapping to remove friction</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">5</td>
+              <td class="py-2.5 font-semibold text-white">LLMs fail at self-review (preservation drift)</td>
+              <td class="py-2.5 text-slate-400">Articulate but Wrong (arXiv:2605.21537)</td>
+              <td class="py-2.5">Separates Transformer from Verifier using deterministic AST diff</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">6</td>
+              <td class="py-2.5 font-semibold text-white">Differential fuzzing catches 19-35% non-equiv.</td>
+              <td class="py-2.5 text-slate-400">arXiv:2602.15761</td>
+              <td class="py-2.5">AST structural diff provides stronger verification than random fuzzing</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">7</td>
+              <td class="py-2.5 font-semibold text-white">Context Rot degrades agent performance</td>
+              <td class="py-2.5 text-slate-400">The Ralph Loop (Geoffrey Litt)</td>
+              <td class="py-2.5">Fresh-context subagent retries over persistent external state files</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">8</td>
+              <td class="py-2.5 font-semibold text-white">Evaluator-Optimizer pattern necessity</td>
+              <td class="py-2.5 text-slate-400">Anthropic Engineering 2025</td>
+              <td class="py-2.5">Subagent D AST Verifier acts as Evaluator gate for Subagent C</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">9</td>
+              <td class="py-2.5 font-semibold text-white">Shift to Loop Engineering</td>
+              <td class="py-2.5 text-slate-400">Addy Osmani 2026</td>
+              <td class="py-2.5">Designs autonomous feedback loops around LLM execution</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">10</td>
+              <td class="py-2.5 font-semibold text-white">IBM i skills gap #1 concern &gt; security</td>
+              <td class="py-2.5 text-slate-400">Fortra IBM i Survey 2026</td>
+              <td class="py-2.5">BRI preserves business rules as git-diffable knowledge base</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">11</td>
+              <td class="py-2.5 font-semibold text-white">&gt;70% of mainframe exit projects (2026) will fail due to overestimation of gen AI</td>
+              <td class="py-2.5 text-slate-400">Gartner Press Release (June 2026)</td>
+              <td class="py-2.5">Catches the exact failure mode Gartner flags — implicit rules &amp; contradictions before code generation</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">12</td>
+              <td class="py-2.5 font-semibold text-white">TSB Bank 2018 (£48.65M fine)</td>
+              <td class="py-2.5 text-slate-400">Bank of England / FCA Report</td>
+              <td class="py-2.5">Detects the class of invisible-rule blind-spots regulators cited in a real-world bank disaster</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-mono text-brand-400">13</td>
+              <td class="py-2.5 font-semibold text-white">Morgan Stanley COBOL AI initiative</td>
+              <td class="py-2.5 text-slate-400">eFinancialCareers 2026</td>
+              <td class="py-2.5">Validates extraction approach; adds missing PRE-generation verification</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="glass rounded-2xl p-6 text-center text-xs text-slate-400 space-y-2 border border-slate-800">
+      <div class="flex items-center justify-center gap-2 font-bold text-white">
+        <span>Tarsius</span> &middot; <span>IBM Bob 2.0 Hackathon (lablab.ai) &middot; Sep 25–27, 2026</span>
+      </div>
+      <p><em>"Bob reads what's written. Tarsius captures what's only in someone's head."</em></p>
+      <p>Built with IBM Bob 2.0, Node.js MCP Server, React, Tailwind CSS, &amp; Mermaid.js</p>
+    </footer>
+
+  </main>
+
+  <script>
+    // INITIALIZE LUCIDE ICONS
+    lucide.createIcons();
+
+    // INITIALIZE MERMAID JS
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+
+    // INTERACTIVE SCROLL REVEAL ANIMATIONS
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

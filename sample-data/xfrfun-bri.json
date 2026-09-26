@@ -1,0 +1,177 @@
+{
+  "version": "3.0",
+  "sourceModule": "sample-data/XFRFUN.cbl",
+  "attachedDocs": [
+    "sample-data/xfrfun-spec.md"
+  ],
+  "generatedAt": "2026-09-26T16:35:00.000Z",
+  "provenance": {
+    "customMode": "legacy-analyzer",
+    "documentUnderstanding": true,
+    "subagentsUsed": 4
+  },
+  "dependencies": {
+    "XFRFUN.cbl": {
+      "calls": [
+        "ACCDB2",
+        "PROCDB2"
+      ],
+      "calledBy": [
+        "CICS-ROUTER"
+      ],
+      "globalState": [
+        "COMM-SUCCESS",
+        "COMM-FAIL-CODE",
+        "WS-ALLOW-REFUND-EXCEPTION"
+      ],
+      "externalFiles": [
+        "ACCOUNT",
+        "PROCTRAN"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "id": "BR-XFR-AMOUNT-POSITIVE",
+      "type": "explicit",
+      "title": "Negative or zero amounts are rejected",
+      "description": "Transfers with amount <= 0.00 are rejected immediately with fail code '4'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.98
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 2,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 295,
+          "endLine": 299
+        },
+        "docQuote": "Transfers with amount <= 0.00 are rejected immediately.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "validation",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-SAME-ACCOUNT-BLOCK",
+      "type": "explicit",
+      "title": "Transfers between identical accounts are blocked",
+      "description": "Transfers where source and destination account number and sortcode are identical are blocked with ABEND 'SAME'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.96
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 3,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 325,
+          "endLine": 335
+        },
+        "docQuote": "Transferring funds where source and target account numbers and sortcodes match is strictly prohibited and triggers an abend audit.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "validation",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-SUSPENDED-BLOCK",
+      "type": "explicit",
+      "title": "Suspended accounts are barred from fund transfers",
+      "description": "Accounts with status 'S' (Suspended) are blocked from standard fund transfers with fail code 'S'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.94
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 4,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 310,
+          "endLine": 318
+        },
+        "docQuote": "Under Section 4.1 of the Core Banking Risk Handbook, suspended accounts are completely frozen.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-REFUND-CARVEOUT",
+      "type": "implicit",
+      "title": "Suspended accounts must accept inbound merchant refunds (Regulation E)",
+      "description": "Suspended accounts are blocked per spec v4.1, but XFRFUN.cbl carves out an exception for inbound merchant refunds (RFIN) under settlement Ticket CB-9102 (US 12 CFR § 1005 / Regulation E). Dropping this exception causes illegal withholding of consumer funds.",
+      "confidence": {
+        "label": "high",
+        "method": "code-analysis",
+        "score": 0.91
+      },
+      "triage": "🔴 must-review",
+      "riskScore": 48,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 311,
+          "endLine": 313
+        },
+        "docQuote": "No exceptions exist for suspended accounts under any transfer type.",
+        "contradiction": true,
+        "contradictionNote": "Code implements Regulation E refund carve-out (CB-9102), but spec §2.3 states 'No exceptions exist for suspended accounts under any transfer type' — 7 years out of sync"
+      },
+      "approvalStatus": "pending",
+      "category": "regulatory-exception",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    }
+  ],
+  "summary": {
+    "totalRules": 4,
+    "explicit": 3,
+    "implicit": 1,
+    "contradictions": 1,
+    "modulesTracked": 1,
+    "byTriage": {
+      "auto-approve": 3,
+      "glance": 0,
+      "must-review": 1
+    },
+    "riskDistribution": {
+      "critical": 0,
+      "medium": 1,
+      "low": 3
+    }
+  }
+}
