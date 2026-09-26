@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   TARSIUS GOVERNANCE DASHBOARD — Design System
+   Deep obsidian dark · Glassmorphism · Neon accents
+════════════════════════════════════════════════════════════════ */
+
+/* ── Design tokens ───────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-base:      #080c14;
+  --bg-surface:   #0d1320;
+  --bg-card:      #0f1623;
+  --bg-card-hover:#182232;
+  --bg-glass:     rgba(15, 22, 35, 0.72);
+
+  /* Borders */
+  --border:       rgba(30, 45, 70, 0.9);
+  --border-light: rgba(255, 255, 255, 0.06);
+  --border-glass: rgba(255, 255, 255, 0.04);
+
+  /* Text */
+  --text:         #e8edf5;
+  --text-sub:     #94a3b8;
+  --muted:        #4a5568;
+
+  /* Accents */
+  --emerald:      #10b981;
+  --emerald-dim:  rgba(16, 185, 129, 0.15);
+  --amber:        #f59e0b;
+  --amber-dim:    rgba(245, 158, 11, 0.15);
+  --rose:         #f43f5e;
+  --rose-dim:     rgba(244, 63, 94, 0.15);
+  --indigo:       #818cf8;
+  --indigo-dim:   rgba(129, 140, 248, 0.15);
+
+  /* Sidebar */
+  --sidebar-w:    252px;
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Tabular numbers — no layout shift on live data ─────────── */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ── Refined scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar            { width: 5px; height: 5px; }
+::-webkit-scrollbar-track      { background: transparent; }
+::-webkit-scrollbar-thumb      {
+  background: rgba(30, 45, 70, 0.8);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(50, 70, 100, 0.9); }
+
+/* ── Glassmorphism card ──────────────────────────────────────── */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-top-color: var(--border-light);
+}
+
+/* ── Card base ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.125rem 1.25rem;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.card:hover { background: var(--bg-card-hover); }
+.card-flat  { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); padding: 1.25rem; }
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0d1421 0%, #080c14 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ── Stat card accent gradients ──────────────────────────────── */
+.stat-emerald {
+  background: linear-gradient(135deg, rgba(16,185,129,.10) 0%, var(--bg-card) 60%);
+  border-color: rgba(16,185,129,.25);
+  border-top-color: rgba(16,185,129,.35);
+}
+.stat-amber {
+  background: linear-gradient(135deg, rgba(245,158,11,.10) 0%, var(--bg-card) 60%);
+  border-color: rgba(245,158,11,.25);
+  border-top-color: rgba(245,158,11,.35);
+}
+.stat-rose {
+  background: linear-gradient(135deg, rgba(244,63,94,.10) 0%, var(--bg-card) 60%);
+  border-color: rgba(244,63,94,.25);
+  border-top-color: rgba(244,63,94,.35);
+}
+.stat-indigo {
+  background: linear-gradient(135deg, rgba(129,140,248,.10) 0%, var(--bg-card) 60%);
+  border-color: rgba(129,140,248,.25);
+  border-top-color: rgba(129,140,248,.35);
+}
+
+/* ── Neon ambient glows ──────────────────────────────────────── */
+.glow-emerald { box-shadow: 0 0 0 1px rgba(16,185,129,.25), 0 4px 20px rgba(16,185,129,.12); }
+.glow-amber   { box-shadow: 0 0 0 1px rgba(245,158,11,.25), 0 4px 20px rgba(245,158,11,.12); }
+.glow-rose    { box-shadow: 0 0 0 1px rgba(244,63,94,.35),  0 4px 24px rgba(244,63,94,.18); }
+.glow-indigo  { box-shadow: 0 0 0 1px rgba(129,140,248,.25),0 4px 20px rgba(129,140,248,.12); }
+
+/* ── Hash monospace ──────────────────────────────────────────── */
+.hash {
+  font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.685rem;
+  letter-spacing: 0.025em;
+  color: var(--emerald);
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+.hash-indigo { color: var(--indigo); }
+
+/* ── Terminal badge ──────────────────────────────────────────── */
+.terminal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  color: #7dd3fc;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ── Incident/alert bar ──────────────────────────────────────── */
+.incident-bar {
+  border-left: 3px solid var(--rose);
+  background: linear-gradient(90deg, rgba(244,63,94,.08) 0%, rgba(244,63,94,.02) 100%);
+  border-top: 1px solid rgba(244,63,94,.25);
+  border-right: 1px solid rgba(244,63,94,.1);
+  border-bottom: 1px solid rgba(244,63,94,.1);
+  border-radius: 0 10px 10px 0;
+}
+
+/* ── Chain timeline line ─────────────────────────────────────── */
+.chain-line {
+  position: absolute;
+  left: 15px;
+  top: 100%;
+  width: 1px;
+  height: 1rem;
+  background: linear-gradient(180deg, rgba(129,140,248,.5) 0%, transparent 100%);
+}
+
+/* ── Pill buttons ────────────────────────────────────────────── */
+.btn-approve {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(16,185,129,.15);
+  border: 1px solid rgba(16,185,129,.4);
+  color: #34d399;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.btn-approve:hover:not(:disabled) {
+  background: rgba(16,185,129,.25);
+  border-color: rgba(16,185,129,.7);
+  box-shadow: 0 0 12px rgba(16,185,129,.2);
+}
+.btn-approve:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-reject {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(244,63,94,.12);
+  border: 1px solid rgba(244,63,94,.35);
+  color: #fb7185;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.btn-reject:hover:not(:disabled) {
+  background: rgba(244,63,94,.22);
+  border-color: rgba(244,63,94,.65);
+  box-shadow: 0 0 12px rgba(244,63,94,.18);
+}
+.btn-reject:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Pulse animations ────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(244,63,94,.7); }
+  60%  { box-shadow: 0 0 0 5px rgba(244,63,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); }
+}
+.pulse-rose { animation: pulse-ring 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+@keyframes breathe-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(16,185,129,.8); }
+  50%       { opacity: 0.55; box-shadow: 0 0 2px rgba(16,185,129,.3); }
+}
+.breathe-green { animation: breathe-green 2.4s ease-in-out infinite; }
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 1s linear infinite; }
+
+/* ── Focus ring ──────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(129,140,248,.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Selection ───────────────────────────────────────────────── */
+::selection {
+  background: rgba(129,140,248,.25);
+  color: #e8edf5;
+}

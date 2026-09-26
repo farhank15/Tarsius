@@ -1,0 +1,6 @@
+.bob/
+mcp-server/node_modules/
+mcp-server/dist
+node_modules/
+dashboard/node_modules/
+dashboard/dist/

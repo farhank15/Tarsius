@@ -1,0 +1,22 @@
+{
+  "name": "tarsius-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Tarsius MCP Server — business rule extraction and governance",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
