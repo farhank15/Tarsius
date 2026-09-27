@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="publics/Tarsius.png" alt="Tarsius — Tacit Knowledge Governance for IBM Bob 2.0" width="130" />
+<img src="public/Tarsius.png" alt="Tarsius — Tacit Knowledge Governance for IBM Bob 2.0" width="130" />
 
 # TARSIUS
 
@@ -27,8 +27,9 @@
 > **Core Premise:** Standard AI code generators can accurately transform syntax they can read. However, in mission-critical systems running for decades, **critical business rules often exist only in human memory (tacit knowledge)** rather than formal documentation or inline comments.  
 > 
 > *IBM Bob 2.0 reads what is written. Tarsius captures what exists only in institutional memory.*  
+> $$\text{IBM Bob 2.0 (Execution Engine)} + \text{Tarsius (Governance and Verification)} = \text{100\% Behavioral Equivalence}$$
 > 
-> $$\text{IBM Bob 2.0 (Execution Engine)} + \text{Tarsius (Governance & Verification)} = \text{100% Behavioral Equivalence}$$
+> **IBM Bob 2.0 (Execution Engine) + Tarsius (Governance & Verification) = 100% Behavioral Equivalence**
 
 ---
 
@@ -261,41 +262,90 @@ An authentic inter-account fund transfer module extracted directly from IBM's of
 - Node.js 18+ and npm
 - IBM Bob 2.0 (IDE or Bob Shell v2)
 
-### 1. Installation & Build
+### Option A — One-line Installer (recommended)
+
 ```bash
-# Clone repository
+# Install the tarsius CLI globally (no clone required):
+curl -fsSL https://github.com/farhank15/Tarsius/main/install.sh | bash
+```
+
+The installer places `tarsius` in `~/.local/bin` (or `/usr/local/bin`) and adds it to your shell profile automatically.
+
+### Option B — Clone & Link
+
+```bash
 git clone https://github.com/your-team/tarsius
 cd tarsius
-
-# Build the TypeScript MCP Server
-cd mcp-server && npm install && npm run build
-
-# Start the React Triage Dashboard
-cd ../dashboard && npm install && npm run dev
+npm link          # registers `tarsius` command from this local clone
 ```
 
-### 2. Run Test Suites
+---
+
+### 1. Initialize Tarsius in Any Legacy Repository
+
 ```bash
-# 1. Execute primary ORDVAL flow tests (38 assertions: triage logic, SHA-256 ledger, BETH oracle)
-npx tsx test/flow-test.ts
-# Result: 38/38 tests passing
-
-# 2. Execute XFRFUN IBM CICS COBOL case study tests (11 assertions: AST extraction, Reg E carve-out, BETH oracle)
-npx tsx test/xfrfun-test.ts
-# Result: 11/11 tests passing
-
-# Total: 49/49 tests passing across both legacy architectures (100% Green)
+cd your-legacy-repo
+tarsius init
 ```
 
-### 3. Connect with IBM Bob 2.0
-Copy configuration files to `.bob/`:
+This single command:
+- Creates `.bob/` with `custom_modes.yaml` (registers `legacy-analyzer` and `modernization-transformer` modes)
+- Copies `mcp.json` (Tarsius MCP tool definitions)
+- Injects governance `rules/` and `skills/` directories
+- Initializes `.bob/RISK-CONTEXT.md` (binding rule contract)
+
+### 2. Launch the React Triage Dashboard
+
 ```bash
-mkdir -p .bob
-cp templates/custom_modes.yaml .bob/
-cp templates/mcp.json .bob/
-cp -r templates/skills .bob/
+tarsius studio
 ```
-In IBM Bob IDE, select **`Legacy Analyzer`** mode to initiate discovery on `sample-data/ORDVAL.rpgle` or `sample-data/XFRFUN.cbl`.
+
+Starts the Vite dev server in `dashboard/` on port 5173 and opens `http://localhost:5173` in your default browser.
+If the server is already running, the command opens the browser immediately.
+
+### 3. Run BETH Verification
+
+```bash
+tarsius verify
+```
+
+Executes both BETH differential test suites:
+
+| Suite | Workload | Assertions |
+|---|---|---|
+| `test/flow-test.ts` | ORDVAL — IBM i RPGLE | 38 |
+| `test/xfrfun-test.ts` | XFRFUN — IBM z/OS CICS COBOL | 11 |
+| **Total** | **Dual-workload (2,069 LOC)** | **49 / 49 ✅** |
+
+### 4. Inspect Rule Inventory
+
+```bash
+tarsius status
+```
+
+Displays total extracted rules, approval counts, 🔴 must-review contradictions, and the current SHA-256 ledger state.
+
+### 5. Connect with IBM Bob 2.0
+
+After `tarsius init`, open IBM Bob IDE and select the **`Legacy Analyzer`** mode to initiate discovery on `sample-data/ORDVAL.rpgle` or `sample-data/XFRFUN.cbl`.
+
+```bash
+# npm run aliases (if running from the cloned repo):
+npm run init      # → tarsius init
+npm run studio    # → tarsius studio
+npm run verify    # → tarsius verify
+npm run status    # → tarsius status
+```
+
+### CLI Reference
+
+```
+tarsius init     Set up .bob/ config in the current repository
+tarsius studio   Launch React Triage Dashboard (port 5173)
+tarsius verify   Run BETH differential test suites (100% BER)
+tarsius status   Show rule counts and ledger state
+tarsius help     Show usage and examples
+```
 
 ---
 

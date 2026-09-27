@@ -322,5 +322,6 @@ function approvePlugin(): Plugin {
 // ---------------------------------------------------------------------------
 
 export default defineConfig({
+  base: "./",
   plugins: [react(), tailwindcss(), approvePlugin()],
 });

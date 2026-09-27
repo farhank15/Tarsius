@@ -4,3 +4,4 @@ mcp-server/dist
 node_modules/
 dashboard/node_modules/
 dashboard/dist/
+dist/

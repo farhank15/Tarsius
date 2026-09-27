@@ -1,0 +1,68 @@
+{
+  "savedAt": "2026-09-26T01:15:39.716Z",
+  "approvedRules": [
+    {
+      "id": "BR-CANCELLED-BLOCK",
+      "type": "explicit",
+      "title": "Cancelled accounts cannot submit orders",
+      "description": "Accounts with status 'C' (Cancelled) are blocked from all order submissions. This is a hard block — no exceptions.",
+      "confidence": {
+        "label": "high",
+        "method": "dual-source",
+        "score": 0.97
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 1,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 56,
+          "endLine": 59
+        },
+        "docQuote": "Accounts with status **C** (Cancelled) are **rejected** for all order types.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
+    },
+    {
+      "id": "BR-SUSPENDED-BLOCK",
+      "type": "explicit",
+      "title": "Suspended accounts are blocked from orders",
+      "description": "Accounts with status 'S' (Suspended) are blocked from all order submissions per standard policy.",
+      "confidence": {
+        "label": "high",
+        "method": "dual-source",
+        "score": 0.95
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 2,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 65,
+          "endLine": 68
+        },
+        "docQuote": "Accounts with status **S** (Suspended) are **rejected** for all order types.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
+    }
+  ],
+  "lastChainHash": "0000000000000000"
+}

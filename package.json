@@ -1,0 +1,15 @@
+{
+  "name": "tarsius",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd dashboard && npm run dev",
+    "build": "node scripts/build-site.mjs",
+    "build:dashboard": "cd dashboard && npm run build",
+    "preview": "npx serve dist",
+    "test": "npx tsx test/flow-test.ts && npx tsx test/xfrfun-test.ts",
+    "test:ordval": "npx tsx test/flow-test.ts",
+    "test:xfrfun": "npx tsx test/xfrfun-test.ts"
+  }
+}

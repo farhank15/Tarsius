@@ -27,8 +27,9 @@
 > **Core Premise:** Standard AI code generators can accurately transform syntax they can read. However, in mission-critical systems running for decades, **critical business rules often exist only in human memory (tacit knowledge)** rather than formal documentation or inline comments.  
 > 
 > *IBM Bob 2.0 reads what is written. Tarsius captures what exists only in institutional memory.*  
+> $$\text{IBM Bob 2.0 (Execution Engine)} + \text{Tarsius (Governance and Verification)} = \text{100\% Behavioral Equivalence}$$
 > 
-> $$\text{IBM Bob 2.0 (Execution Engine)} + \text{Tarsius (Governance & Verification)} = \text{100% Behavioral Equivalence}$$
+> **IBM Bob 2.0 (Execution Engine) + Tarsius (Governance & Verification) = 100% Behavioral Equivalence**
 
 ---
 

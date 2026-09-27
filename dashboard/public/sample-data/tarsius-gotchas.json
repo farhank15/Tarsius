@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "gotchas": [
+    {
+      "id": "GOT-001",
+      "title": "Class action exceptions are legally binding",
+      "description": "Rules referencing class action settlements (CS-4471, 2009-CV-118) are legally binding. Never approve removal without legal sign-off.",
+      "category": "legal",
+      "severity": "critical",
+      "triggerCount": 1,
+      "active": true,
+      "addedAt": "2026-08-28T15:00:00Z",
+      "addedBy": "lead-001",
+      "relatedRules": ["BR-DISC-EXCEPTION", "BR-GRANDFATHER-PRICING"],
+      "autoLearning": {
+        "discoveredFrom": {
+          "type": "contradiction",
+          "description": "BR-DISC-EXCEPTION shows code implements CS-4471 but spec doesn't mention it"
+        },
+        "appliesTo": { "categories": ["account-status-exception", "pricing"] }
+      }
+    },
+    {
+      "id": "GOT-002",
+      "title": "Legacy pricing grandfathering must be preserved",
+      "description": "Plan-7 customers retain locked-in pricing per 2009 class action. Never remove grandfathering logic.",
+      "category": "business",
+      "severity": "high",
+      "triggerCount": 0,
+      "active": true,
+      "addedAt": "2026-08-28T16:00:00Z",
+      "addedBy": "lead-001",
+      "relatedRules": ["BR-GRANDFATHER-PRICING"],
+      "autoLearning": {
+        "discoveredFrom": {
+          "type": "manual-entry",
+          "description": "Manual entry during rule review"
+        },
+        "appliesTo": { "categories": ["pricing"] }
+      }
+    }
+  ],
+  "summary": {
+    "totalGotchas": 2,
+    "active": 2,
+    "byCategory": { "legal": 1, "business": 1 },
+    "bySeverity": { "critical": 1, "high": 1 }
+  }
+}

@@ -1,0 +1,402 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import { execSync, spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ─── ANSI colours ────────────────────────────────────────────────────────────
+const C = {
+  reset:  '\x1b[0m',
+  bold:   '\x1b[1m',
+  dim:    '\x1b[2m',
+  red:    '\x1b[31m',
+  green:  '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue:   '\x1b[34m',
+  cyan:   '\x1b[36m',
+  white:  '\x1b[37m',
+};
+const b  = s => `${C.bold}${s}${C.reset}`;
+const g  = s => `${C.green}${s}${C.reset}`;
+const y  = s => `${C.yellow}${s}${C.reset}`;
+const r  = s => `${C.red}${s}${C.reset}`;
+const c  = s => `${C.cyan}${s}${C.reset}`;
+const d  = s => `${C.dim}${s}${C.reset}`;
+
+const VERSION = '0.1.0';
+
+// ─── ASCII banner ─────────────────────────────────────────────────────────────
+function printBanner() {
+  console.log(`
+${C.cyan}${C.bold}  ████████╗ █████╗ ██████╗ ███████╗██╗██╗   ██╗███████╗${C.reset}
+${C.cyan}${C.bold}     ██╔══╝██╔══██╗██╔══██╗██╔════╝██║██║   ██║██╔════╝${C.reset}
+${C.cyan}${C.bold}     ██║   ███████║██████╔╝███████╗██║██║   ██║███████╗ ${C.reset}
+${C.cyan}${C.bold}     ██║   ██╔══██║██╔══██╗╚════██║██║██║   ██║╚════██║${C.reset}
+${C.cyan}${C.bold}     ██║   ██║  ██║██║  ██║███████║██║╚██████╔╝███████║${C.reset}
+${C.cyan}${C.bold}     ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚══════╝${C.reset}
+${d(`  Tarsius v${VERSION} — Behavioral Safety Layer for AI Legacy Modernization`)}
+${d('  IBM Bob 2.0 Native Extension — tacit-knowledge governance')}
+`);
+}
+
+function cmdVersion() {
+  console.log(`tarsius v${VERSION}`);
+}
+
+// ─── Resolve the tarsius package root (where templates/ lives) ───────────────
+function pkgRoot() {
+  if (process.env.TARSIUS_ROOT && fs.existsSync(process.env.TARSIUS_ROOT)) {
+    return process.env.TARSIUS_ROOT;
+  }
+  const relRoot = path.resolve(__dirname, '..');
+  if (fs.existsSync(path.join(relRoot, 'templates'))) {
+    return relRoot;
+  }
+  const homeTarsius = path.join(os.homedir(), '.tarsius');
+  if (fs.existsSync(homeTarsius)) {
+    return homeTarsius;
+  }
+  return relRoot;
+}
+
+// ─── Utility: copy a file, ensuring the destination directory exists ─────────
+function copyFile(src, dest) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
+}
+
+// ─── Utility: copy a directory recursively ───────────────────────────────────
+function copyDir(src, dest) {
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const s = path.join(src, entry.name);
+    const d2 = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(s, d2);
+    } else {
+      fs.copyFileSync(s, d2);
+    }
+  }
+}
+
+// ─── Utility: check if a TCP port is in use ───────────────────────────────────
+function portInUse(port) {
+  try {
+    execSync(`lsof -iTCP:${port} -sTCP:LISTEN -t 2>/dev/null`, { stdio: 'pipe' });
+    return true;
+  } catch {
+    try {
+      execSync(`ss -tlnp "sport = :${port}" 2>/dev/null | grep -q LISTEN`, { stdio: 'pipe' });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
+// ─── Utility: open URL in default browser (cross-platform) ───────────────────
+function openBrowser(url) {
+  const platform = process.platform;
+  const cmd = platform === 'darwin' ? 'open'
+            : platform === 'win32'  ? 'start'
+            : 'xdg-open';
+  try { execSync(`${cmd} "${url}"`); } catch { /* ignore */ }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  COMMANDS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ─── tarsius init ─────────────────────────────────────────────────────────────
+function cmdInit() {
+  printBanner();
+  const cwd  = process.cwd();
+  const root = pkgRoot();
+  const bob  = path.join(cwd, '.bob');
+
+  console.log(b('  Initializing Tarsius in:'), c(cwd));
+  console.log();
+
+  // 1. Create .bob directory
+  fs.mkdirSync(bob, { recursive: true });
+  console.log(g('  ✔'), 'Created', c('.bob/'));
+
+  // 2. Copy custom_modes.yaml
+  const modessSrc  = path.join(root, 'templates', 'custom_modes.yaml');
+  const modesDest  = path.join(bob, 'custom_modes.yaml');
+  if (fs.existsSync(modessSrc)) {
+    copyFile(modessSrc, modesDest);
+    console.log(g('  ✔'), 'Copied', c('templates/custom_modes.yaml'), '→', c('.bob/custom_modes.yaml'));
+  } else {
+    console.log(y('  ⚠'), 'templates/custom_modes.yaml not found — skipped');
+  }
+
+  // 3. Copy mcp.json
+  const mcpSrc  = path.join(root, 'templates', 'mcp.json');
+  const mcpDest = path.join(bob, 'mcp.json');
+  if (fs.existsSync(mcpSrc)) {
+    copyFile(mcpSrc, mcpDest);
+    console.log(g('  ✔'), 'Copied', c('templates/mcp.json'), '→', c('.bob/mcp.json'));
+  } else {
+    console.log(y('  ⚠'), 'templates/mcp.json not found — skipped');
+  }
+
+  // 4. Copy rules/
+  const rulesSrc  = path.join(root, 'templates', 'rules');
+  const rulesDest = path.join(bob, 'rules');
+  if (fs.existsSync(rulesSrc)) {
+    copyDir(rulesSrc, rulesDest);
+    console.log(g('  ✔'), 'Copied', c('templates/rules/'), '→', c('.bob/rules/'));
+  }
+
+  // 5. Copy rules-legacy-analyzer/
+  const rlasSrc  = path.join(root, 'templates', 'rules-legacy-analyzer');
+  const rlasDest = path.join(bob, 'rules-legacy-analyzer');
+  if (fs.existsSync(rlasSrc)) {
+    copyDir(rlasSrc, rlasDest);
+    console.log(g('  ✔'), 'Copied', c('templates/rules-legacy-analyzer/'), '→', c('.bob/rules-legacy-analyzer/'));
+  }
+
+  // 6. Copy rules-modernization-transformer/
+  const rmtSrc  = path.join(root, 'templates', 'rules-modernization-transformer');
+  const rmtDest = path.join(bob, 'rules-modernization-transformer');
+  if (fs.existsSync(rmtSrc)) {
+    copyDir(rmtSrc, rmtDest);
+    console.log(g('  ✔'), 'Copied', c('templates/rules-modernization-transformer/'), '→', c('.bob/rules-modernization-transformer/'));
+  }
+
+  // 7. Copy skills/
+  const skillsSrc  = path.join(root, 'templates', 'skills');
+  const skillsDest = path.join(bob, 'skills');
+  if (fs.existsSync(skillsSrc)) {
+    copyDir(skillsSrc, skillsDest);
+    console.log(g('  ✔'), 'Copied', c('templates/skills/'), '→', c('.bob/skills/'));
+  }
+
+  // 8. Initialize RISK-CONTEXT.md if absent
+  const riskDest = path.join(bob, 'RISK-CONTEXT.md');
+  if (!fs.existsSync(riskDest)) {
+    const ts = new Date().toISOString();
+    fs.writeFileSync(riskDest, `# RISK-CONTEXT\n\n> Auto-generated by Tarsius. Do not edit manually.\n> Initialized: ${ts}\n\n## ✅ Approved Rules\n\n_No rules approved yet. Run the Legacy Analyzer mode to extract business rules._\n\n## 🔴 Pending Review\n\n_None._\n`);
+    console.log(g('  ✔'), 'Initialized', c('.bob/RISK-CONTEXT.md'));
+  } else {
+    console.log(d('  –'), c('.bob/RISK-CONTEXT.md'), 'already exists — preserved');
+  }
+
+  console.log();
+  console.log(b('  ✅ Tarsius initialized successfully!'));
+  console.log();
+  console.log('  Next steps:');
+  console.log('  ', c('1.'), 'Open IBM Bob IDE and select the', b('Legacy Analyzer'), 'mode');
+  console.log('  ', c('2.'), 'Point Bob at your legacy source file to extract business rules');
+  console.log('  ', c('3.'), 'Run', b('tarsius studio'), 'to open the React Triage Dashboard');
+  console.log('  ', c('4.'), 'Run', b('tarsius verify'), 'after code generation to confirm 100% BER');
+  console.log();
+}
+
+// ─── tarsius studio ───────────────────────────────────────────────────────────
+function cmdStudio() {
+  const root = pkgRoot();
+  const url  = 'http://localhost:5173';
+  const dashboardDir = path.join(root, 'dashboard');
+
+  if (portInUse(5173)) {
+    console.log(g('  ✔'), 'Dashboard already running at', c(url));
+    console.log('  Opening browser…');
+    openBrowser(url);
+    return;
+  }
+
+  if (!fs.existsSync(dashboardDir)) {
+    console.error(r('  ✖'), `dashboard/ directory not found in ${root}`);
+    process.exit(1);
+  }
+
+  // Auto-install dashboard dependencies on first run if missing
+  const nmPath = path.join(dashboardDir, 'node_modules');
+  if (!fs.existsSync(nmPath)) {
+    console.log(c('  ⏳'), 'Installing Studio dependencies (first run only)…');
+    try {
+      execSync('npm install --silent --no-audit --no-fund', { cwd: dashboardDir, stdio: 'inherit' });
+    } catch {
+      console.error(r('  ✖'), 'Failed to install dashboard dependencies');
+      process.exit(1);
+    }
+  }
+
+  console.log(c('  ⏳'), 'Starting Tarsius Studio…');
+  const child = spawn('npm', ['run', 'dev'], {
+    cwd: dashboardDir,
+    stdio: 'inherit',
+    detached: true,
+  });
+  child.unref();
+
+  // Give Vite ~2 s to bind the port, then open browser
+  setTimeout(() => {
+    console.log();
+    console.log(g('  ✔'), 'Dashboard launching at', c(url));
+    openBrowser(url);
+  }, 2000);
+}
+
+// ─── tarsius verify ───────────────────────────────────────────────────────────
+function cmdVerify() {
+  const root = pkgRoot();
+  console.log(b('  Running BETH differential test suites…'));
+  console.log();
+
+  let allPassed = true;
+
+  for (const suite of ['test/flow-test.ts', 'test/xfrfun-test.ts']) {
+    const fullPath = path.join(root, suite);
+    if (!fs.existsSync(fullPath)) {
+      console.log(y('  ⚠'), `${suite} not found — skipped`);
+      continue;
+    }
+    console.log(d(`  ▶ npx tsx ${suite}`));
+    try {
+      execSync(`npx tsx "${fullPath}"`, { cwd: root, stdio: 'inherit' });
+      console.log(g(`  ✔ ${suite} — PASSED`));
+    } catch {
+      console.log(r(`  ✖ ${suite} — FAILED`));
+      allPassed = false;
+    }
+    console.log();
+  }
+
+  if (allPassed) {
+    console.log(b(g('  🎯 100% Behavioral Equivalence Rate (BER) — all test vectors match!')));
+  } else {
+    console.log(r('  ✖ One or more suites failed. Review output above.'));
+    process.exit(1);
+  }
+}
+
+// ─── tarsius status ───────────────────────────────────────────────────────────
+function cmdStatus() {
+  const root = pkgRoot();
+  printBanner();
+  console.log(b('  Tarsius Status'));
+  console.log(d('  ' + '─'.repeat(54)));
+
+  // ── BRI stats (tarsius-bri.json) ──
+  let totalRules = 0;
+  let approvedRules = 0;
+  for (const briFile of ['sample-data/tarsius-bri.json', 'sample-data/xfrfun-bri.json']) {
+    const fp = path.join(root, briFile);
+    if (!fs.existsSync(fp)) continue;
+    try {
+      const bri = JSON.parse(fs.readFileSync(fp, 'utf8'));
+      const rules = bri.rules || [];
+      totalRules += rules.length;
+      approvedRules += rules.filter(r => r.approvalStatus === 'approved').length;
+    } catch { /* skip malformed */ }
+  }
+
+  // ── RISK-CONTEXT.md stats ──
+  const cwdRiskPath = path.join(process.cwd(), '.bob', 'RISK-CONTEXT.md');
+  const riskPath = fs.existsSync(cwdRiskPath) ? cwdRiskPath : path.join(root, '.bob', 'RISK-CONTEXT.md');
+  let approvedSection = 0;
+  let pendingSection  = 0;
+  let lastUpdated     = 'unknown';
+  let ledgerState     = 'not found';
+
+  if (fs.existsSync(riskPath)) {
+    const content = fs.readFileSync(riskPath, 'utf8');
+    const updMatch = content.match(/Last updated:\s*(.+)/);
+    if (updMatch) lastUpdated = updMatch[1].trim();
+
+    // Count approved rule headings (### BR-...)
+    approvedSection = (content.match(/^### BR-/gm) || []).length;
+
+    // Count 🔴 must-review lines in pending section
+    pendingSection = (content.match(/🔴/g) || []).length;
+
+    // Ledger state: last SHA line
+    const ledgerMatch = content.match(/sha256:[a-f0-9]{8,}/i);
+    ledgerState = ledgerMatch ? ledgerMatch[0] : 'clean (no entries)';
+  }
+
+  const pad = n => String(n).padStart(4);
+
+  console.log();
+  console.log(`  ${b('BRI Rules')}          (from tarsius-bri.json + xfrfun-bri.json)`);
+  console.log(`   Total extracted :  ${c(pad(totalRules))}`);
+  console.log(`   Approved        :  ${g(pad(approvedRules))}`);
+  console.log(`   Pending (BRI)   :  ${y(pad(totalRules - approvedRules))}`);
+  console.log();
+  console.log(`  ${b('RISK-CONTEXT.md')}     (${path.relative(process.cwd(), riskPath) || '.bob/RISK-CONTEXT.md'})`);
+  console.log(`   Approved rules  :  ${g(pad(approvedSection))}`);
+  console.log(`   🔴 Must-review  :  ${pendingSection > 0 ? r(pad(pendingSection)) : g(pad(pendingSection))}`);
+  console.log(`   Last updated    :  ${d(lastUpdated)}`);
+  console.log(`   Ledger          :  ${d(ledgerState)}`);
+  console.log();
+  console.log(d('  ' + '─'.repeat(54)));
+  console.log(`  Run ${b('tarsius verify')} to confirm 100% BER against both workloads.`);
+  console.log();
+}
+
+// ─── tarsius help ─────────────────────────────────────────────────────────────
+function cmdHelp() {
+  printBanner();
+  console.log(b('  Usage:'), c('tarsius <command>'));
+  console.log();
+  console.log('  Commands:');
+  console.log(`   ${b('init')}     Set up Tarsius in the current repository`);
+  console.log(`            Copies .bob/ config, modes, MCP tools, skills, and`);
+  console.log(`            initializes RISK-CONTEXT.md`);
+  console.log();
+  console.log(`   ${b('studio')}   Launch the React Triage Dashboard`);
+  console.log(`            Starts Vite dev server in dashboard/ on port 5173`);
+  console.log(`            and opens http://localhost:5173 in the browser`);
+  console.log();
+  console.log(`   ${b('verify')}   Run BETH differential test suites`);
+  console.log(`            Executes flow-test.ts (ORDVAL / RPGLE) and`);
+  console.log(`            xfrfun-test.ts (XFRFUN / COBOL) via npx tsx`);
+  console.log(`            Validates 100% Behavioral Equivalence Rate (BER)`);
+  console.log();
+  console.log(`   ${b('status')}   Show current BRI rule counts and ledger state`);
+  console.log(`            Reads tarsius-bri.json and .bob/RISK-CONTEXT.md`);
+  console.log(`   ${b('version')}  Print Tarsius version (aliases: -v, --version)`);
+  console.log();
+  console.log(`   ${b('help')}     Show this help message`);
+  console.log();
+  console.log('  Examples:');
+  console.log(`   ${d('$')} ${c('tarsius init')}            # bootstrap a new repo`);
+  console.log(`   ${d('$')} ${c('tarsius studio')}          # open triage dashboard`);
+  console.log(`   ${d('$')} ${c('tarsius verify')}          # confirm 100% BER`);
+  console.log(`   ${d('$')} ${c('tarsius status')}          # inspect rule inventory`);
+  console.log(`   ${d('$')} ${c('tarsius -v')}              # show version`);
+  console.log();
+  console.log('  Installation:');
+  console.log(`   ${d('$')} ${c('curl -fsSL https://raw.githubusercontent.com/farhank15/Tarsius/main/install.sh | bash')}`);
+  console.log();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  ENTRY POINT
+// ══════════════════════════════════════════════════════════════════════════════
+const [,, cmd, ...rest] = process.argv;
+
+switch (cmd) {
+  case 'init':      cmdInit();    break;
+  case 'studio':    cmdStudio();  break;
+  case 'verify':    cmdVerify();  break;
+  case 'status':    cmdStatus();  break;
+  case '-v':
+  case '--version':
+  case 'version':   cmdVersion(); break;
+  case 'help':
+  case '--help':
+  case '-h':        cmdHelp();    break;
+  default:
+    if (cmd) console.error(r(`  Unknown command: ${cmd}\n`));
+    cmdHelp();
+    if (cmd) process.exit(1);
+    break;
+}
