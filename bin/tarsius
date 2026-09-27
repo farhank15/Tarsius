@@ -27,7 +27,7 @@ const r  = s => `${C.red}${s}${C.reset}`;
 const c  = s => `${C.cyan}${s}${C.reset}`;
 const d  = s => `${C.dim}${s}${C.reset}`;
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 
 // ─── ASCII banner ─────────────────────────────────────────────────────────────
 function printBanner() {
