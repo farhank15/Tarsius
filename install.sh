@@ -177,7 +177,7 @@ main() {
   echo "  Get started:"
   echo "   ${CYAN}cd your-legacy-repo${RESET}"
   echo "   ${CYAN}tarsius init${RESET}     # bootstrap .bob/ custom modes & rules"
-  echo "   ${CYAN}tarsius studio${RESET}   # launch React Triage Dashboard (localhost:5173)"
+  echo "   ${CYAN}tarsius studio${RESET}   # launch React Triage Dashboard (localhost:8321)"
   echo "   ${CYAN}tarsius verify${RESET}   # confirm 100% Behavioral Equivalence"
   echo "   ${CYAN}tarsius status${RESET}   # inspect rule inventory & audit ledger"
   echo ""

@@ -1,0 +1,343 @@
+{
+  "version": "3.0",
+  "sourceModule": "Core Banking Legacy Suite (ORDVAL.rpgle, XFRFUN.cbl)",
+  "attachedDocs": [
+    "sample-data/order-validation-spec.md",
+    "sample-data/xfrfun-spec.md"
+  ],
+  "generatedAt": "2026-09-27T02:43:05.000Z",
+  "provenance": {
+    "customMode": "legacy-analyzer",
+    "documentUnderstanding": true,
+    "subagentsUsed": 4
+  },
+  "dependencies": {
+    "ORDVAL.rpgle": {
+      "calls": [
+        "CUSTCHK.rpgle",
+        "PRICCALC.rpgle"
+      ],
+      "calledBy": [
+        "ORDENTRY.rpgle"
+      ],
+      "globalState": [
+        "SUSPEND-FLAG",
+        "DISC-TYPE"
+      ],
+      "externalFiles": [
+        "CUSTMAST",
+        "ORDHIST"
+      ]
+    },
+    "CUSTCHK.rpgle": {
+      "calls": [],
+      "calledBy": [
+        "ORDVAL.rpgle",
+        "CRDCHK.rpgle"
+      ],
+      "globalState": [
+        "SUSPEND-FLAG"
+      ],
+      "externalFiles": [
+        "CUSTMAST"
+      ]
+    },
+    "PRICCALC.rpgle": {
+      "calls": [],
+      "calledBy": [
+        "ORDVAL.rpgle"
+      ],
+      "globalState": [],
+      "externalFiles": [
+        "PRICING"
+      ]
+    },
+    "XFRFUN.cbl": {
+      "calls": [
+        "ACCDB2",
+        "PROCDB2"
+      ],
+      "calledBy": [
+        "CICS-ROUTER"
+      ],
+      "globalState": [
+        "COMM-SUCCESS",
+        "COMM-FAIL-CODE",
+        "WS-ALLOW-REFUND-EXCEPTION"
+      ],
+      "externalFiles": [
+        "ACCOUNT",
+        "PROCTRAN"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "id": "BR-CANCELLED-BLOCK",
+      "type": "explicit",
+      "title": "Cancelled accounts cannot submit orders",
+      "description": "Accounts with status 'C' (Cancelled) are blocked from all order submissions. This is a hard block — no exceptions.",
+      "confidence": {
+        "label": "high",
+        "method": "dual-source",
+        "score": 0.97
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 1,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 56,
+          "endLine": 59
+        },
+        "docQuote": "Accounts with status **C** (Cancelled) are **rejected** for all order types.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
+    },
+    {
+      "id": "BR-SUSPENDED-BLOCK",
+      "type": "explicit",
+      "title": "Suspended accounts are blocked from orders",
+      "description": "Accounts with status 'S' (Suspended) are blocked from all order submissions per standard policy.",
+      "confidence": {
+        "label": "high",
+        "method": "dual-source",
+        "score": 0.95
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 2,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 65,
+          "endLine": 68
+        },
+        "docQuote": "Accounts with status **S** (Suspended) are **rejected** for all order types.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "ORDENTRY.rpgle"
+      ]
+    },
+    {
+      "id": "BR-DISC-EXCEPTION",
+      "type": "implicit",
+      "title": "Suspended accounts may submit DISC orders",
+      "description": "Suspended accounts are blocked from all orders per spec v3.2, but ORDVAL.rpgle carves out an exception for DISC orders (ticket CS-4471). This exception exists in code but is completely undocumented — a legal requirement from 2010 class action settlement.",
+      "confidence": {
+        "label": "high",
+        "method": "code-analysis",
+        "score": 0.88
+      },
+      "triage": "🔴 must-review",
+      "riskScore": 44,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 77,
+          "endLine": 81
+        },
+        "docQuote": "No exceptions exist for suspended accounts under any order type.",
+        "contradiction": true,
+        "contradictionNote": "Code implements DISC exception (CS-4471) but spec doesn't mention it — 11 years out of sync"
+      },
+      "approvalStatus": "approved",
+      "category": "account-status-exception",
+      "affectsModules": [
+        "CUSTCHK.rpgle"
+      ]
+    },
+    {
+      "id": "BR-GRANDFATHER-PRICING",
+      "type": "implicit",
+      "title": "Plan-7 legacy customers retain locked-in pricing",
+      "description": "Despite documentation stating legacy pricing was retired in 2012, Plan-7 customers MUST receive locked-in pricing per class action settlement 2009-CV-118. This rule exists in code comments only — completely absent from documentation.",
+      "confidence": {
+        "label": "medium",
+        "method": "code-analysis",
+        "score": 0.62
+      },
+      "triage": "🟡 glance",
+      "riskScore": 21,
+      "source": [
+        "code"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "ORDVAL.rpgle",
+          "startLine": 94,
+          "endLine": 99
+        },
+        "docQuote": null,
+        "contradiction": false,
+        "contradictionNote": "Code-only rule — no documentation to compare against. Extracted from pricing logic with class action reference in comments"
+      },
+      "approvalStatus": "approved",
+      "category": "pricing",
+      "affectsModules": [
+        "PRICCALC.rpgle"
+      ]
+    },
+    {
+      "id": "BR-XFR-AMOUNT-POSITIVE",
+      "type": "explicit",
+      "title": "Negative or zero amounts are rejected",
+      "description": "Transfers with amount <= 0.00 are rejected immediately with fail code '4'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.98
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 2,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 295,
+          "endLine": 299
+        },
+        "docQuote": "Transfers with amount <= 0.00 are rejected immediately.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "validation",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-SAME-ACCOUNT-BLOCK",
+      "type": "explicit",
+      "title": "Transfers between identical accounts are blocked",
+      "description": "Transfers where source and destination account number and sortcode are identical are blocked with ABEND 'SAME'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.96
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 3,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 338,
+          "endLine": 348
+        },
+        "docQuote": "Transferring funds where source and target account numbers and sortcodes match is strictly prohibited and triggers an abend audit.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "validation",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-SUSPENDED-BLOCK",
+      "type": "explicit",
+      "title": "Suspended accounts are barred from fund transfers",
+      "description": "Accounts with status 'S' (Suspended) are blocked from standard fund transfers with fail code 'S'.",
+      "confidence": {
+        "label": "high",
+        "method": "cross-reference",
+        "score": 0.94
+      },
+      "triage": "🟢 auto-approve",
+      "riskScore": 4,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 310,
+          "endLine": 318
+        },
+        "docQuote": "Under Section 4.1 of the Core Banking Risk Handbook, suspended accounts are completely frozen.",
+        "contradiction": false
+      },
+      "approvalStatus": "approved",
+      "category": "account-status",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    },
+    {
+      "id": "BR-XFR-REFUND-CARVEOUT",
+      "type": "implicit",
+      "title": "Suspended accounts must accept inbound merchant refunds (Regulation E)",
+      "description": "Suspended accounts are blocked per spec v4.1, but XFRFUN.cbl carves out an exception for inbound merchant refunds (RFIN) under settlement Ticket CB-9102 (US 12 CFR § 1005 / Regulation E). Dropping this exception causes illegal withholding of consumer funds.",
+      "confidence": {
+        "label": "high",
+        "method": "code-analysis",
+        "score": 0.91
+      },
+      "triage": "🔴 must-review",
+      "riskScore": 48,
+      "source": [
+        "code",
+        "document"
+      ],
+      "evidence": {
+        "codeLocation": {
+          "file": "XFRFUN.cbl",
+          "startLine": 311,
+          "endLine": 313
+        },
+        "docQuote": "No exceptions exist for suspended accounts under any transfer type.",
+        "contradiction": true,
+        "contradictionNote": "Code implements Regulation E refund carve-out (CB-9102), but spec §2.3 states 'No exceptions exist for suspended accounts under any transfer type' — 7 years out of sync"
+      },
+      "approvalStatus": "pending",
+      "category": "regulatory-exception",
+      "affectsModules": [
+        "XFRFUN.cbl"
+      ]
+    }
+  ],
+  "summary": {
+    "totalRules": 8,
+    "explicit": 5,
+    "implicit": 3,
+    "contradictions": 2,
+    "modulesTracked": 2,
+    "byTriage": {
+      "auto-approve": 5,
+      "glance": 1,
+      "must-review": 2
+    },
+    "riskDistribution": {
+      "critical": 0,
+      "medium": 2,
+      "low": 6
+    }
+  }
+}

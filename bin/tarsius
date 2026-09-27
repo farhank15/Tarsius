@@ -117,13 +117,77 @@ function cmdInit() {
   const cwd  = process.cwd();
   const root = pkgRoot();
   const bob  = path.join(cwd, '.bob');
+  const tarsiusDir = path.join(cwd, '.tarsius');
 
   console.log(b('  Initializing Tarsius in:'), c(cwd));
   console.log();
 
-  // 1. Create .bob directory
+  // 1. Create .tarsius directory (for committed governance artifacts)
+  fs.mkdirSync(tarsiusDir, { recursive: true });
+  console.log(g('  ✔'), 'Created', c('.tarsius/'), '(governance rules & audit ledger)');
+
+  // 1b. Initialize .tarsius/bri.json if absent
+  const briDest = path.join(tarsiusDir, 'bri.json');
+  if (!fs.existsSync(briDest)) {
+    const initialBri = {
+      version: "3.0",
+      sourceModule: path.basename(cwd),
+      attachedDocs: [],
+      generatedAt: new Date().toISOString(),
+      provenance: {
+        customMode: "legacy-analyzer",
+        documentUnderstanding: true,
+        subagentsUsed: 0,
+      },
+      dependencies: {},
+      rules: [],
+      summary: {
+        totalRules: 0,
+        explicit: 0,
+        implicit: 0,
+        contradictions: 0,
+        modulesTracked: 1,
+        byTriage: { "auto-approve": 0, glance: 0, "must-review": 0 },
+        riskDistribution: { critical: 0, medium: 0, low: 0 },
+      },
+    };
+    fs.writeFileSync(briDest, JSON.stringify(initialBri, null, 2) + '\n');
+    console.log(g('  ✔'), 'Initialized', c('.tarsius/bri.json'));
+  }
+
+  // 1c. Initialize .tarsius/decisions.json if absent
+  const decisionsDest = path.join(tarsiusDir, 'decisions.json');
+  if (!fs.existsSync(decisionsDest)) {
+    const initialDecisions = {
+      version: "1.0",
+      decisions: [],
+      summary: {
+        totalDecisions: 0,
+        approved: 0,
+        rejected: 0,
+        reversed: 0,
+        overrides: 0,
+      },
+      lastChainHash: "0".repeat(64),
+    };
+    fs.writeFileSync(decisionsDest, JSON.stringify(initialDecisions, null, 2) + '\n');
+    console.log(g('  ✔'), 'Initialized', c('.tarsius/decisions.json'));
+  }
+
+  // 1d. Initialize .tarsius/gotchas.json if absent
+  const gotchasDest = path.join(tarsiusDir, 'gotchas.json');
+  if (!fs.existsSync(gotchasDest)) {
+    const initialGotchas = {
+      version: "1.0",
+      gotchas: [],
+    };
+    fs.writeFileSync(gotchasDest, JSON.stringify(initialGotchas, null, 2) + '\n');
+    console.log(g('  ✔'), 'Initialized', c('.tarsius/gotchas.json'));
+  }
+
+  // 2. Create .bob directory (for IBM Bob IDE integration)
   fs.mkdirSync(bob, { recursive: true });
-  console.log(g('  ✔'), 'Created', c('.bob/'));
+  console.log(g('  ✔'), 'Created', c('.bob/'), '(IBM Bob custom modes & contracts)');
 
   // 2. Copy custom_modes.yaml
   const modessSrc  = path.join(root, 'templates', 'custom_modes.yaml');
@@ -135,15 +199,29 @@ function cmdInit() {
     console.log(y('  ⚠'), 'templates/custom_modes.yaml not found — skipped');
   }
 
-  // 3. Copy mcp.json
-  const mcpSrc  = path.join(root, 'templates', 'mcp.json');
-  const mcpDest = path.join(bob, 'mcp.json');
-  if (fs.existsSync(mcpSrc)) {
-    copyFile(mcpSrc, mcpDest);
-    console.log(g('  ✔'), 'Copied', c('templates/mcp.json'), '→', c('.bob/mcp.json'));
-  } else {
-    console.log(y('  ⚠'), 'templates/mcp.json not found — skipped');
-  }
+  // 3. Configure mcp.json pointing to installed mcp-server
+  const mcpServerEntry = path.join(root, 'mcp-server', 'dist', 'index.js');
+  const mcpConfig = {
+    mcpServers: {
+      tarsius: {
+        command: 'node',
+        args: [mcpServerEntry],
+        env: {
+          TARSIUS_WORKSPACE: cwd,
+        },
+        alwaysAllow: [
+          'write_finding',
+          'get_pending_approvals',
+          'mark_approved',
+          'record_decision',
+          'check_gotchas',
+          'verify_equivalence',
+        ],
+      },
+    },
+  };
+  fs.writeFileSync(path.join(bob, 'mcp.json'), JSON.stringify(mcpConfig, null, 2) + '\n');
+  console.log(g('  ✔'), 'Configured', c('.bob/mcp.json'), '→ pointing to', c(mcpServerEntry));
 
   // 4. Copy rules/
   const rulesSrc  = path.join(root, 'templates', 'rules');
@@ -201,11 +279,12 @@ function cmdInit() {
 // ─── tarsius studio ───────────────────────────────────────────────────────────
 function cmdStudio() {
   const root = pkgRoot();
-  const url  = 'http://localhost:5173';
+  const STUDIO_PORT = 8321;
+  const url  = `http://localhost:${STUDIO_PORT}`;
   const dashboardDir = path.join(root, 'dashboard');
 
-  if (portInUse(5173)) {
-    console.log(g('  ✔'), 'Dashboard already running at', c(url));
+  if (portInUse(STUDIO_PORT)) {
+    console.log(g('  ✔'), 'Studio already running at', c(url));
     console.log('  Opening browser…');
     openBrowser(url);
     return;
@@ -228,20 +307,47 @@ function cmdStudio() {
     }
   }
 
-  console.log(c('  ⏳'), 'Starting Tarsius Studio…');
-  const child = spawn('npm', ['run', 'dev'], {
+  console.log(c('  ⏳'), `Starting Tarsius Studio on port ${STUDIO_PORT}…`);
+  console.log(d(`    Press ${b('Ctrl + C')} in this terminal to stop the studio.`));
+  console.log();
+
+  // Run in foreground so Ctrl + C cleanly terminates Vite
+  const child = spawn('npm', ['run', 'dev', '--', '--port', String(STUDIO_PORT)], {
     cwd: dashboardDir,
     stdio: 'inherit',
-    detached: true,
+    env: {
+      ...process.env,
+      TARSIUS_WORKSPACE: process.cwd(),
+    },
   });
-  child.unref();
 
-  // Give Vite ~2 s to bind the port, then open browser
+  const cleanup = () => {
+    if (!child.killed) {
+      console.log('\n' + c('  ⏳') + ' Stopping Tarsius Studio…');
+      try {
+        child.kill('SIGINT');
+      } catch {}
+    }
+  };
+
+  process.on('SIGINT', () => {
+    cleanup();
+    process.exit(0);
+  });
+
+  process.on('SIGTERM', () => {
+    cleanup();
+    process.exit(0);
+  });
+
+  child.on('exit', (code) => {
+    process.exit(code ?? 0);
+  });
+
+  // Give Vite ~1.5 s to bind the port, then open browser
   setTimeout(() => {
-    console.log();
-    console.log(g('  ✔'), 'Dashboard launching at', c(url));
     openBrowser(url);
-  }, 2000);
+  }, 1500);
 }
 
 // ─── tarsius verify ───────────────────────────────────────────────────────────
@@ -284,18 +390,42 @@ function cmdStatus() {
   console.log(b('  Tarsius Status'));
   console.log(d('  ' + '─'.repeat(54)));
 
-  // ── BRI stats (tarsius-bri.json) ──
+  // ── BRI stats (.tarsius/bri.json or fallback) ──
   let totalRules = 0;
   let approvedRules = 0;
-  for (const briFile of ['sample-data/tarsius-bri.json', 'sample-data/xfrfun-bri.json']) {
-    const fp = path.join(root, briFile);
-    if (!fs.existsSync(fp)) continue;
+  let briSource = '.tarsius/bri.json';
+  const cwd = process.cwd();
+  const cwdBri = path.join(cwd, '.tarsius', 'bri.json');
+  const candidateBriFiles = fs.existsSync(cwdBri)
+    ? [cwdBri]
+    : [
+        path.join(cwd, '.bob', 'tarsius-bri.json'),
+        path.join(root, '.tarsius', 'bri.json'),
+        path.join(root, 'sample-data', 'tarsius-bri.json'),
+        path.join(root, 'sample-data', 'xfrfun-bri.json'),
+      ];
+
+  for (const fp of candidateBriFiles) {
+    if (fs.existsSync(fp)) {
+      try {
+        const bri = JSON.parse(fs.readFileSync(fp, 'utf8'));
+        const rules = bri.rules || [];
+        totalRules = rules.length;
+        approvedRules = rules.filter(r => r.approvalStatus === 'approved').length;
+        briSource = path.relative(cwd, fp) || '.tarsius/bri.json';
+        break;
+      } catch { /* skip malformed */ }
+    }
+  }
+
+  // ── Decisions ledger stats (.tarsius/decisions.json) ──
+  let totalDecisions = 0;
+  const decisionsPath = path.join(cwd, '.tarsius', 'decisions.json');
+  if (fs.existsSync(decisionsPath)) {
     try {
-      const bri = JSON.parse(fs.readFileSync(fp, 'utf8'));
-      const rules = bri.rules || [];
-      totalRules += rules.length;
-      approvedRules += rules.filter(r => r.approvalStatus === 'approved').length;
-    } catch { /* skip malformed */ }
+      const decDoc = JSON.parse(fs.readFileSync(decisionsPath, 'utf8'));
+      totalDecisions = decDoc.decisions?.length || 0;
+    } catch {}
   }
 
   // ── RISK-CONTEXT.md stats ──
@@ -325,10 +455,13 @@ function cmdStatus() {
   const pad = n => String(n).padStart(4);
 
   console.log();
-  console.log(`  ${b('BRI Rules')}          (from tarsius-bri.json + xfrfun-bri.json)`);
+  console.log(`  ${b('BRI Rules')}          (${briSource})`);
   console.log(`   Total extracted :  ${c(pad(totalRules))}`);
   console.log(`   Approved        :  ${g(pad(approvedRules))}`);
   console.log(`   Pending (BRI)   :  ${y(pad(totalRules - approvedRules))}`);
+  if (totalDecisions > 0) {
+    console.log(`   Ledger Decisions:  ${g(pad(totalDecisions))}`);
+  }
   console.log();
   console.log(`  ${b('RISK-CONTEXT.md')}     (${path.relative(process.cwd(), riskPath) || '.bob/RISK-CONTEXT.md'})`);
   console.log(`   Approved rules  :  ${g(pad(approvedSection))}`);
@@ -352,8 +485,8 @@ function cmdHelp() {
   console.log(`            initializes RISK-CONTEXT.md`);
   console.log();
   console.log(`   ${b('studio')}   Launch the React Triage Dashboard`);
-  console.log(`            Starts Vite dev server in dashboard/ on port 5173`);
-  console.log(`            and opens http://localhost:5173 in the browser`);
+  console.log(`            Starts Vite dev server in dashboard/ on port 8321`);
+  console.log(`            and opens http://localhost:8321 in the browser`);
   console.log();
   console.log(`   ${b('verify')}   Run BETH differential test suites`);
   console.log(`            Executes flow-test.ts (ORDVAL / RPGLE) and`);

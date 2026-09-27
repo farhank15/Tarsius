@@ -8,13 +8,58 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin, Connect } from "vite";
 
 // ---------------------------------------------------------------------------
-// Paths (resolved relative to dashboard/ at build/dev time)
+// Paths (Workspace-First Resolution)
 // ---------------------------------------------------------------------------
 
 const ROOT = resolve(__dirname, "..");
-const BRI_PATH = resolve(ROOT, "sample-data/tarsius-bri.json");
-const DECISIONS_PATH = resolve(ROOT, "sample-data/tarsius-decisions.json");
-const RISK_CONTEXT_PATH = resolve(ROOT, ".bob/RISK-CONTEXT.md");
+const WORKSPACE = process.env.TARSIUS_WORKSPACE || process.cwd();
+
+function resolveWorkspaceFile(candidates: string[], fallback: string): string {
+  for (const rel of candidates) {
+    const p = resolve(WORKSPACE, rel);
+    if (existsSync(p)) return p;
+  }
+  return fallback;
+}
+
+const BRI_PATH = resolveWorkspaceFile(
+  [
+    ".tarsius/bri.json",
+    ".tarsius/tarsius-bri.json",
+    ".bob/tarsius-bri.json",
+    "sample-data/tarsius-bri.json",
+    "tarsius-bri.json",
+  ],
+  resolve(ROOT, "sample-data/tarsius-bri.json")
+);
+
+const DECISIONS_PATH = resolveWorkspaceFile(
+  [
+    ".tarsius/decisions.json",
+    ".tarsius/tarsius-decisions.json",
+    ".bob/tarsius-decisions.json",
+    "sample-data/tarsius-decisions.json",
+    "tarsius-decisions.json",
+  ],
+  resolve(ROOT, "sample-data/tarsius-decisions.json")
+);
+
+const RISK_CONTEXT_PATH = resolveWorkspaceFile(
+  [".bob/RISK-CONTEXT.md", ".tarsius/RISK-CONTEXT.md"],
+  resolve(ROOT, ".bob/RISK-CONTEXT.md")
+);
+
+const GOTCHAS_PATH = resolveWorkspaceFile(
+  [
+    ".tarsius/gotchas.json",
+    ".tarsius/tarsius-gotchas.json",
+    ".bob/tarsius-gotchas.json",
+    "sample-data/tarsius-gotchas.json",
+    "tarsius-gotchas.json",
+  ],
+  resolve(ROOT, "sample-data/tarsius-gotchas.json")
+);
+
 const SAMPLE_DATA_DIR = resolve(ROOT, "sample-data");
 const PUBLICS_DIR = resolve(ROOT, "publics");
 
@@ -145,9 +190,27 @@ function serveStatic(
     if (!url.startsWith(urlPrefix)) return next();
 
     const relativePath = url.slice(urlPrefix.length).split("?")[0];
-    const filePath = resolve(dir, relativePath.replace(/^\//, ""));
+    const cleanRel = relativePath.replace(/^\//, "");
 
-    if (!existsSync(filePath)) return next();
+    // Check user workspace first (.tarsius/ or .bob/ or sample-data/ or root), then fall back to dir
+    const candidates = [
+      resolve(WORKSPACE, ".tarsius", cleanRel),
+      resolve(WORKSPACE, ".tarsius", cleanRel.replace(/^tarsius-/, "")),
+      resolve(WORKSPACE, ".bob", cleanRel),
+      resolve(WORKSPACE, "sample-data", cleanRel),
+      resolve(WORKSPACE, cleanRel),
+      resolve(dir, cleanRel),
+    ];
+
+    let filePath: string | null = null;
+    for (const cand of candidates) {
+      if (existsSync(cand)) {
+        filePath = cand;
+        break;
+      }
+    }
+
+    if (!filePath || !existsSync(filePath)) return next();
 
     let body: Buffer;
     try {
@@ -299,6 +362,54 @@ function approvePlugin(): Plugin {
       // Serve publics files
       server.middlewares.use(serveStatic("/publics", PUBLICS_DIR));
 
+      // GET /api/bri
+      server.middlewares.use(
+        "/api/bri",
+        (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+          if (req.method !== "GET") return next();
+          try {
+            const data = readFileSync(BRI_PATH, "utf8");
+            res.setHeader("Content-Type", "application/json");
+            res.end(data);
+          } catch {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "BRI document not found" }));
+          }
+        }
+      );
+
+      // GET /api/decisions
+      server.middlewares.use(
+        "/api/decisions",
+        (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+          if (req.method !== "GET") return next();
+          try {
+            const data = readFileSync(DECISIONS_PATH, "utf8");
+            res.setHeader("Content-Type", "application/json");
+            res.end(data);
+          } catch {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Decisions document not found" }));
+          }
+        }
+      );
+
+      // GET /api/gotchas
+      server.middlewares.use(
+        "/api/gotchas",
+        (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+          if (req.method !== "GET") return next();
+          try {
+            const data = readFileSync(GOTCHAS_PATH, "utf8");
+            res.setHeader("Content-Type", "application/json");
+            res.end(data);
+          } catch {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Gotchas document not found" }));
+          }
+        }
+      );
+
       // Handle POST /api/approve
       server.middlewares.use(
         "/api/approve",
@@ -323,5 +434,9 @@ function approvePlugin(): Plugin {
 
 export default defineConfig({
   base: "./",
+  server: {
+    port: 8321,
+    strictPort: true,
+  },
   plugins: [react(), tailwindcss(), approvePlugin()],
 });

@@ -300,7 +300,7 @@ This single command:
 tarsius studio
 ```
 
-Starts the Vite dev server in `dashboard/` on port 5173 and opens `http://localhost:5173` in your default browser.
+Starts the Vite dev server in `dashboard/` on port 8321 and opens `http://localhost:8321` in your default browser.
 If the server is already running, the command opens the browser immediately.
 
 ### 3. Run BETH Verification
@@ -341,7 +341,7 @@ npm run status    # → tarsius status
 
 ```
 tarsius init     Set up .bob/ config in the current repository
-tarsius studio   Launch React Triage Dashboard (port 5173)
+tarsius studio   Launch React Triage Dashboard (port 8321)
 tarsius verify   Run BETH differential test suites (100% BER)
 tarsius status   Show rule counts and ledger state
 tarsius help     Show usage and examples

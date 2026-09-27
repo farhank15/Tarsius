@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "decisions": [
+    {
+      "id": "DEC-00001",
+      "hash": "3b5fc5090961980d88e2dbd7fc83ade6fbcfe08e552015b635f664c1e4f26606",
+      "chainHash": "1a1214b50fd95927825529d46f1628ea4745643c49cc23209c31da1e2635526a",
+      "ruleId": "BR-DISC-EXCEPTION",
+      "decision": {
+        "previousStatus": "pending",
+        "newStatus": "approved"
+      },
+      "decidedBy": {
+        "userId": "architect-1",
+        "userName": "Chief Architect",
+        "role": "architect"
+      },
+      "timestamp": "2026-08-29T02:43:02.195Z",
+      "justification": "Preserve legally binding class-action carveout",
+      "context": {
+        "overrideAutoApprove": false,
+        "reversed": false,
+        "riskScoreAtDecision": 44,
+        "triageAtDecision": "🔴 must-review"
+      }
+    },
+    {
+      "id": "DEC-00002",
+      "hash": "d2f0f879b7620c3ded19783b9be6bf7e82d56cd60fa5f883a08d9345a58e9f1f",
+      "chainHash": "0674ae8a088f433e6a3d3d40f43b4b1e6f736abaa3800c4a585c0e3b530ba597",
+      "ruleId": "BR-GRANDFATHER-PRICING",
+      "decision": {
+        "previousStatus": "pending",
+        "newStatus": "approved"
+      },
+      "decidedBy": {
+        "userId": "architect-1",
+        "userName": "Chief Architect",
+        "role": "architect"
+      },
+      "timestamp": "2026-08-29T02:43:05.920Z",
+      "justification": "Plan-7 locked-in pricing mandated by settlement",
+      "context": {
+        "overrideAutoApprove": false,
+        "reversed": false,
+        "riskScoreAtDecision": 21,
+        "triageAtDecision": "🟡 glance"
+      }
+    }
+  ],
+  "summary": {
+    "totalDecisions": 2,
+    "approved": 2,
+    "rejected": 0,
+    "reversed": 0,
+    "overrides": 0
+  },
+  "lastChainHash": "0674ae8a088f433e6a3d3d40f43b4b1e6f736abaa3800c4a585c0e3b530ba597"
+}

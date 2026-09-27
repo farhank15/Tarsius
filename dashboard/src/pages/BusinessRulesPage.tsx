@@ -13,6 +13,7 @@ import {
   FileText,
   Bot,
   ShieldCheck,
+  Layers,
 } from "lucide-react";
 import { useBriRules } from "../hooks/useBriData.js";
 import { RuleCard } from "../components/RuleCard.js";
@@ -51,6 +52,7 @@ export function BusinessRulesPage() {
   const { data: bri, isLoading } = useBriRules();
   const [search, setSearch]           = useState("");
   const [filterStatus, setFilterStatus] = useState<ApprovalStatus | "all">("all");
+  const [filterModule, setFilterModule] = useState<string>("all");
   const [view, setView]               = useState<ViewMode>("table");
 
   if (isLoading) {
@@ -68,6 +70,10 @@ export function BusinessRulesPage() {
 
   const rules = bri.rules;
 
+  const availableModules = Array.from(
+    new Set(rules.map((r) => r.evidence?.codeLocation?.file).filter(Boolean))
+  ) as string[];
+
   // Per-tab counts (search-independent so counts always reflect full data)
   const counts = {
     all:      rules.length,
@@ -80,6 +86,7 @@ export function BusinessRulesPage() {
   const filteredForCards = rules.filter(
     (r) =>
       (filterStatus === "all" || r.approvalStatus === filterStatus) &&
+      (filterModule === "all" || r.evidence?.codeLocation?.file === filterModule) &&
       matchesSearch(r, search)
   );
 
@@ -204,6 +211,50 @@ export function BusinessRulesPage() {
           })}
         </div>
 
+        {/* Module tabs (when repo has multiple modules) */}
+        {availableModules.length > 1 && (
+          <div
+            className="flex items-center rounded-xl p-1 gap-0.5"
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+          >
+            <button
+              onClick={() => setFilterModule("all")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                filterModule === "all"
+                  ? "bg-white/[0.07] text-slate-100"
+                  : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]"
+              }`}
+            >
+              <Layers className="w-3 h-3 text-slate-400" />
+              All Modules
+              <span className="tabular text-[10px] font-bold text-slate-500">
+                {rules.length}
+              </span>
+            </button>
+            {availableModules.map((mod) => {
+              const active = filterModule === mod;
+              const count = rules.filter((r) => r.evidence?.codeLocation?.file === mod).length;
+              return (
+                <button
+                  key={mod}
+                  onClick={() => setFilterModule(mod)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
+                    active
+                      ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                      : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]"
+                  }`}
+                >
+                  <FileCode2 className={`w-3 h-3 ${active ? "text-indigo-400" : "text-slate-500"}`} />
+                  {mod}
+                  <span className={`tabular text-[10px] font-bold ${active ? "text-indigo-300" : "text-slate-600"}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* View toggle */}
         <div
           className="flex items-center rounded-xl p-1 gap-0.5 ml-auto"
@@ -220,7 +271,7 @@ export function BusinessRulesPage() {
 
       {/* ── Content ──────────────────────────────────────────────── */}
       {view === "table" ? (
-        <RuleTable rules={rules} search={search} filterStatus={filterStatus} />
+        <RuleTable rules={rules} search={search} filterStatus={filterStatus} filterModule={filterModule} />
       ) : (
         <>
           {/* Card grid result count */}

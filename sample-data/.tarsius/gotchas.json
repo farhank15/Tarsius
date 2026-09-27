@@ -1,0 +1,95 @@
+{
+  "version": "1.0",
+  "gotchas": [
+    {
+      "id": "GOT-001",
+      "title": "Class action exceptions are legally binding",
+      "description": "Rules referencing class action settlements (CS-4471, 2009-CV-118) are legally binding. Never approve removal without legal sign-off.",
+      "category": "legal",
+      "severity": "critical",
+      "triggerCount": 1,
+      "active": true,
+      "addedAt": "2026-08-28T15:00:00Z",
+      "addedBy": "lead-001",
+      "relatedRules": [
+        "BR-DISC-EXCEPTION",
+        "BR-GRANDFATHER-PRICING"
+      ],
+      "autoLearning": {
+        "discoveredFrom": {
+          "type": "contradiction",
+          "description": "BR-DISC-EXCEPTION shows code implements CS-4471 but spec doesn't mention it"
+        },
+        "appliesTo": {
+          "categories": [
+            "account-status-exception",
+            "pricing"
+          ]
+        }
+      }
+    },
+    {
+      "id": "GOT-002",
+      "title": "Legacy pricing grandfathering must be preserved",
+      "description": "Plan-7 customers retain locked-in pricing per 2009 class action. Never remove grandfathering logic.",
+      "category": "business",
+      "severity": "high",
+      "triggerCount": 0,
+      "active": true,
+      "addedAt": "2026-08-28T16:00:00Z",
+      "addedBy": "lead-001",
+      "relatedRules": [
+        "BR-GRANDFATHER-PRICING"
+      ],
+      "autoLearning": {
+        "discoveredFrom": {
+          "type": "manual-entry",
+          "description": "Manual entry during rule review"
+        },
+        "appliesTo": {
+          "categories": [
+            "pricing"
+          ]
+        }
+      }
+    },
+    {
+      "id": "GOT-003",
+      "title": "Regulation E inbound refund carve-out is legally mandatory",
+      "description": "Per US 12 CFR § 1005 (Regulation E) and Settlement Ticket CB-9102, inbound merchant refunds (RFIN) must never be blocked even on frozen or suspended accounts. Blocking refunds triggers severe statutory consumer banking penalties.",
+      "category": "legal",
+      "severity": "critical",
+      "triggerCount": 1,
+      "active": true,
+      "addedAt": "2026-09-26T16:40:00Z",
+      "addedBy": "lead-001",
+      "relatedRules": [
+        "BR-XFR-REFUND-CARVEOUT"
+      ],
+      "autoLearning": {
+        "discoveredFrom": {
+          "type": "contradiction",
+          "description": "COBOL code implements Ticket CB-9102 Regulation E carve-out, while outdated spec §2.3 falsely claimed zero exceptions"
+        },
+        "appliesTo": {
+          "categories": [
+            "regulatory-exception",
+            "account-status"
+          ]
+        }
+      }
+    }
+  ],
+  "summary": {
+    "totalGotchas": 3,
+    "active": 3,
+    "byCategory": {
+      "legal": 2,
+      "business": 1
+    },
+    "bySeverity": {
+      "critical": 2,
+      "high": 1
+    }
+  }
+}

@@ -18,11 +18,12 @@ interface Props {
   rules: BusinessRule[];
   search?: string;
   filterStatus?: ApprovalStatus | "all";
+  filterModule?: string;
 }
 
 type SortKey = "riskScore" | "id" | "category" | "title";
 
-export function RuleTable({ rules, search = "", filterStatus = "all" }: Props) {
+export function RuleTable({ rules, search = "", filterStatus = "all", filterModule = "all" }: Props) {
   const [sort,    setSort]    = useState<SortKey>("riskScore");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const approve = useApproveRule();
@@ -30,6 +31,7 @@ export function RuleTable({ rules, search = "", filterStatus = "all" }: Props) {
   const filtered = rules
     .filter((r) => {
       const matchStatus = filterStatus === "all" || r.approvalStatus === filterStatus;
+      const matchModule = filterModule === "all" || r.evidence?.codeLocation?.file === filterModule;
       const q = search.toLowerCase();
       const matchSearch =
         !q ||
@@ -37,7 +39,7 @@ export function RuleTable({ rules, search = "", filterStatus = "all" }: Props) {
         r.title.toLowerCase().includes(q) ||
         r.category.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q);
-      return matchStatus && matchSearch;
+      return matchStatus && matchModule && matchSearch;
     })
     .sort((a, b) => {
       let cmp = 0;

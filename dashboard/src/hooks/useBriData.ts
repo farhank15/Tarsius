@@ -16,14 +16,17 @@ import type {
 // Workload Management (Dual-Workload: ORDVAL & XFRFUN)
 // ---------------------------------------------------------------------------
 
-export type WorkloadId = "ordval" | "xfrfun";
+export type WorkloadId = "workspace" | "ordval" | "xfrfun";
 
 const WORKLOAD_KEY = "tarsius_active_workload";
 
 export function getActiveWorkload(): WorkloadId {
-  if (typeof window === "undefined") return "ordval";
+  if (typeof window === "undefined") return "workspace";
   const stored = localStorage.getItem(WORKLOAD_KEY);
-  return stored === "xfrfun" ? "xfrfun" : "ordval";
+  if (stored === "ordval" || stored === "xfrfun" || stored === "workspace") {
+    return stored;
+  }
+  return "workspace";
 }
 
 export function setActiveWorkload(workload: WorkloadId) {
@@ -77,14 +80,17 @@ async function fetchJson<T>(url: string): Promise<T> {
 // Hooks
 // ---------------------------------------------------------------------------
 
-/** Polls BRI data for the active workload every 3 seconds. */
+/** Polls BRI data for the workspace every 3 seconds. */
 export function useBriRules() {
-  const { workload } = useActiveWorkload();
-  const file = workload === "xfrfun" ? "/sample-data/xfrfun-bri.json" : "/sample-data/tarsius-bri.json";
-
   return useQuery<BriDocument>({
-    queryKey: ["bri", workload],
-    queryFn: () => fetchJson<BriDocument>(file),
+    queryKey: QUERY_KEYS.bri,
+    queryFn: async () => {
+      try {
+        return await fetchJson<BriDocument>("/api/bri");
+      } catch {
+        return await fetchJson<BriDocument>("/sample-data/tarsius-bri.json");
+      }
+    },
     refetchInterval: 3_000,
   });
 }
@@ -93,8 +99,13 @@ export function useBriRules() {
 export function useDecisions() {
   return useQuery<DecisionsDocument>({
     queryKey: QUERY_KEYS.decisions,
-    queryFn: () =>
-      fetchJson<DecisionsDocument>("/sample-data/tarsius-decisions.json"),
+    queryFn: async () => {
+      try {
+        return await fetchJson<DecisionsDocument>("/api/decisions");
+      } catch {
+        return await fetchJson<DecisionsDocument>("/sample-data/tarsius-decisions.json");
+      }
+    },
     refetchInterval: 5_000,
   });
 }
@@ -103,8 +114,13 @@ export function useDecisions() {
 export function useGotchas() {
   return useQuery<GotchasDocument>({
     queryKey: QUERY_KEYS.gotchas,
-    queryFn: () =>
-      fetchJson<GotchasDocument>("/sample-data/tarsius-gotchas.json"),
+    queryFn: async () => {
+      try {
+        return await fetchJson<GotchasDocument>("/api/gotchas");
+      } catch {
+        return await fetchJson<GotchasDocument>("/sample-data/tarsius-gotchas.json");
+      }
+    },
     refetchInterval: 5_000,
   });
 }

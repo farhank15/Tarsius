@@ -7,7 +7,12 @@ import {
   ExternalLink,
   ShieldCheck,
 } from "lucide-react";
-import { useBriRules, useDecisions, useGotchas, useApproveRule } from "../hooks/useBriData.js";
+import {
+  useBriRules,
+  useDecisions,
+  useGotchas,
+  useApproveRule,
+} from "../hooks/useBriData.js";
 import { TriageBadge } from "../components/TriageBadge.js";
 import { ConfidenceBadge } from "../components/ConfidenceBadge.js";
 import { DecisionHistory } from "../components/DecisionHistory.js";
@@ -117,7 +122,47 @@ export function DashboardPage() {
 
   if (!bri || !decisions) return null;
 
-  const rules = bri.rules;
+  const rules = bri.rules || [];
+
+  if (rules.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 py-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Overview</h1>
+          <p className="text-sm text-[var(--text-sub)] mt-1">
+            Business Rule Inventory · Live governance status
+          </p>
+        </div>
+
+        <div className="p-8 sm:p-12 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col items-center text-center">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-5 text-emerald-400">
+            <ShieldCheck className="w-7 h-7" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-100 mb-2">Workspace Ready · Awaiting Discovery</h2>
+          <p className="text-sm text-slate-400 max-w-lg mb-6 leading-relaxed">
+            Tarsius governance is active in this repository. No business rules have been extracted into <code className="text-emerald-300 font-mono text-xs px-1.5 py-0.5 rounded bg-slate-800">.tarsius/bri.json</code> yet.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full text-left mb-2">
+            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Option 1: Scan Your Repo</p>
+              <p className="text-xs text-slate-300 mb-2">Open IBM Bob IDE, select the <strong className="text-white">Legacy Analyzer</strong> mode, and point it at your legacy code.</p>
+              <div className="font-mono text-[11px] text-slate-400 bg-slate-900 px-2.5 py-1.5 rounded border border-slate-800">
+                tarsius init &amp;&amp; bob
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              <p className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">Option 2: Explore Sample Suite</p>
+              <p className="text-xs text-slate-300 mb-3">Copy demo rules from the Core Banking legacy suite (IBM i ORDVAL & z/OS XFRFUN) into your workspace.</p>
+              <div className="font-mono text-[11px] text-slate-400 bg-slate-900 px-2.5 py-1.5 rounded border border-slate-800">
+                cp -r sample-data/.tarsius/* .tarsius/
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const approvedCount  = rules.filter((r) => r.approvalStatus === "approved").length;
   const pendingRules   = rules.filter((r) => r.approvalStatus === "pending");
   const contradictions = rules.filter((r) => r.evidence.contradiction);

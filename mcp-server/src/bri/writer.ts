@@ -1,25 +1,69 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BriDocument, BusinessRule, ApprovalStatus } from "./schema.js";
 
-// Resolve BRI path relative to the workspace root (two levels up from mcp-server/src/bri/)
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BRI_PATH = resolve(__dirname, "../../../sample-data/tarsius-bri.json");
+
+export function getBriPath(): string {
+  const ws = process.env.TARSIUS_WORKSPACE || process.cwd();
+  const candidates = [
+    resolve(ws, ".tarsius/bri.json"),
+    resolve(ws, ".tarsius/tarsius-bri.json"),
+    resolve(ws, ".bob/tarsius-bri.json"),
+    resolve(ws, "sample-data/tarsius-bri.json"),
+    resolve(ws, "tarsius-bri.json"),
+  ];
+  for (const cand of candidates) {
+    if (existsSync(cand)) return cand;
+  }
+  const fallback = resolve(__dirname, "../../../sample-data/tarsius-bri.json");
+  if (existsSync(fallback)) return fallback;
+  return resolve(ws, ".tarsius/bri.json");
+}
 
 /**
  * Read and parse the BRI JSON document from disk.
  */
 export async function readBri(): Promise<BriDocument> {
-  const raw = await readFile(BRI_PATH, "utf-8");
-  return JSON.parse(raw) as BriDocument;
+  const p = getBriPath();
+  try {
+    const raw = await readFile(p, "utf-8");
+    return JSON.parse(raw) as BriDocument;
+  } catch {
+    return {
+      version: "3.0",
+      sourceModule: "workspace",
+      attachedDocs: [],
+      generatedAt: new Date().toISOString(),
+      provenance: {
+        customMode: "legacy-analyzer",
+        documentUnderstanding: true,
+        subagentsUsed: 0,
+      },
+      dependencies: {},
+      rules: [],
+      summary: {
+        totalRules: 0,
+        explicit: 0,
+        implicit: 0,
+        contradictions: 0,
+        modulesTracked: 1,
+        byTriage: { "auto-approve": 0, glance: 0, "must-review": 0 },
+        riskDistribution: { critical: 0, medium: 0, low: 0 },
+      },
+    };
+  }
 }
 
 /**
  * Persist the BRI document back to disk with stable 2-space formatting.
  */
 async function writeBri(doc: BriDocument): Promise<void> {
-  await writeFile(BRI_PATH, JSON.stringify(doc, null, 2) + "\n", "utf-8");
+  const p = getBriPath();
+  await mkdir(dirname(p), { recursive: true });
+  await writeFile(p, JSON.stringify(doc, null, 2) + "\n", "utf-8");
 }
 
 /**

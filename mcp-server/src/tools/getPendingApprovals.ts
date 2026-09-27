@@ -16,7 +16,7 @@ export interface GetPendingApprovalsResult {
  * triage level and capped at `limit` entries.
  */
 export async function handleGetPendingApprovals(
-  input: GetPendingApprovalsInput
+  input: GetPendingApprovalsInput = {}
 ): Promise<GetPendingApprovalsResult> {
   const doc = await readBri();
 

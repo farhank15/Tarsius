@@ -1,13 +1,27 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DECISIONS_PATH = resolve(
-  __dirname,
-  "../../../sample-data/tarsius-decisions.json"
-);
+
+export function getDecisionsPath(): string {
+  const ws = process.env.TARSIUS_WORKSPACE || process.cwd();
+  const candidates = [
+    resolve(ws, ".tarsius/decisions.json"),
+    resolve(ws, ".tarsius/tarsius-decisions.json"),
+    resolve(ws, ".bob/tarsius-decisions.json"),
+    resolve(ws, "sample-data/tarsius-decisions.json"),
+    resolve(ws, "tarsius-decisions.json"),
+  ];
+  for (const cand of candidates) {
+    if (existsSync(cand)) return cand;
+  }
+  const fallback = resolve(__dirname, "../../../sample-data/tarsius-decisions.json");
+  if (existsSync(fallback)) return fallback;
+  return resolve(ws, ".tarsius/decisions.json");
+}
 
 // ---------------------------------------------------------------------------
 // Shape types
@@ -74,16 +88,30 @@ export interface RecordDecisionInput {
 // ---------------------------------------------------------------------------
 
 async function readDecisions(): Promise<DecisionsDocument> {
-  const raw = await readFile(DECISIONS_PATH, "utf-8");
-  return JSON.parse(raw) as DecisionsDocument;
+  const p = getDecisionsPath();
+  try {
+    const raw = await readFile(p, "utf-8");
+    return JSON.parse(raw) as DecisionsDocument;
+  } catch {
+    return {
+      version: "1.0",
+      decisions: [],
+      summary: {
+        totalDecisions: 0,
+        approved: 0,
+        rejected: 0,
+        reversed: 0,
+        overrides: 0,
+      },
+      lastChainHash: "0".repeat(64),
+    };
+  }
 }
 
 async function writeDecisions(doc: DecisionsDocument): Promise<void> {
-  await writeFile(
-    DECISIONS_PATH,
-    JSON.stringify(doc, null, 2) + "\n",
-    "utf-8"
-  );
+  const p = getDecisionsPath();
+  await mkdir(dirname(p), { recursive: true });
+  await writeFile(p, JSON.stringify(doc, null, 2) + "\n", "utf-8");
 }
 
 /**

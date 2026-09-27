@@ -6,10 +6,13 @@ import { recordDecision } from "../bri/decision-store.js";
 import { checkGotchas } from "../bri/gotcha-store.js";
 import type { BusinessRule } from "../bri/schema.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-// Workspace root is three levels up: dist/tools -> dist -> mcp-server -> workspace root
-const WORKSPACE_ROOT = resolve(__dirname, "../../../");
-const RISK_CONTEXT_PATH = resolve(WORKSPACE_ROOT, ".bob/RISK-CONTEXT.md");
+function getWorkspaceRoot(): string {
+  return process.env.TARSIUS_WORKSPACE || process.cwd();
+}
+
+function getRiskContextPath(): string {
+  return resolve(getWorkspaceRoot(), ".bob/RISK-CONTEXT.md");
+}
 
 export interface MarkApprovedInput {
   ruleId: string;
@@ -100,8 +103,10 @@ async function regenerateRiskContext(): Promise<void> {
   ];
 
   const content = sections.join("\n");
-  await mkdir(resolve(WORKSPACE_ROOT, ".bob"), { recursive: true });
-  await writeFile(RISK_CONTEXT_PATH, content, "utf-8");
+  const ws = getWorkspaceRoot();
+  const riskPath = getRiskContextPath();
+  await mkdir(resolve(ws, ".bob"), { recursive: true });
+  await writeFile(riskPath, content, "utf-8");
 }
 
 // ---------------------------------------------------------------------------
