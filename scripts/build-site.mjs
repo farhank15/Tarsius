@@ -26,12 +26,18 @@ cpSync(resolve(ROOT, "index.html"), resolve(DIST, "index.html"));
 
 // 4. Copy public assets (logos, favicons)
 console.log("🖼️ Copying assets (public, publics)...");
-cpSync(resolve(ROOT, "public"), resolve(DIST, "public"), { recursive: true });
-cpSync(resolve(ROOT, "publics"), resolve(DIST, "publics"), { recursive: true });
+if (existsSync(resolve(ROOT, "public"))) {
+  cpSync(resolve(ROOT, "public"), resolve(DIST, "public"), { recursive: true });
+}
+if (existsSync(resolve(ROOT, "publics"))) {
+  cpSync(resolve(ROOT, "publics"), resolve(DIST, "publics"), { recursive: true });
+}
 
 // 5. Copy sample data
 console.log("📊 Copying sample-data...");
-cpSync(resolve(ROOT, "sample-data"), resolve(DIST, "sample-data"), { recursive: true });
+if (existsSync(resolve(ROOT, "sample-data"))) {
+  cpSync(resolve(ROOT, "sample-data"), resolve(DIST, "sample-data"), { recursive: true });
+}
 
 // 6. Copy presentation slide deck
 console.log("📑 Copying presentation slide deck...");
@@ -45,12 +51,20 @@ if (existsSync(presSrc)) {
 // 7. Copy dashboard build to dist/studio
 console.log("🖥️ Installing React Triage Studio at dist/studio...");
 mkdirSync(resolve(DIST, "studio"), { recursive: true });
-cpSync(resolve(ROOT, "dashboard/dist"), resolve(DIST, "studio"), { recursive: true });
+if (existsSync(resolve(ROOT, "dashboard/dist"))) {
+  cpSync(resolve(ROOT, "dashboard/dist"), resolve(DIST, "studio"), { recursive: true });
+}
 
 // Ensure studio has access to sample-data and public assets relative to /studio
-cpSync(resolve(ROOT, "sample-data"), resolve(DIST, "studio/sample-data"), { recursive: true });
-cpSync(resolve(ROOT, "public"), resolve(DIST, "studio/public"), { recursive: true });
-cpSync(resolve(ROOT, "publics"), resolve(DIST, "studio/publics"), { recursive: true });
+if (existsSync(resolve(ROOT, "sample-data"))) {
+  cpSync(resolve(ROOT, "sample-data"), resolve(DIST, "studio/sample-data"), { recursive: true });
+}
+if (existsSync(resolve(ROOT, "public"))) {
+  cpSync(resolve(ROOT, "public"), resolve(DIST, "studio/public"), { recursive: true });
+}
+if (existsSync(resolve(ROOT, "publics"))) {
+  cpSync(resolve(ROOT, "publics"), resolve(DIST, "studio/publics"), { recursive: true });
+}
 
 console.log("✅ Unified Tarsius production build complete!");
 console.log("   - /            -> Official Tarsius Platform & BETH Simulator");
