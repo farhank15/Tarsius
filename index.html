@@ -124,28 +124,35 @@
       </a>
 
       <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-300">
+      <nav class="hidden lg:flex items-center gap-5 text-xs font-medium text-slate-300">
         <a href="#the-problem" class="hover:text-white transition-colors">The Dilemma</a>
-        <a href="#smoke-test" class="hover:text-white transition-colors flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          BETH Proof
+        <a href="#socratic-terminal" class="hover:text-blue-400 transition-colors flex items-center gap-1.5 text-blue-300 font-semibold">
+          <i data-lucide="terminal" class="w-3.5 h-3.5 text-blue-400"></i>
+          Socratic Console
         </a>
-        <a href="#cli-quickstart" class="hover:text-white transition-colors">CLI & Setup</a>
-        <a href="#governance-matrix" class="hover:text-white transition-colors">Governance Matrix</a>
-        <a href="#ledger" class="hover:text-white transition-colors">Audit Ledger</a>
-        <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+        <a href="#code-inspector" class="hover:text-amber-400 transition-colors flex items-center gap-1.5 text-amber-300 font-semibold">
+          <i data-lucide="code-2" class="w-3.5 h-3.5 text-amber-400"></i>
+          AST Inspector
+        </a>
+        <a href="#smoke-test" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-emerald-300 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          BETH Oracle
+        </a>
+        <a href="#ledger" class="hover:text-indigo-400 transition-colors">Audit Ledger</a>
+        <a href="#governance-matrix" class="hover:text-white transition-colors">Matrix</a>
+        <a href="#cli-quickstart" class="hover:text-white transition-colors">CLI</a>
       </nav>
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-2 shrink-0">
-        <a href="./presentation/index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-dark-850 transition-all">
+        <a href="./presentation/index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-dark-850 transition-all border border-transparent hover:border-dark-border">
           <i data-lucide="presentation" class="w-3.5 h-3.5 text-indigo-400"></i>
           <span>Deck</span>
         </a>
         <a href="https://github.com/farhank15/Tarsius" target="_blank" title="GitHub" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-dark-850 transition-colors">
           <i data-lucide="github" class="w-4 h-4"></i>
         </a>
-        <a href="/studio" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm shadow-blue-600/20 transition-all hover:scale-102">
+        <a href="./studio/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm shadow-blue-600/20 transition-all hover:scale-102">
           <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
           <span>Live Studio</span>
           <i data-lucide="arrow-up-right" class="w-3 h-3 text-blue-200"></i>
@@ -179,18 +186,23 @@
       </p>
 
       <!-- Quick Action CTA Buttons -->
-      <div class="flex items-center justify-center gap-4 flex-wrap mb-16">
-        <a href="#smoke-test" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-xl shadow-blue-600/30 transition-all hover:scale-105">
+      <div class="flex items-center justify-center gap-3.5 flex-wrap mb-16">
+        <a href="#socratic-terminal" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-xl shadow-blue-600/30 transition-all hover:scale-105">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          Launch Socratic Console
+        </a>
+        <a href="#smoke-test" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-xl shadow-emerald-600/30 transition-all hover:scale-105">
           <i data-lucide="play" class="w-4 h-4 fill-white"></i>
-          Run Live Proof Simulator
+          Run Differential Proof
         </a>
-        <a href="/studio" target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-dark-850 hover:bg-dark-800 text-slate-200 border border-dark-border hover:border-slate-500 font-semibold text-sm transition-all hover:scale-102">
+        <a href="./studio/" target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-dark-850 hover:bg-dark-800 text-slate-200 border border-dark-border hover:border-blue-500/50 font-semibold text-sm transition-all hover:scale-102">
           <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i>
-          Open Live Triage Studio
+          Open Live React Studio
+          <i data-lucide="arrow-up-right" class="w-3 h-3 text-slate-400"></i>
         </a>
-        <a href="#cli-quickstart" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-dark-850 hover:bg-dark-800 text-slate-200 border border-dark-border hover:border-slate-500 font-semibold text-sm transition-all hover:scale-102">
-          <i data-lucide="terminal" class="w-4 h-4 text-emerald-400"></i>
-          Install CLI via Curl
+        <a href="https://github.com/farhank15/Tarsius/releases/tag/v0.1.1" target="_blank" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-slate-200 border border-dark-border font-semibold text-sm transition-all">
+          <i data-lucide="tag" class="w-4 h-4 text-purple-400"></i>
+          v0.1.1 Verified Release
         </a>
       </div>
 
@@ -368,6 +380,225 @@
   </section>
 
   <!-- ========================================================================= -->
+  <!-- LIVE SOCRATIC INQUIRY TERMINAL (IBM BOB 2.0 WORKBENCH SIMULATOR)          -->
+  <!-- ========================================================================= -->
+  <section id="socratic-terminal" class="py-20 border-b border-dark-border bg-dark-900/60 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">IBM Bob 2.0 Native Extension</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Live Socratic Inquiry Console</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base leading-relaxed">
+          Test how IBM Bob 2.0 halts autonomous hallucination and initiates a 60-second Socratic inquiry with the human SME before emitting modernized code.
+        </p>
+      </div>
+
+      <!-- Socratic Terminal Cockpit -->
+      <div class="max-w-5xl mx-auto rounded-3xl glass-card border border-dark-border shadow-2xl overflow-hidden">
+        <!-- Terminal Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-3.5 bg-dark-950 border-b border-dark-border gap-3">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+            </div>
+            <span class="font-mono text-xs text-slate-300 font-semibold flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 text-blue-400"></i>
+              bob-cli v2.0 · @tarsius-legacy-analyzer
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Workload Selector -->
+            <div class="inline-flex p-1 rounded-xl bg-dark-900 border border-dark-border text-xs">
+              <button id="soc-btn-ordval" onclick="selectSocraticWorkload('ordval')" class="px-2.5 py-1 rounded-lg font-semibold transition-all bg-dark-800 text-white border border-blue-500/30">
+                1. ORDVAL.rpgle (IBM i)
+              </button>
+              <button id="soc-btn-xfrfun" onclick="selectSocraticWorkload('xfrfun')" class="px-2.5 py-1 rounded-lg font-semibold transition-all text-slate-400 hover:text-white">
+                2. XFRFUN.cbl (z/OS CICS)
+              </button>
+            </div>
+
+            <!-- Run Action Button -->
+            <button id="btn-run-socratic" onclick="runSocraticDiscovery()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all">
+              <i data-lucide="play" class="w-3 h-3 fill-white"></i>
+              <span id="soc-run-label">Run Bob Analyzer</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terminal Stream Output -->
+        <div class="p-6 bg-dark-950/90 font-mono text-xs text-slate-300 min-h-[300px] max-h-[450px] overflow-y-auto space-y-2.5 leading-relaxed" id="socratic-log-window">
+          <p class="text-slate-500">// Ready. Select a legacy workload and click 'Run Bob Analyzer' to begin AST discovery.</p>
+        </div>
+
+        <!-- Socratic Decision Box (Appears when contradiction is hit) -->
+        <div id="socratic-decision-box" class="p-6 bg-dark-900 border-t border-amber-500/30 hidden">
+          <div class="flex items-start gap-3">
+            <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0 mt-0.5">
+              <i data-lucide="help-circle" class="w-5 h-5"></i>
+            </div>
+            <div class="space-y-3 w-full">
+              <div>
+                <span class="text-xs font-mono uppercase font-bold text-amber-400" id="soc-decision-tag">🔴 MUST-REVIEW CONTRADICTION DETECTED</span>
+                <h4 class="text-sm font-bold text-white mt-0.5" id="soc-decision-title">Rule BR-DISC-EXCEPTION conflicts with Technical Spec v3.2</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed" id="soc-decision-desc">
+                  The legacy AST overrides suspension for 'DISC' orders (CS-4471 class action carve-out). The written spec strictly states all suspended accounts are blocked without exception.
+                </p>
+              </div>
+
+              <!-- Interactive Buttons for SME -->
+              <div class="flex items-center gap-3 pt-1 flex-wrap">
+                <button onclick="resolveSocraticDecision('approve')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-lg shadow-emerald-600/20">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                  <span id="soc-approve-label">Approve Carve-Out (Legal Settlement CS-4471)</span>
+                </button>
+                <button onclick="resolveSocraticDecision('reject')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-dark-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-300 border border-dark-border hover:border-rose-500/40 font-semibold text-xs transition-all">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                  Reject (Follow Outdated Spec)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Socratic Result Artifacts Tabs (Visible after approval) -->
+        <div id="socratic-result-tabs" class="border-t border-dark-border bg-dark-950 p-5 hidden">
+          <div class="flex items-center justify-between border-b border-dark-border pb-3 mb-4">
+            <div class="flex items-center gap-2 text-xs font-semibold">
+              <span class="text-emerald-400 flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                Cryptographically Sealed Artifacts
+              </span>
+              <span class="text-slate-500">|</span>
+              <span class="text-slate-400 font-mono text-[11px]" id="soc-result-hash">SHA: 1004ad65...</span>
+            </div>
+            <div class="inline-flex p-0.5 rounded-lg bg-dark-900 border border-dark-border text-[11px] font-mono">
+              <button id="tab-art-ts" onclick="switchArtifactTab('ts')" class="px-2.5 py-1 rounded-md bg-dark-800 text-white font-bold">Modern TS</button>
+              <button id="tab-art-risk" onclick="switchArtifactTab('risk')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white">RISK-CONTEXT.md</button>
+              <button id="tab-art-json" onclick="switchArtifactTab('json')" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-white">Ledger Block</button>
+            </div>
+          </div>
+          <div class="p-4 rounded-xl bg-dark-900 border border-dark-border font-mono text-xs text-slate-300 overflow-x-auto max-h-56 leading-relaxed" id="soc-artifact-content">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- DUAL-PANE CODE & SPEC CONTRADICTION INSPECTOR (RPGLE & COBOL)             -->
+  <!-- ========================================================================= -->
+  <section id="code-inspector" class="py-20 border-b border-dark-border">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-semibold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">Dual-Source Ground Truth</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Interactive AST vs Spec Contradiction Inspector</h2>
+        <p class="text-slate-400 mt-3 text-sm sm:text-base leading-relaxed">
+          See the exact contradiction lines side-by-side. See why unconstrained AI deletes the rule and how Tarsius creates the cryptographic bridge.
+        </p>
+      </div>
+
+      <!-- Workload Tabs -->
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <button id="insp-btn-ordval" onclick="switchInspectorWorkload('ordval')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-dark-800 text-white border border-blue-500/30 flex items-center gap-2 shadow-lg">
+          <i data-lucide="file-code" class="w-4 h-4 text-blue-400"></i>
+          Workload 1: ORDVAL.rpgle (IBM i Free-form)
+        </button>
+        <button id="insp-btn-xfrfun" onclick="switchInspectorWorkload('xfrfun')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white bg-dark-950 border border-dark-border flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
+          Workload 2: XFRFUN.cbl (IBM z/OS CICS COBOL - 2,069 LOC)
+        </button>
+      </div>
+
+      <!-- Dual Pane Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Pane: Legacy Source Code -->
+        <div class="rounded-2xl glass-card border border-dark-border overflow-hidden shadow-2xl flex flex-col">
+          <div class="flex items-center justify-between px-4 py-3 bg-dark-900 border-b border-dark-border text-xs text-slate-300">
+            <span class="font-mono flex items-center gap-2 font-bold text-white">
+              <i data-lucide="file-code-2" class="w-4 h-4 text-amber-400"></i>
+              <span id="insp-legacy-filename">src/legacy/ORDVAL.rpgle</span>
+            </span>
+            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 font-bold">11-Yr Undocumented</span>
+          </div>
+          <div class="p-4 bg-dark-950 font-mono text-xs overflow-x-auto leading-relaxed text-slate-300 grow space-y-1" id="insp-legacy-code-box">
+            <!-- Populated via JS -->
+          </div>
+          <div class="px-4 py-2.5 bg-dark-900/60 border-t border-dark-border text-[11px] text-slate-400 flex items-center justify-between">
+            <span>AST node: <code>IF-BLOCK (Lines 77–81)</code></span>
+            <span class="text-amber-400 font-semibold">Tacit Carve-Out</span>
+          </div>
+        </div>
+
+        <!-- Right Pane: Technical Documentation -->
+        <div class="rounded-2xl glass-card border border-dark-border overflow-hidden shadow-2xl flex flex-col">
+          <div class="flex items-center justify-between px-4 py-3 bg-dark-900 border-b border-dark-border text-xs text-slate-300">
+            <span class="font-mono flex items-center gap-2 font-bold text-white">
+              <i data-lucide="file-text" class="w-4 h-4 text-blue-400"></i>
+              <span id="insp-spec-filename">docs/order-validation-spec.md</span>
+            </span>
+            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 font-bold">Official Spec (2013)</span>
+          </div>
+          <div class="p-4 bg-dark-950 font-mono text-xs overflow-x-auto leading-relaxed text-slate-300 grow space-y-2" id="insp-spec-code-box">
+            <!-- Populated via JS -->
+          </div>
+          <div class="px-4 py-2.5 bg-dark-900/60 border-t border-dark-border text-[11px] text-slate-400 flex items-center justify-between">
+            <span>Clause: <code id="insp-spec-clause">Section 2.2: Universal Suspension</code></span>
+            <span class="text-rose-400 font-semibold">Strict Prohibition</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Translation Diff (Naive vs Governed) -->
+      <div class="mt-6 p-6 rounded-2xl bg-dark-950 border border-dark-border">
+        <h4 class="text-xs uppercase font-mono font-bold text-slate-400 mb-4 flex items-center gap-2">
+          <i data-lucide="git-compare" class="w-4 h-4 text-indigo-400"></i>
+          Generated Modern TypeScript Comparison (Naive AI vs Tarsius Governed)
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+          <!-- Naive AI Translation -->
+          <div class="p-4 rounded-xl bg-rose-950/20 border border-rose-500/30 space-y-2">
+            <div class="flex items-center justify-between text-rose-300 font-bold text-[11px]">
+              <span>Unconstrained AI (Naive Spec Translation)</span>
+              <span class="text-rose-400">❌ DROPS CARVE-OUT</span>
+            </div>
+            <pre class="text-[11px] text-slate-300 overflow-x-auto leading-relaxed" id="insp-diff-naive">
+// Naive AI follows outdated spec Section 2.2
+if (customer.status === 'S' || customer.isSuspended) {
+  return OrderResult.REJECTED; // Universal block!
+}
+// Carve-out deleted as "obsolete dead code"!
+            </pre>
+            <p class="text-[11px] text-rose-400 font-sans">
+              Result: 4 Regressions in BETH oracle. Wrongfully blocks valid customer orders ($128k/day revenue loss).
+            </p>
+          </div>
+
+          <!-- Tarsius Governed Translation -->
+          <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+            <div class="flex items-center justify-between text-emerald-300 font-bold text-[11px]">
+              <span>Tarsius Governed (Bound by .bob/RISK-CONTEXT.md)</span>
+              <span class="text-emerald-400">✅ PRESERVES CARVE-OUT</span>
+            </div>
+            <pre class="text-[11px] text-slate-300 overflow-x-auto leading-relaxed" id="insp-diff-gov">
+// Sealed by DEC-00004 (Class Action CS-4471)
+if (customer.isSuspended && order.type === 'DISC') {
+  return OrderResult.APPROVED; // Preserved exception!
+}
+if (customer.status === 'S') return OrderResult.REJECTED;
+            </pre>
+            <p class="text-[11px] text-emerald-400 font-sans">
+              Result: 100% Behavioral Equivalence (BER). Zero regressions; fully compliant with legal audit.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
   <!-- INTERACTIVE SMOKE TEST: BETH DIFFERENTIAL SIMULATOR                        -->
   <!-- ========================================================================= -->
   <section id="smoke-test" class="py-20 border-b border-dark-border">
@@ -458,13 +689,60 @@
                 <th class="py-3 px-3">Inputs</th>
                 <th class="py-3 px-3">Legacy Oracle</th>
                 <th class="py-3 px-3">Modernized Output</th>
-                <th class="py-3 px-3 text-right">Equivalence Status</th>
+                <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-right">Differential Trace</th>
               </tr>
             </thead>
             <tbody id="vector-tbody" class="divide-y divide-dark-border/70 font-mono">
               <!-- Dynamically populated via JavaScript -->
             </tbody>
           </table>
+        </div>
+
+        <!-- Interactive Differential Trace Drawer -->
+        <div id="vector-trace-card" class="mt-6 p-5 rounded-2xl bg-dark-950 border border-blue-500/40 text-xs shadow-2xl hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-dark-border mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse"></span>
+              <span id="trace-title" class="font-bold text-white font-mono text-sm">Execution Trace Inspector: Vector V04</span>
+            </div>
+            <button onclick="closeTraceDrawer()" class="text-slate-400 hover:text-white text-xs px-2.5 py-1 rounded-lg bg-dark-900 border border-dark-border hover:border-slate-500 transition-colors">
+              Close Trace ✕
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[11px]">
+            <!-- Col 1: Legacy Runtime -->
+            <div class="p-3.5 rounded-xl bg-dark-900 border border-dark-border flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-blue-400 font-bold block mb-1">1. Legacy AST Execution</span>
+                <p class="text-slate-400 text-[10px] mb-2 font-sans" id="trace-legacy-ast">// Evaluated legacy runtime</p>
+                <div class="p-2.5 rounded bg-dark-950 text-slate-300 space-y-1 font-mono text-[11px]" id="trace-legacy-code"></div>
+              </div>
+              <p class="mt-3 pt-2 border-t border-dark-border text-emerald-400 font-bold" id="trace-legacy-res">Verdict: 'A' (Approved)</p>
+            </div>
+            <!-- Col 2: Naive AI -->
+            <div class="p-3.5 rounded-xl bg-dark-900 border border-rose-500/30 flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-rose-400 font-bold block mb-1">2. Naive AI Modernization</span>
+                <p class="text-slate-400 text-[10px] mb-2 font-sans">// Spec-only context (omits tacit rule)</p>
+                <div class="p-2.5 rounded bg-dark-950 text-slate-300 space-y-1 font-mono text-[11px]" id="trace-naive-code"></div>
+              </div>
+              <p class="mt-3 pt-2 border-t border-dark-border text-rose-400 font-bold" id="trace-naive-res">Verdict: 'R' (REGRESSION!)</p>
+            </div>
+            <!-- Col 3: Governed -->
+            <div class="p-3.5 rounded-xl bg-dark-900 border border-emerald-500/30 flex flex-col justify-between">
+              <div>
+                <span class="text-xs text-emerald-400 font-bold block mb-1">3. Tarsius Governed (Bob 2.0)</span>
+                <p class="text-slate-400 text-[10px] mb-2 font-sans">// Guarded by .bob/RISK-CONTEXT.md</p>
+                <div class="p-2.5 rounded bg-dark-950 text-slate-300 space-y-1 font-mono text-[11px]" id="trace-gov-code"></div>
+              </div>
+              <p class="mt-3 pt-2 border-t border-dark-border text-emerald-400 font-bold" id="trace-gov-res">Verdict: 'A' (100% Equivalence)</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-dark-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-slate-400 text-xs">
+            <span id="trace-risk-impact" class="text-amber-300 font-sans"></span>
+            <span class="font-mono text-[10px] text-slate-500">Deterministic Mathematical Proof via BETH Oracle</span>
+          </div>
         </div>
 
         <!-- Explanation Footer Note -->
@@ -678,44 +956,69 @@
         </p>
       </div>
 
+      <!-- Interactive Merkle Tamper Simulator Control Bar -->
+      <div id="merkle-control-bar" class="mb-8 p-4 rounded-2xl bg-dark-950 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div class="flex items-center gap-2.5">
+          <span id="merkle-status-dot" class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div>
+            <span id="merkle-status-text" class="text-xs font-mono font-bold text-emerald-400">
+              MERKLE CHAIN INTEGRITY: 100% SECURE (EU AI Act Article 12 Compliant)
+            </span>
+            <p id="merkle-status-sub" class="text-[11px] text-slate-400 font-sans mt-0.5">
+              All 4 decision blocks cryptographically linked via SHA-256 parent hash tree.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-tamper-chain" onclick="simulateTamper()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-900 hover:bg-rose-950/60 text-slate-300 hover:text-rose-300 border border-dark-border hover:border-rose-500/40 text-xs font-semibold transition-all">
+            <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Simulate Unauthorized Tamper</span>
+          </button>
+          <button id="btn-restore-chain" onclick="restoreChainIntegrity()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-all">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            <span>Verify & Re-Seal</span>
+          </button>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Decision 1 -->
-        <div class="p-6 rounded-2xl glass-card flex flex-col justify-between">
+        <div id="card-dec-3" class="p-6 rounded-2xl glass-card flex flex-col justify-between transition-all duration-300">
           <div>
             <div class="flex items-center justify-between mb-3">
               <span class="font-mono text-xs text-blue-400 font-bold">DEC-00003</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
+              <span id="badge-dec-3" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
             </div>
             <h4 class="text-sm font-bold text-white mb-1">BR-GRANDFATHER-PRICING</h4>
             <p class="text-xs text-slate-400 mb-4">Plan-7 legacy customers retain locked-in pricing per class action settlement 2009-CV-118.</p>
             <div class="space-y-1.5 font-mono text-[11px] p-3 rounded-lg bg-dark-950 border border-dark-border text-slate-300">
-              <p><span class="text-slate-500">Hash:</span> de2769d389d807f500f4dbfacf674c209d4adfc58e6606f1c8888ef154e06fdc</p>
+              <p><span class="text-slate-500">Hash:</span> <span id="hash-dec-3" class="text-slate-300">de2769d389d807f500f4dbfacf674c209d4adfc58e6606f1c8888ef154e06fdc</span></p>
               <p><span class="text-indigo-400 font-bold">Chain:</span> 1b94cc7f1ab4767d417b2e8ecffae38e76f2020f945a2233ecdd35aa2aefb30b</p>
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-dark-border flex items-center justify-between text-[11px] text-slate-400">
             <span>Decided by: Architect (architect-1)</span>
-            <span class="text-emerald-400 flex items-center gap-1"><i data-lucide="link-2" class="w-3.5 h-3.5"></i> Linked</span>
+            <span id="link-status-3" class="text-emerald-400 flex items-center gap-1"><i data-lucide="link-2" class="w-3.5 h-3.5"></i> Linked</span>
           </div>
         </div>
 
         <!-- Decision 2 -->
-        <div class="p-6 rounded-2xl glass-card border-indigo-900/60 glow-blue flex flex-col justify-between">
+        <div id="card-dec-4" class="p-6 rounded-2xl glass-card border-indigo-900/60 glow-blue flex flex-col justify-between transition-all duration-300">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-xs text-indigo-400 font-bold">DEC-00004 (Validated Chain Tip)</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
+              <span class="font-mono text-xs text-indigo-400 font-bold">DEC-00004 (Chain Tip)</span>
+              <span id="badge-dec-4" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">Approved</span>
             </div>
             <h4 class="text-sm font-bold text-white mb-1">BR-DISC-EXCEPTION</h4>
             <p class="text-xs text-slate-400 mb-4">11-year unwritten carve-out for suspended accounts placing DISC orders approved under CS-4471.</p>
             <div class="space-y-1.5 font-mono text-[11px] p-3 rounded-lg bg-dark-950 border border-dark-border text-slate-300">
               <p><span class="text-slate-500">Hash:</span> c1bd6eeebdbe5f4df399891ecdbf4dd15881a3b3f0f5d721031ea5b51c0f6dfb</p>
-              <p><span class="text-indigo-400 font-bold">Chain:</span> 1004ad65a78c8e3018820e25c23bbe9cfb9b98802a5f288f77efe20c4a7d72ef</p>
+              <p><span class="text-indigo-400 font-bold">Chain:</span> <span id="chain-dec-4" class="text-indigo-400">1004ad65a78c8e3018820e25c23bbe9cfb9b98802a5f288f77efe20c4a7d72ef</span></p>
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-dark-border flex items-center justify-between text-[11px] text-slate-400">
             <span>Decided by: Architect (architect-1)</span>
-            <span class="text-indigo-400 font-bold flex items-center gap-1"><i data-lucide="check-check" class="w-3.5 h-3.5"></i> Tip Verified</span>
+            <span id="status-dec-4" class="text-indigo-400 font-bold flex items-center gap-1"><i data-lucide="check-check" class="w-3.5 h-3.5"></i> Tip Verified</span>
           </div>
         </div>
       </div>
@@ -801,31 +1104,374 @@
   <!-- DUAL-WORKLOAD INTERACTIVE LOGIC                                           -->
   <!-- ========================================================================= -->
   <script>
-    // Workload 1: ORDVAL (IBM i RPGLE) - 12 Vectors
+    // -------------------------------------------------------------------------
+    // 1. DATA DEFINITIONS & TEST VECTORS
+    // -------------------------------------------------------------------------
     const ordvalVectors = [
-      { id: "V01", desc: "Active customer, standard order baseline", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
-      { id: "V02", desc: "Cancelled customer blocked (BR-CANCELLED-BLOCK)", input: "C / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
-      { id: "V03", desc: "Suspended-status customer blocked", input: "S / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
-      { id: "V04", desc: "Suspended + DISC order: CS-4471 Carve-Out", input: "A / Susp: Y / DISC / PLAN1", legacy: "A (std)", naive: "R (null)", gov: "A (std)", naiveMatch: false, govMatch: true },
-      { id: "V05", desc: "Suspended-flag standard order — rejected", input: "A / Susp: Y / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
-      { id: "V06", desc: "PLAN7 active customer — grandfather pricing", input: "A / Susp: N / STND / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true },
-      { id: "V07", desc: "PLAN7 active DISC order — grandfather pricing", input: "A / Susp: N / DISC / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true },
-      { id: "V08", desc: "Express order — active customer", input: "A / Susp: N / EXPR / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
-      { id: "V09", desc: "Corporate order — active customer", input: "A / Susp: N / CORP / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
-      { id: "V10", desc: "Unknown/inactive status — rejected", input: "X / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true },
-      { id: "V11", desc: "Negative amount — rejected", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true },
-      { id: "V12", desc: "PLAN7 + suspended + DISC — carve-out + pricing", input: "A / Susp: Y / DISC / PLAN7", legacy: "A (legacy)", naive: "R (null)", gov: "A (legacy)", naiveMatch: false, govMatch: true }
+      { id: "V01", desc: "Active customer, standard order baseline", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true, trace: { legAst: "Lines 51-54: Status == 'A', not suspended -> Approved", naiveAst: "Spec Section 2.1: Active account -> Approved", govAst: "RISK-CONTEXT: Standard baseline approved -> Equivalent", impact: "Routine order flow." } },
+      { id: "V02", desc: "Cancelled customer blocked (BR-CANCELLED-BLOCK)", input: "C / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true, trace: { legAst: "Lines 56-59: Status == 'C' -> Early Return wsResult = 'R'", naiveAst: "Spec Section 2.2: Cancelled accounts blocked", govAst: "RISK-CONTEXT: BR-CANCELLED-BLOCK verified -> Blocked", impact: "Fraud protection active." } },
+      { id: "V03", desc: "Suspended-status customer blocked", input: "S / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true, trace: { legAst: "Lines 65-68: Status == 'S' -> Early Return wsResult = 'R'", naiveAst: "Spec Section 2.2: Status 'S' universal rejection", govAst: "RISK-CONTEXT: Standard suspension maintained", impact: "Credit risk enforced." } },
+      { id: "V04", desc: "Suspended + DISC order: CS-4471 Carve-Out", input: "A / Susp: Y / DISC / PLAN1", legacy: "A (std)", naive: "R (null)", gov: "A (std)", naiveMatch: false, govMatch: true, trace: { legAst: "Lines 77-81: IF suspendedFlag = 'Y' AND pOrderType = 'DISC' THEN wsResult = 'A' (CS-4471 override!)", naiveAst: "Spec Section 2.2: Universal suspension -> wsResult = 'R' (REGRESSION)", govAst: "RISK-CONTEXT: Immutable constraint DEC-00004 preserves carve-out -> wsResult = 'A'", impact: "CRITICAL COMPLIANCE: Dropping this violates 2010 CS-4471 Class Action Settlement! TSB Bank failure mode." } },
+      { id: "V05", desc: "Suspended-flag standard order — rejected", input: "A / Susp: Y / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true, trace: { legAst: "Lines 77-81 not matched; falls through to default 'R'", naiveAst: "Spec Section 2.2: Universal block -> Rejected", govAst: "RISK-CONTEXT: Standard suspended rejection preserved", impact: "Normal suspension enforced." } },
+      { id: "V06", desc: "PLAN7 active customer — grandfather pricing", input: "A / Susp: N / STND / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true, trace: { legAst: "Lines 96-98: planId = 'PLAN7' -> EXSR $GETLEGACYPRICE", naiveAst: "Spec does not mention PLAN7 -> Applies current market pricing ($GETSTDPRICE)", govAst: "RISK-CONTEXT: DEC-00003 binds locked legacy pricing table", impact: "HIGH: Overcharging legacy customers violates 2009-CV-118 consent decree." } },
+      { id: "V07", desc: "PLAN7 active DISC order — grandfather pricing", input: "A / Susp: N / DISC / PLAN7", legacy: "A (legacy)", naive: "A (std)", gov: "A (legacy)", naiveMatch: false, govMatch: true, trace: { legAst: "Lines 96-98: PLAN7 grandfather price override", naiveAst: "Current price table applied (Wrong rate)", govAst: "Grandfathered pricing preserved", impact: "Pricing compliance guaranteed." } },
+      { id: "V08", desc: "Express order — active customer", input: "A / Susp: N / EXPR / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true, trace: { legAst: "Standard pass", naiveAst: "Standard pass", govAst: "Standard pass", impact: "Routine throughput." } },
+      { id: "V09", desc: "Corporate order — active customer", input: "A / Susp: N / CORP / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true, trace: { legAst: "Standard pass", naiveAst: "Standard pass", govAst: "Standard pass", impact: "Routine throughput." } },
+      { id: "V10", desc: "Unknown/inactive status — rejected", input: "X / Susp: N / STND / PLAN1", legacy: "R (null)", naive: "R (null)", gov: "R (null)", naiveMatch: true, govMatch: true, trace: { legAst: "Default reject", naiveAst: "Default reject", govAst: "Default reject", impact: "Invalid status blocked." } },
+      { id: "V11", desc: "Negative amount — rejected", input: "A / Susp: N / STND / PLAN1", legacy: "A (std)", naive: "A (std)", gov: "A (std)", naiveMatch: true, govMatch: true, trace: { legAst: "Order type valid", naiveAst: "Order type valid", govAst: "Order type valid", impact: "Passed." } },
+      { id: "V12", desc: "PLAN7 + suspended + DISC — carve-out + pricing", input: "A / Susp: Y / DISC / PLAN7", legacy: "A (legacy)", naive: "R (null)", gov: "A (legacy)", naiveMatch: false, govMatch: true, trace: { legAst: "Line 77 carve-out + Line 96 grandfather price", naiveAst: "Fails at suspension check -> Dropped completely", govAst: "Both DEC-00003 and DEC-00004 honored simultaneously", impact: "HIGH: Multi-rule tacit combination fully maintained." } }
     ];
 
-    // Workload 2: XFRFUN (IBM z/OS CICS COBOL - 2,069 LOC) - 5 Vectors
     const xfrfunVectors = [
-      { id: "XFR-01", desc: "Active accounts standard interbank wire transfer", input: "From: A / To: A / WIRE / $150.00", legacy: "Success (Y)", naive: "Success (Y)", gov: "Success (Y)", naiveMatch: true, govMatch: true },
-      { id: "XFR-02", desc: "Negative transfer amount rejected immediately", input: "From: A / To: A / WIRE / -$10.00", legacy: "Fail '4' (N)", naive: "Fail '4' (N)", gov: "Fail '4' (N)", naiveMatch: true, govMatch: true },
-      { id: "XFR-03", desc: "Suspended origin account blocked", input: "From: S / To: A / WIRE / $100.00", legacy: "Fail 'S' (N)", naive: "Fail 'S' (N)", gov: "Fail 'S' (N)", naiveMatch: true, govMatch: true },
-      { id: "XFR-04", desc: "Suspended target inbound refund (Regulation E / CB-9102)", input: "From: A / To: S / RFIN / $75.50", legacy: "Success (Y)", naive: "Fail 'S' (N)", gov: "Success (Y)", naiveMatch: false, govMatch: true },
-      { id: "XFR-05", desc: "Suspended target account non-refund wire blocked", input: "From: A / To: S / WIRE / $75.50", legacy: "Fail 'S' (N)", naive: "Fail 'S' (N)", gov: "Fail 'S' (N)", naiveMatch: true, govMatch: true }
+      { id: "XFR-01", desc: "Active accounts standard interbank wire transfer", input: "From: A / To: A / WIRE / $150.00", legacy: "Success (Y)", naive: "Success (Y)", gov: "Success (Y)", naiveMatch: true, govMatch: true, trace: { legAst: "L280: Standard validation passed -> DB2 PROCTRAN update", naiveAst: "Transfers funds normally", govAst: "Transfers funds normally", impact: "Normal ACH/Wire flow." } },
+      { id: "XFR-02", desc: "Negative transfer amount rejected immediately", input: "From: A / To: A / WIRE / -$10.00", legacy: "Fail '4' (N)", naive: "Fail '4' (N)", gov: "Fail '4' (N)", naiveMatch: true, govMatch: true, trace: { legAst: "L255: COMM-AMT <= 0 -> COMM-FAIL-CODE = '4'", naiveAst: "Rejects negative amounts", govAst: "Rejects negative amounts", impact: "Zero/Negative validation active." } },
+      { id: "XFR-03", desc: "Suspended origin account blocked", input: "From: S / To: A / WIRE / $100.00", legacy: "Fail 'S' (N)", naive: "Fail 'S' (N)", gov: "Fail 'S' (N)", naiveMatch: true, govMatch: true, trace: { legAst: "L310: COMM-FSTATUS = 'S' -> COMM-FAIL-CODE = 'S'", naiveAst: "Rejects origin suspended account", govAst: "Rejects origin suspended account", impact: "Anti-fraud block." } },
+      { id: "XFR-04", desc: "Suspended target inbound refund (Regulation E / CB-9102)", input: "From: A / To: S / RFIN / $75.50", legacy: "Success (Y)", naive: "Fail 'S' (N)", gov: "Success (Y)", naiveMatch: false, govMatch: true, trace: { legAst: "L311-313: IF COMM-TSTATUS = 'S' AND COMM-XFR-TYPE = 'RFIN' MOVE 'Y' TO WS-ALLOW-REFUND-EXCEPTION", naiveAst: "Spec Section 2.3: Rejects all transactions to suspended account -> Fail 'S' (REGRESSION)", govAst: "RISK-CONTEXT: Mandates 12 CFR § 1005 (Regulation E) refund preservation -> Success 'Y'", impact: "CRITICAL REGULATORY RISK: Illegally withholding consumer merchant refunds incurs OCC & CFPB civil penalties." } },
+      { id: "XFR-05", desc: "Suspended target account non-refund wire blocked", input: "From: A / To: S / WIRE / $75.50", legacy: "Fail 'S' (N)", naive: "Fail 'S' (N)", gov: "Fail 'S' (N)", naiveMatch: true, govMatch: true, trace: { legAst: "L314: Non-RFIN wire to suspended target blocked", naiveAst: "Blocked per standard rule", govAst: "Blocked per standard rule", impact: "Standard suspension enforced." } }
     ];
 
+    // -------------------------------------------------------------------------
+    // 2. SOCRATIC CONSOLE STATE & EXECUTION
+    // -------------------------------------------------------------------------
+    let socraticWorkload = "ordval";
+    let socraticRunning = false;
+    let socraticSealedHash = "1004ad65a78c8e3018820e25c23bbe9cfb9b98802a5f288f77efe20c4a7d72ef";
+
+    function selectSocraticWorkload(wl) {
+      if (socraticRunning) return;
+      socraticWorkload = wl;
+      document.getElementById("soc-btn-ordval").className = wl === "ordval"
+        ? "px-2.5 py-1 rounded-lg font-semibold transition-all bg-dark-800 text-white border border-blue-500/30"
+        : "px-2.5 py-1 rounded-lg font-semibold transition-all text-slate-400 hover:text-white";
+      document.getElementById("soc-btn-xfrfun").className = wl === "xfrfun"
+        ? "px-2.5 py-1 rounded-lg font-semibold transition-all bg-dark-800 text-white border border-blue-500/30"
+        : "px-2.5 py-1 rounded-lg font-semibold transition-all text-slate-400 hover:text-white";
+
+      document.getElementById("socratic-decision-box").classList.add("hidden");
+      document.getElementById("socratic-result-tabs").classList.add("hidden");
+
+      const log = document.getElementById("socratic-log-window");
+      if (wl === "ordval") {
+        log.innerHTML = '<p class="text-slate-500">// Ready. Target: src/legacy/ORDVAL.rpgle (IBM i Free-form RPGLE). Click "Run Bob Analyzer".</p>';
+      } else {
+        log.innerHTML = '<p class="text-slate-500">// Ready. Target: src/legacy/XFRFUN.cbl (IBM z/OS CICS COBOL - 2,069 LOC). Click "Run Bob Analyzer".</p>';
+      }
+    }
+
+    function runSocraticDiscovery() {
+      if (socraticRunning) return;
+      socraticRunning = true;
+      const log = document.getElementById("socratic-log-window");
+      const btn = document.getElementById("btn-run-socratic");
+      const label = document.getElementById("soc-run-label");
+      const decisionBox = document.getElementById("socratic-decision-box");
+      const resultTabs = document.getElementById("socratic-result-tabs");
+
+      decisionBox.classList.add("hidden");
+      resultTabs.classList.add("hidden");
+      btn.disabled = true;
+      label.innerText = "Analyzing AST...";
+
+      log.innerHTML = "";
+      const isRpg = socraticWorkload === "ordval";
+
+      const steps = isRpg ? [
+        { text: "$ bob @tarsius-analyzer scan src/legacy/ORDVAL.rpgle --spec docs/order-validation-spec.md", color: "text-blue-400 font-bold", delay: 150 },
+        { text: "[1/4] [AST-PARSER] Ingesting IBM i Free-form RPGLE control blocks... 12 rules extracted.", color: "text-slate-300", delay: 500 },
+        { text: "[2/4] [SPEC-XREF] Cross-referencing against order-validation-spec.md (v3.2 - 2013)...", color: "text-slate-300", delay: 900 },
+        { text: "⚠️  [3/4] [CONTRADICTION DETECTED] Rule: BR-DISC-EXCEPTION (ORDVAL.rpgle:77-81)", color: "text-amber-400 font-bold", delay: 1400 },
+        { text: "    → Code says: IF suspendedFlag = 'Y' AND pOrderType = 'DISC' THEN wsResult = 'A'", color: "text-emerald-300", delay: 1700 },
+        { text: "    → Spec says: Section 2.2: 'Suspended accounts blocked universally. No exceptions exist.'", color: "text-rose-300", delay: 2000 },
+        { text: "    → Origin: Ticket CS-4471 (2010 Class Action Settlement Carve-Out)", color: "text-slate-400", delay: 2300 },
+        { text: "🛑 [4/4] [SOCRATIC GATE] Bob halts autonomous code generation. Requesting human SME adjudication...", color: "text-yellow-400 font-bold", delay: 2600 }
+      ] : [
+        { text: "$ bob @tarsius-analyzer scan src/legacy/XFRFUN.cbl --spec docs/xfrfun-spec.md", color: "text-blue-400 font-bold", delay: 150 },
+        { text: "[1/4] [AST-PARSER] Parsing IBM z/OS CICS COBOL (2,069 LOC)... 15 paragraphs mapped.", color: "text-slate-300", delay: 500 },
+        { text: "[2/4] [SPEC-XREF] Cross-referencing against xfrfun-spec.md (v4.1 - 2017)...", color: "text-slate-300", delay: 900 },
+        { text: "⚠️  [3/4] [CONTRADICTION DETECTED] Rule: BR-XFR-REG-E-REFUND (XFRFUN.cbl:310-318)", color: "text-amber-400 font-bold", delay: 1400 },
+        { text: "    → Code says: IF COMM-TSTATUS = 'S' AND COMM-XFR-TYPE = 'RFIN' MOVE 'Y' TO WS-ALLOW-REFUND-EXCEPTION", color: "text-emerald-300", delay: 1700 },
+        { text: "    → Spec says: Section 2.3: 'Suspended accounts completely frozen. No inbound/outbound transfers under any circumstance.'", color: "text-rose-300", delay: 2000 },
+        { text: "    → Origin: Ticket CB-9102 (US Federal Regulation E 12 CFR § 1005 Compliance Settlement)", color: "text-slate-400", delay: 2300 },
+        { text: "🛑 [4/4] [SOCRATIC GATE] Bob halts autonomous code generation. Requesting human SME adjudication...", color: "text-yellow-400 font-bold", delay: 2600 }
+      ];
+
+      steps.forEach((s) => {
+        setTimeout(() => {
+          const p = document.createElement("p");
+          p.className = s.color;
+          p.innerText = s.text;
+          log.appendChild(p);
+          log.scrollTop = log.scrollHeight;
+        }, s.delay);
+      });
+
+      setTimeout(() => {
+        socraticRunning = false;
+        btn.disabled = false;
+        label.innerText = "Re-analyze AST";
+
+        if (isRpg) {
+          document.getElementById("soc-decision-title").innerText = "Rule BR-DISC-EXCEPTION conflicts with Technical Spec v3.2";
+          document.getElementById("soc-decision-desc").innerText = "The legacy AST overrides suspension for 'DISC' orders (CS-4471 class action carve-out). The written spec strictly states all suspended accounts are blocked without exception.";
+          document.getElementById("soc-approve-label").innerText = "Approve Carve-Out (Legal Settlement CS-4471)";
+        } else {
+          document.getElementById("soc-decision-title").innerText = "Rule BR-XFR-REG-E-REFUND conflicts with Core Banking Spec v4.1";
+          document.getElementById("soc-decision-desc").innerText = "The legacy COBOL code permits inbound merchant refunds ('RFIN') to suspended target accounts under Regulation E (12 CFR § 1005). The written spec mandates universal account freeze.";
+          document.getElementById("soc-approve-label").innerText = "Approve Carve-Out (Regulation E CB-9102)";
+        }
+        decisionBox.classList.remove("hidden");
+        decisionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 3000);
+    }
+
+    async function resolveSocraticDecision(action) {
+      const log = document.getElementById("socratic-log-window");
+      const decisionBox = document.getElementById("socratic-decision-box");
+      const resultTabs = document.getElementById("socratic-result-tabs");
+      const isRpg = socraticWorkload === "ordval";
+
+      decisionBox.classList.add("hidden");
+
+      if (action === "approve") {
+        const ruleId = isRpg ? "BR-DISC-EXCEPTION" : "BR-XFR-REG-E-REFUND";
+        const citation = isRpg ? "Class Action CS-4471" : "Regulation E Ticket CB-9102";
+        const ts = new Date().toISOString();
+        const rawPayload = `${ruleId}|${citation}|architect-1|${ts}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(rawPayload);
+        const hashBuf = await crypto.subtle.digest("SHA-256", data);
+        const hashArray = Array.from(new Uint8Array(hashBuf));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        socraticSealedHash = hashHex;
+
+        const p1 = document.createElement("p");
+        p1.className = "text-emerald-400 font-bold mt-2";
+        p1.innerText = `[DECISION SEALED] SME 'architect-1' APPROVED rule ${ruleId} (${citation}).`;
+        log.appendChild(p1);
+
+        const p2 = document.createElement("p");
+        p2.className = "text-indigo-400 font-mono text-[11px]";
+        p2.innerText = `[MERKLE CHAIN] SHA-256 Block Hash: ${hashHex.substring(0, 32)}... (Sealed)`;
+        log.appendChild(p2);
+
+        const p3 = document.createElement("p");
+        p3.className = "text-blue-400 font-mono text-[11px]";
+        p3.innerText = `[CONTRACT] Injected .bob/RISK-CONTEXT.md into Bob prompt context.`;
+        log.appendChild(p3);
+
+        const p4 = document.createElement("p");
+        p4.className = "text-slate-300 font-mono text-[11px]";
+        p4.innerText = `[CODE-GEN] Bob generating modern TypeScript with immutable boundary conditions... DONE.`;
+        log.appendChild(p4);
+
+        const p5 = document.createElement("p");
+        p5.className = "text-emerald-400 font-bold";
+        p5.innerText = `[ORACLE PROOF] BETH Differential Engine: 100% Behavioral Equivalence Verified. 0 Regressions.`;
+        log.appendChild(p5);
+        log.scrollTop = log.scrollHeight;
+
+        document.getElementById("soc-result-hash").innerText = `SHA: ${hashHex.substring(0, 16)}...`;
+        resultTabs.classList.remove("hidden");
+        switchArtifactTab("ts");
+      } else {
+        const p1 = document.createElement("p");
+        p1.className = "text-rose-400 font-bold mt-2";
+        p1.innerText = `[SIMULATION: UNCONSTRAINED AI] SME rejected unwritten exception. Code generated without carve-out.`;
+        log.appendChild(p1);
+
+        const p2 = document.createElement("p");
+        p2.className = "text-rose-300 text-[11px]";
+        p2.innerText = `[BETH ALERT] BETH Differential Oracle detects REGRESSION on Vector ${isRpg ? 'V04' : 'XFR-04'}!`;
+        log.appendChild(p2);
+
+        const p3 = document.createElement("p");
+        p3.className = "text-amber-400 text-[11px]";
+        p3.innerText = `[RISK IMPACT] ${isRpg ? 'Wrongfully rejected orders violate CS-4471 ($128k/day exposure).' : 'Blocked merchant refunds violate 12 CFR § 1005 (CFPB enforcement).'}`;
+        log.appendChild(p3);
+        log.scrollTop = log.scrollHeight;
+      }
+    }
+
+    function switchArtifactTab(tab) {
+      const btnTs = document.getElementById("tab-art-ts");
+      const btnRisk = document.getElementById("tab-art-risk");
+      const btnJson = document.getElementById("tab-art-json");
+      const container = document.getElementById("soc-artifact-content");
+      const isRpg = socraticWorkload === "ordval";
+
+      [btnTs, btnRisk, btnJson].forEach(b => b.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-white");
+
+      if (tab === "ts") {
+        btnTs.className = "px-2.5 py-1 rounded-md bg-dark-800 text-white font-bold";
+        if (isRpg) {
+          container.innerHTML = `<pre class="text-emerald-400">// src/modern/ordval.service.ts
+// @tarsius-rule: BR-DISC-EXCEPTION (Merkle Hash: ${socraticSealedHash.substring(0, 12)}...)
+// Justification: Legal Settlement CS-4471 (Approved by architect-1)
+export function validateOrder(input: OrderInput): OrderResult {
+  // Enforce tacit class-action carve-out first
+  if (input.suspendedFlag === 'Y' && input.orderType === 'DISC') {
+    return OrderResult.APPROVED; // Preserved tacit behavior
+  }
+  if (input.customerStatus === 'S' || input.suspendedFlag === 'Y') {
+    return OrderResult.REJECTED;
+  }
+  return OrderResult.APPROVED;
+}</pre>`;
+        } else {
+          container.innerHTML = `<pre class="text-emerald-400">// src/modern/transfer.service.ts
+// @tarsius-rule: BR-XFR-REG-E-REFUND (Merkle Hash: ${socraticSealedHash.substring(0, 12)}...)
+// Justification: US Federal Regulation E 12 CFR § 1005 (Ticket CB-9102)
+export function executeFundsTransfer(transfer: TransferRequest): TransferResponse {
+  if (transfer.toAccount.isSuspended && transfer.type === 'RFIN') {
+    return { success: true, allowRefundException: true }; // Mandatory consumer refund
+  }
+  if (transfer.fromAccount.isSuspended || transfer.toAccount.isSuspended) {
+    return { success: false, failCode: 'S' };
+  }
+  return { success: true };
+}</pre>`;
+        }
+      } else if (tab === "risk") {
+        btnRisk.className = "px-2.5 py-1 rounded-md bg-dark-800 text-white font-bold";
+        container.innerHTML = `<pre class="text-blue-300"># .bob/RISK-CONTEXT.md — Immutable Socratic Boundary Contract
+# Generated: ${new Date().toISOString()} | Auditor: Tarsius Engine
+
+## Hard Safety Constraints (DO NOT DELETE)
+- [RULE-SEALED] ${isRpg ? 'BR-DISC-EXCEPTION' : 'BR-XFR-REG-E-REFUND'}
+  - Decision ID: ${isRpg ? 'DEC-00004' : 'DEC-00005'}
+  - Status: APPROVED (Legal Precedent)
+  - Authority: architect-1
+  - Merkle Root: ${socraticSealedHash}
+  - Constraint: Subagents MUST preserve unwritten carve-out logic. Deletion is blocked by pre-commit hook.</pre>`;
+      } else {
+        btnJson.className = "px-2.5 py-1 rounded-md bg-dark-800 text-white font-bold";
+        container.innerHTML = `<pre class="text-indigo-300">{
+  "decisionId": "${isRpg ? 'DEC-00004' : 'DEC-00005'}",
+  "ruleId": "${isRpg ? 'BR-DISC-EXCEPTION' : 'BR-XFR-REG-E-REFUND'}",
+  "decision": "approved",
+  "justification": "${isRpg ? 'Class Action CS-4471 carve-out' : 'Regulation E 12 CFR 1005 consumer refund'}",
+  "auditor": "architect-1",
+  "timestamp": "${new Date().toISOString()}",
+  "hash": "${socraticSealedHash}",
+  "parentChainHash": "1004ad65a78c8e3018820e25c23bbe9cfb9b98802a5f288f77efe20c4a7d72ef",
+  "euAiActArticle12Compliant": true
+}</pre>`;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. DUAL-PANE CODE & AST INSPECTOR
+    // -------------------------------------------------------------------------
+    let inspectorWorkload = "ordval";
+
+    function switchInspectorWorkload(wl) {
+      inspectorWorkload = wl;
+      const btnOrdval = document.getElementById("insp-btn-ordval");
+      const btnXfrfun = document.getElementById("insp-btn-xfrfun");
+      const legFilename = document.getElementById("insp-legacy-filename");
+      const specFilename = document.getElementById("insp-spec-filename");
+      const legCodeBox = document.getElementById("insp-legacy-code-box");
+      const specCodeBox = document.getElementById("insp-spec-code-box");
+      const specClause = document.getElementById("insp-spec-clause");
+      const diffNaive = document.getElementById("insp-diff-naive");
+      const diffGov = document.getElementById("insp-diff-gov");
+
+      if (wl === "ordval") {
+        btnOrdval.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-dark-800 text-white border border-blue-500/30 flex items-center gap-2 shadow-lg";
+        btnXfrfun.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white bg-dark-950 border border-dark-border flex items-center gap-2";
+
+        legFilename.innerText = "src/legacy/ORDVAL.rpgle";
+        specFilename.innerText = "docs/order-validation-spec.md";
+        specClause.innerText = "Section 2.2: Universal Suspension";
+
+        legCodeBox.innerHTML = `
+          <p class="text-slate-500">70:  *================================================================</p>
+          <p class="text-slate-500">71:  * BR-DISC-EXCEPTION: Suspended accounts MAY submit DISC orders</p>
+          <p class="text-slate-500">72:  * Source: CODE ONLY — this exception is NOT in documentation</p>
+          <p class="text-slate-500">73:  * Reason: Ticket CS-4471 (2010 class action settlement)</p>
+          <p class="text-slate-500">74:  * DO NOT REMOVE without legal sign-off.</p>
+          <p class="text-slate-500">75:  *================================================================</p>
+          <div class="p-2 bg-amber-500/10 border-l-2 border-amber-400 rounded my-1">
+            <p><span class="text-blue-400 font-bold">77:</span>   C   <span class="text-blue-400">IF</span>   suspendedFlag = <span class="text-emerald-300">'Y'</span></p>
+            <p><span class="text-blue-400 font-bold">78:</span>   C   <span class="text-blue-400">AND</span>  pOrderType = <span class="text-emerald-300">'DISC'</span></p>
+            <p><span class="text-blue-400 font-bold">79:</span>   C   <span class="text-blue-400">EVAL</span> wsResult = <span class="text-emerald-300 font-bold">'A'</span>   <span class="text-emerald-400 font-bold">// OVERRIDE!</span></p>
+            <p><span class="text-blue-400 font-bold">80:</span>   C   <span class="text-blue-400">RETURN</span></p>
+            <p><span class="text-blue-400 font-bold">81:</span>   C   <span class="text-blue-400">ENDIF</span></p>
+          </div>
+          <p class="text-slate-500">86:   C   EVAL wsResult = 'R'</p>
+        `;
+
+        specCodeBox.innerHTML = `
+          <p class="text-blue-400 font-bold">Section 2.2: Suspended Account Enforcement (Spec v3.2 - 2013)</p>
+          <div class="p-3 bg-rose-950/20 border-l-2 border-rose-500 rounded my-2 text-slate-300">
+            "Accounts with status 'S' (Suspended) are strictly blocked from all transactions. 
+            <strong class="text-rose-300">This rule applies universally. No exceptions exist for suspended accounts under any order or transfer type.</strong>"
+          </div>
+          <p class="text-slate-400 text-xs">Written documentation has not been synchronized in 11 years.</p>
+        `;
+
+        diffNaive.innerText = `// Naive AI follows outdated spec Section 2.2
+if (customer.status === 'S' || customer.isSuspended) {
+  return OrderResult.REJECTED; // Universal block!
+}
+// Carve-out deleted as "obsolete dead code"!`;
+
+        diffGov.innerText = `// Sealed by DEC-00004 (Class Action CS-4471)
+if (customer.isSuspended && order.type === 'DISC') {
+  return OrderResult.APPROVED; // Preserved exception!
+}
+if (customer.status === 'S') return OrderResult.REJECTED;`;
+      } else {
+        btnXfrfun.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-dark-800 text-white border border-blue-500/30 flex items-center gap-2 shadow-lg";
+        btnOrdval.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white bg-dark-950 border border-dark-border flex items-center gap-2";
+
+        legFilename.innerText = "src/legacy/XFRFUN.cbl (2,069 LOC)";
+        specFilename.innerText = "docs/xfrfun-spec.md";
+        specClause.innerText = "Section 2.3: Account Suspension Policy";
+
+        legCodeBox.innerHTML = `
+          <p class="text-slate-500">301:  *    Account Status Check: Standard policy blocks suspended accounts.</p>
+          <p class="text-slate-500">302:  *    REGULATORY CARVE-OUT: Regulation E Merchant Inbound Refund</p>
+          <p class="text-slate-500">303:  *    Reason: Ticket CB-9102 (2018 Banking Compliance Settlement)</p>
+          <p class="text-slate-500">304:  *    Suspended accounts MUST accept inbound REFUND-IN ('RFIN') under 12 CFR 1005.</p>
+          <div class="p-2 bg-amber-500/10 border-l-2 border-amber-400 rounded my-1">
+            <p><span class="text-blue-400 font-bold">310:</span>        IF COMM-FSTATUS = 'S' OR COMM-TSTATUS = 'S'</p>
+            <p><span class="text-blue-400 font-bold">311:</span>          IF COMM-TSTATUS = 'S' AND COMM-XFR-TYPE = 'RFIN'</p>
+            <p><span class="text-blue-400 font-bold">312:</span>             MOVE 'Y' TO WS-ALLOW-REFUND-EXCEPTION</p>
+            <p><span class="text-blue-400 font-bold">313:</span>          ELSE</p>
+            <p><span class="text-blue-400 font-bold">314:</span>             MOVE 'N' TO COMM-SUCCESS</p>
+            <p><span class="text-blue-400 font-bold">315:</span>             MOVE 'S' TO COMM-FAIL-CODE</p>
+            <p><span class="text-blue-400 font-bold">318:</span>        END-IF.</p>
+          </div>
+        `;
+
+        specCodeBox.innerHTML = `
+          <p class="text-blue-400 font-bold">Section 2.3: Suspended Account Enforcement (Spec v4.1 - 2017)</p>
+          <div class="p-3 bg-rose-950/20 border-l-2 border-rose-500 rounded my-2 text-slate-300">
+            "Under Section 4.1 of the Core Banking Risk Handbook, suspended accounts are completely frozen.
+            <strong class="text-rose-300">No incoming or outgoing funds transfers may execute against a suspended account under any circumstance.</strong>"
+          </div>
+          <p class="text-slate-400 text-xs">Spec author never documented Regulation E compliance ticket CB-9102.</p>
+        `;
+
+        diffNaive.innerText = `// Naive AI follows Section 2.3 blindly
+if (fromAccount.isSuspended || toAccount.isSuspended) {
+  return { success: false, failCode: 'S' }; // All transfers blocked!
+}
+// Consumer merchant refunds illegally frozen!`;
+
+        diffGov.innerText = `// Sealed by DEC-00005 (Regulation E CB-9102)
+if (toAccount.isSuspended && transferType === 'RFIN') {
+  allowRefundException = true; // Preserved consumer refund!
+} else if (fromAccount.isSuspended || toAccount.isSuspended) {
+  return { success: false, failCode: 'S' };
+}`;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. BETH DIFFERENTIAL SIMULATOR & TRACE INSPECTOR
+    // -------------------------------------------------------------------------
     let currentWorkload = "ordval";
     let currentMode = "naive";
 
@@ -844,6 +1490,7 @@
         tabOrdval.className = "px-3.5 py-1.5 rounded-lg font-semibold transition-all text-slate-400 hover:text-white";
         footnoteText.innerText = "Under Naive AI, Vector XFR-04 blocks inbound merchant refunds to suspended accounts per Section 3.1. But IBM z/OS CICS COBOL L412 carved this out under Regulation E compliance (CB-9102). Tarsius catches this contradiction before migration.";
       }
+      closeTraceDrawer();
       renderSimulator();
     }
 
@@ -877,6 +1524,29 @@
         btn.disabled = false;
         renderSimulator();
       }, 500);
+    }
+
+    function inspectVector(vectorId) {
+      const vecs = currentWorkload === "ordval" ? ordvalVectors : xfrfunVectors;
+      const v = vecs.find(item => item.id === vectorId);
+      if (!v) return;
+
+      const card = document.getElementById("vector-trace-card");
+      document.getElementById("trace-title").innerText = `Differential Execution Trace: Vector [${v.id}] — ${v.desc}`;
+      document.getElementById("trace-legacy-code").innerText = v.trace.legAst;
+      document.getElementById("trace-naive-code").innerText = v.trace.naiveAst;
+      document.getElementById("trace-gov-code").innerText = v.trace.govAst;
+      document.getElementById("trace-legacy-res").innerText = `Legacy Output: ${v.legacy}`;
+      document.getElementById("trace-naive-res").innerText = `Naive AI Output: ${v.naive} ${v.naiveMatch ? '✅ (PASS)' : '❌ (REGRESSION!)'}`;
+      document.getElementById("trace-gov-res").innerText = `Tarsius Output: ${v.gov} ✅ (100% Equivalent)`;
+      document.getElementById("trace-risk-impact").innerText = `Regulatory Assessment: ${v.trace.impact}`;
+
+      card.classList.remove("hidden");
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeTraceDrawer() {
+      document.getElementById("vector-trace-card").classList.add("hidden");
     }
 
     function renderSimulator() {
@@ -926,14 +1596,81 @@
           <td class="py-3 px-3 text-slate-400 text-[11px]">${v.input}</td>
           <td class="py-3 px-3 text-slate-300 font-bold">${v.legacy}</td>
           <td class="py-3 px-3 ${isMatch ? 'text-slate-300' : 'text-rose-400 font-bold'}">${modernOut}</td>
-          <td class="py-3 px-3 text-right">
+          <td class="py-3 px-3 text-center">
             ${isMatch 
               ? '<span class="inline-flex items-center gap-1 text-emerald-400 text-xs font-bold"><i data-lucide="check" class="w-3.5 h-3.5"></i> PASS</span>' 
-              : '<span class="inline-flex items-center gap-1 text-rose-400 text-xs font-bold"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> REGRESSION</span>'}
+              : '<span class="inline-flex items-center gap-1 text-rose-400 text-xs font-bold"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> FAIL</span>'}
+          </td>
+          <td class="py-3 px-3 text-right">
+            <button onclick="inspectVector('${v.id}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-dark-900 hover:bg-blue-600 text-blue-400 hover:text-white border border-dark-border hover:border-blue-500 text-[11px] font-semibold transition-all">
+              <i data-lucide="search" class="w-3 h-3"></i>
+              <span>Trace</span>
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. MERKLE CHAIN TAMPER SIMULATOR
+    // -------------------------------------------------------------------------
+    let chainIsTampered = false;
+
+    function simulateTamper() {
+      chainIsTampered = true;
+      const bar = document.getElementById("merkle-control-bar");
+      const dot = document.getElementById("merkle-status-dot");
+      const text = document.getElementById("merkle-status-text");
+      const sub = document.getElementById("merkle-status-sub");
+      const card4 = document.getElementById("card-dec-4");
+      const badge4 = document.getElementById("badge-dec-4");
+      const status4 = document.getElementById("status-dec-4");
+      const hash3 = document.getElementById("hash-dec-3");
+
+      bar.className = "mb-8 p-4 rounded-2xl bg-rose-950/40 border border-rose-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xl transition-all duration-300";
+      dot.className = "w-3 h-3 rounded-full bg-rose-500 animate-ping";
+      text.className = "text-xs font-mono font-bold text-rose-400";
+      text.innerText = "🚨 MERKLE CHAIN BROKEN: Cryptographic Mismatch at Block 4 (EU AI Act Article 12 Violation)";
+      sub.innerText = "Block DEC-00003 was modified without authorization. Downstream hash link broken!";
+
+      hash3.className = "text-rose-400 font-bold bg-rose-950/60 px-1 py-0.5 rounded";
+      hash3.innerText = "de2769d389d807f5...[TAMPERED_BY_UNAUTHORIZED_ACTOR]";
+
+      card4.className = "p-6 rounded-2xl glass-card border-rose-500 glow-rose flex flex-col justify-between transition-all duration-300";
+      badge4.className = "px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/40 uppercase";
+      badge4.innerText = "COMPROMISED";
+      status4.className = "text-rose-400 font-bold flex items-center gap-1";
+      status4.innerHTML = '<i data-lucide="alert-octagon" class="w-3.5 h-3.5 text-rose-400"></i> Chain Severed!';
+      lucide.createIcons();
+    }
+
+    function restoreChainIntegrity() {
+      chainIsTampered = false;
+      const bar = document.getElementById("merkle-control-bar");
+      const dot = document.getElementById("merkle-status-dot");
+      const text = document.getElementById("merkle-status-text");
+      const sub = document.getElementById("merkle-status-sub");
+      const card4 = document.getElementById("card-dec-4");
+      const badge4 = document.getElementById("badge-dec-4");
+      const status4 = document.getElementById("status-dec-4");
+      const hash3 = document.getElementById("hash-dec-3");
+
+      bar.className = "mb-8 p-4 rounded-2xl bg-dark-950 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl transition-all duration-300";
+      dot.className = "w-3 h-3 rounded-full bg-emerald-400 animate-pulse";
+      text.className = "text-xs font-mono font-bold text-emerald-400";
+      text.innerText = "MERKLE CHAIN INTEGRITY: 100% SECURE (EU AI Act Article 12 Compliant)";
+      sub.innerText = "All 4 decision blocks cryptographically linked via SHA-256 parent hash tree.";
+
+      hash3.className = "text-slate-300";
+      hash3.innerText = "de2769d389d807f500f4dbfacf674c209d4adfc58e6606f1c8888ef154e06fdc";
+
+      card4.className = "p-6 rounded-2xl glass-card border-indigo-900/60 glow-blue flex flex-col justify-between transition-all duration-300";
+      badge4.className = "px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase";
+      badge4.innerText = "Approved";
+      status4.className = "text-indigo-400 font-bold flex items-center gap-1";
+      status4.innerHTML = '<i data-lucide="check-check" class="w-3.5 h-3.5"></i> Tip Verified';
       lucide.createIcons();
     }
 
@@ -947,6 +1684,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
+      switchInspectorWorkload("ordval");
       renderSimulator();
     });
   </script>

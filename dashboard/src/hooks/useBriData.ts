@@ -88,7 +88,11 @@ export function useBriRules() {
       try {
         return await fetchJson<BriDocument>("/api/bri");
       } catch {
-        return await fetchJson<BriDocument>("/sample-data/tarsius-bri.json");
+        try {
+          return await fetchJson<BriDocument>("./sample-data/tarsius-bri.json");
+        } catch {
+          return await fetchJson<BriDocument>("/sample-data/tarsius-bri.json");
+        }
       }
     },
     refetchInterval: 3_000,
@@ -103,7 +107,11 @@ export function useDecisions() {
       try {
         return await fetchJson<DecisionsDocument>("/api/decisions");
       } catch {
-        return await fetchJson<DecisionsDocument>("/sample-data/tarsius-decisions.json");
+        try {
+          return await fetchJson<DecisionsDocument>("./sample-data/tarsius-decisions.json");
+        } catch {
+          return await fetchJson<DecisionsDocument>("/sample-data/tarsius-decisions.json");
+        }
       }
     },
     refetchInterval: 5_000,
@@ -118,7 +126,11 @@ export function useGotchas() {
       try {
         return await fetchJson<GotchasDocument>("/api/gotchas");
       } catch {
-        return await fetchJson<GotchasDocument>("/sample-data/tarsius-gotchas.json");
+        try {
+          return await fetchJson<GotchasDocument>("./sample-data/tarsius-gotchas.json");
+        } catch {
+          return await fetchJson<GotchasDocument>("/sample-data/tarsius-gotchas.json");
+        }
       }
     },
     refetchInterval: 5_000,
