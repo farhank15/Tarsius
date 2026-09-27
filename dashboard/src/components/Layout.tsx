@@ -8,7 +8,9 @@ import {
   Activity,
   Cpu,
   Zap,
+  Layers,
 } from "lucide-react";
+import { useActiveWorkload } from "../hooks/useBriData.js";
 
 interface Props {
   children: React.ReactNode;
@@ -22,6 +24,7 @@ const NAV_ITEMS = [
 ];
 
 export function Layout({ children }: Props) {
+  const { workload, setWorkload } = useActiveWorkload();
   return (
     <div className="flex h-full min-h-screen">
       {/* ── Sidebar ─────────────────────────────────────────── */}
@@ -71,6 +74,42 @@ export function Layout({ children }: Props) {
               <span className="text-[10px] text-emerald-500/70 leading-tight">
                 BETH Oracle: 100%
               </span>
+            </div>
+          </div>
+          {/* Workload selector */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between mb-1.5 px-0.5">
+              <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center gap-1">
+                <Layers className="w-3 h-3 text-slate-400" />
+                Workload
+              </span>
+              <span className="text-[9px] text-slate-500 font-mono">
+                {workload === "ordval" ? "IBM i" : "z/OS"}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-1 p-1 rounded-lg bg-slate-900/90 border border-slate-800 text-[11px]">
+              <button
+                type="button"
+                onClick={() => setWorkload("ordval")}
+                className={`px-2 py-1 rounded font-medium transition-all text-center ${
+                  workload === "ordval"
+                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+                }`}
+              >
+                ORDVAL
+              </button>
+              <button
+                type="button"
+                onClick={() => setWorkload("xfrfun")}
+                className={`px-2 py-1 rounded font-medium transition-all text-center ${
+                  workload === "xfrfun"
+                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+                }`}
+              >
+                XFRFUN
+              </button>
             </div>
           </div>
         </div>

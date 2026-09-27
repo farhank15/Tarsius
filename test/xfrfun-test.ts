@@ -70,6 +70,15 @@ test("COBOL code contains Ticket CB-9102 & Regulation E reference", () => {
   assert(cobolCode.includes("CB-9102"), "CB-9102 ticket comment missing in XFRFUN.cbl");
   assert(cobolCode.includes("Regulation E"), "Regulation E comment missing in XFRFUN.cbl");
   assert(cobolCode.includes("WS-ALLOW-REFUND-EXCEPTION"), "Carve-out variable missing");
+  // Cross-verify all BRI line pointers against the actual COBOL source lines
+  const lines = cobolCode.split("\n");
+  for (const rule of bri.rules) {
+    const loc = rule.evidence?.codeLocation;
+    if (loc && loc.file === "XFRFUN.cbl") {
+      const slice = lines.slice(loc.startLine - 1, loc.endLine).join("\n").trim();
+      assert(slice.length > 0, `Empty line slice for rule ${rule.id} at lines ${loc.startLine}-${loc.endLine}`);
+    }
+  }
 });
 
 test("Spec document contains universal freeze contradiction", () => {

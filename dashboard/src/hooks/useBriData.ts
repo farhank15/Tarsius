@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   useQuery,
   useMutation,
@@ -10,6 +11,47 @@ import type {
   ApprovePayload,
   ApproveResponse,
 } from "../types/index.js";
+
+// ---------------------------------------------------------------------------
+// Workload Management (Dual-Workload: ORDVAL & XFRFUN)
+// ---------------------------------------------------------------------------
+
+export type WorkloadId = "ordval" | "xfrfun";
+
+const WORKLOAD_KEY = "tarsius_active_workload";
+
+export function getActiveWorkload(): WorkloadId {
+  if (typeof window === "undefined") return "ordval";
+  const stored = localStorage.getItem(WORKLOAD_KEY);
+  return stored === "xfrfun" ? "xfrfun" : "ordval";
+}
+
+export function setActiveWorkload(workload: WorkloadId) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem(WORKLOAD_KEY, workload);
+    window.dispatchEvent(new CustomEvent("tarsius-workload-changed", { detail: workload }));
+  }
+}
+
+export function useActiveWorkload() {
+  const [workload, setWorkloadState] = useState<WorkloadId>(getActiveWorkload);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const custom = e as CustomEvent<WorkloadId>;
+      setWorkloadState(custom.detail || getActiveWorkload());
+    };
+    window.addEventListener("tarsius-workload-changed", handler);
+    return () => window.removeEventListener("tarsius-workload-changed", handler);
+  }, []);
+
+  const setWorkload = (newWorkload: WorkloadId) => {
+    setActiveWorkload(newWorkload);
+    setWorkloadState(newWorkload);
+  };
+
+  return { workload, setWorkload };
+}
 
 // ---------------------------------------------------------------------------
 // Query keys
@@ -35,11 +77,14 @@ async function fetchJson<T>(url: string): Promise<T> {
 // Hooks
 // ---------------------------------------------------------------------------
 
-/** Polls BRI data every 3 seconds. */
+/** Polls BRI data for the active workload every 3 seconds. */
 export function useBriRules() {
+  const { workload } = useActiveWorkload();
+  const file = workload === "xfrfun" ? "/sample-data/xfrfun-bri.json" : "/sample-data/tarsius-bri.json";
+
   return useQuery<BriDocument>({
-    queryKey: QUERY_KEYS.bri,
-    queryFn: () => fetchJson<BriDocument>("/sample-data/tarsius-bri.json"),
+    queryKey: ["bri", workload],
+    queryFn: () => fetchJson<BriDocument>(file),
     refetchInterval: 3_000,
   });
 }
@@ -93,7 +138,7 @@ export function useApproveRule() {
         .join("");
       const chainHash = hash;
 
-      queryClient.setQueryData<BriDocument>(QUERY_KEYS.bri, (old) => {
+      queryClient.setQueriesData<BriDocument>({ queryKey: ["bri"] }, (old) => {
         if (!old) return old;
         return {
           ...old,
